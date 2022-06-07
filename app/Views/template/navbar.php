@@ -1,4 +1,3 @@
-<!-- topbar -->
 <header class="topbar" data-navbarbg="skin6">
     <nav class="navbar top-navbar navbar-expand-md">
         <div class="navbar-header" data-logobg="skin6">
@@ -8,19 +7,23 @@
 
             <div class="navbar-brand">
 
-                <a href="index.html">
+                <a href="#">
                     <b class="logo-icon">
 
-                        <img src="../assets/images/logo-icon.png" alt="homepage" class="dark-logo" />
+                        <img src="<?= base_url() ?>/assets/images/logo.png"
+                            alt="homepage" class="dark-logo" />
 
-                        <img src="../assets/images/logo-icon.png" alt="homepage" class="light-logo" />
+                        <img src="<?= base_url() ?>/assets/images/logo.png"
+                            alt="homepage" class="light-logo" />
                     </b>
 
                     <span class="logo-text">
 
-                        <img src="../assets/images/logo-text.png" alt="homepage" class="dark-logo" />
+                        <img src="<?= base_url() ?>/assets/images/logo-text.png"
+                            alt="homepage" class="dark-logo" />
 
-                        <img src="../assets/images/logo-light-text.png" class="light-logo" alt="homepage" />
+                        <img src="<?= base_url() ?>/assets/images/logo-light-text.png"
+                            class="light-logo" alt="homepage" />
                     </span>
                 </a>
             </div>
@@ -31,11 +34,13 @@
         </div>
 
         <div class="navbar-collapse collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav float-left mr-auto ml-3 pl-1"></ul>
             <ul class="navbar-nav float-right">
                 <li class=" nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="javascript:void(0)" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
-                        <img src="../assets/images/users/profile-pic.jpg" alt="user" class="rounded-circle" width="40">
+                        <img src="<?= base_url() ?>/assets/images/users/profile-pic.jpg"
+                            alt="user" class="rounded-circle" width="40">
                         <span class="ml-2 d-none d-lg-inline-block"><span>Hello,</span> <span class="text-dark">Jason
                                 Doe</span> <i data-feather="chevron-down" class="svg-icon"></i></span>
                     </a>
@@ -57,13 +62,9 @@
                         <a class="dropdown-item" href="javascript:void(0)"><i data-feather="power"
                                 class="svg-icon mr-2 ml-1"></i>
                             Logout</a>
-                        <div class="dropdown-divider"></div>
-                        <div class="pl-4 p-3"><a href="javascript:void(0)" class="btn btn-sm btn-info">View
-                                Profile</a></div>
                     </div>
                 </li>
             </ul>
         </div>
     </nav>
 </header>
-<!-- end topbar -->

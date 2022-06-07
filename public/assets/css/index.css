@@ -1,0 +1,13 @@
+.logo-icon img {
+  max-width: 50px;
+}
+
+.sub-title {
+  color: #d6d6d6;
+  font-size: 0.775rem;
+  line-height: 1.5;
+}
+
+.status-badge {
+  text-align: center;
+}

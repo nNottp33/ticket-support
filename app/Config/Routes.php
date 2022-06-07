@@ -33,6 +33,14 @@ $routes->setAutoRoute(true);
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
 
+$routes->group('admin', function ($routes) {
+    $routes->get('ticket/list', 'Ticket::index');
+    $routes->get('users/list', 'User::index');
+    $routes->get('ticket/catagories', 'Ticket::CATList');
+});
+
+
+
 /*
  * --------------------------------------------------------------------
  * Additional Routing
