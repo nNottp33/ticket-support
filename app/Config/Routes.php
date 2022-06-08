@@ -36,7 +36,7 @@ $routes->get('/', 'Home::index');
 $routes->group('admin', function ($routes) {
     $routes->get('ticket/list', 'Ticket::index');
     $routes->get('users/list', 'User::index');
-    $routes->get('ticket/catagories', 'Ticket::CATList');
+    $routes->get('ticket/catagories', 'Ticket::catList');
 });
 
 

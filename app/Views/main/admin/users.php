@@ -10,7 +10,9 @@
                  <div class="d-flex align-items-center">
                      <nav aria-label="breadcrumb">
                          <ol class="breadcrumb m-0 p-0">
-                             <li class="breadcrumb-item"><a href="index.html" class="text-muted">User</a></li>
+                             <li class="breadcrumb-item"><a
+                                     href="<?=  base_url('admin/users/list') ?>"
+                                     class="text-muted">User</a></li>
                              <li class="breadcrumb-item text-muted active" aria-current="page">User list</li>
                          </ol>
                      </nav>
@@ -18,7 +20,7 @@
              </div>
              <div class="col-5 align-self-center">
                  <div class="customize-input float-right">
-                     <a data-bs-toggle="modal" data-bs-target="#addUserModal" href="#" class="btn btn-primary">
+                     <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#userModal">
                          <i class="fas fa-plus"></i>
                          <span class="hide-menu">
                              เพิ่มผู้ใช้
@@ -94,7 +96,7 @@
                                  <tbody>
                                      <tr>
                                          <td class="text-center">
-                                             <a href="#" class="btn btn-primary btn-sm">
+                                             <a href="#" onclick="editUser()" class="btn btn-primary btn-sm">
                                                  <i class="fas fa-edit"></i>
                                              </a>
                                              <a href="#" class="btn btn-danger btn-sm">
@@ -213,6 +215,30 @@
          </div>
      </div>
  </div>
+
+
+ <!--  add user Modal-->
+ <div class="modal fade clear-modal" id="userModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="userModalLabel" aria-hidden="true">
+     <div class="modal-dialog">
+         <div class="modal-content">
+             <div class="modal-header">
+                 <h5 class="modal-title" id="staticBackdropLabel">ข้อมูลผู้ใช้</h5>
+                 <a href="#" class="icon-close" data-bs-dismiss="modal" aria-label="Close"></a>
+             </div>
+             <div class="modal-body">
+                 <div>
+
+                 </div>
+             </div>
+             <div class="modal-footer">
+                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                 <button type="button" class="btn btn-primary">บันทึกข้อมูล</button>
+             </div>
+         </div>
+     </div>
+ </div>
+ <!-- end add user modal-->
 
  <script>
      $(document).ready(function() {

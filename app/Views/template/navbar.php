@@ -7,22 +7,21 @@
 
             <div class="navbar-brand">
 
-                <a href="#">
+                <a href="index.html">
                     <b class="logo-icon">
-
-                        <img src="<?= base_url() ?>/assets/images/logo.png"
+                        <img src="<?= base_url(); ?>/assets/images/logo.png"
                             alt="homepage" class="dark-logo" />
 
-                        <img src="<?= base_url() ?>/assets/images/logo.png"
+                        <img src="<?= base_url(); ?>/assets/images/logo.png"
                             alt="homepage" class="light-logo" />
                     </b>
 
                     <span class="logo-text">
 
-                        <img src="<?= base_url() ?>/assets/images/logo-text.png"
+                        <img src="<?= base_url(); ?>/assets/images/logo-text.png"
                             alt="homepage" class="dark-logo" />
 
-                        <img src="<?= base_url() ?>/assets/images/logo-light-text.png"
+                        <img src="<?= base_url(); ?>/assets/images/logo-light-text.png"
                             class="light-logo" alt="homepage" />
                     </span>
                 </a>

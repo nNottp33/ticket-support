@@ -11,3 +11,31 @@
 .status-badge {
   text-align: center;
 }
+
+.icon-close {
+  font-size: 1.5rem;
+}
+
+th {
+  text-align: center;
+}
+
+.btn,
+.badge,
+table,
+.card div {
+  border-radius: 5px;
+}
+
+.navbar-nav {
+  background: #ffff;
+}
+
+.navbar-collapse {
+  background: radial-gradient(
+    circle at 10% 20%,
+    rgb(255, 94, 7) 0%,
+    rgb(255, 151, 32) 90%
+  );
+  /* background: linear-gradient(-60deg, #f09819 0%, #ff5858 100%); */
+}

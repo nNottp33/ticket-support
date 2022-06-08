@@ -14,6 +14,8 @@
     <title>Ticket support | <?php echo session()->get('class') == 'user' ? 'User' : 'Admin'; ?>
     </title>
     </title>
+
+
     <!-- Custom CSS -->
     <link href="<?= base_url() ?>/assets/extra-libs/c3/c3.min.css"
         rel="stylesheet">
@@ -38,16 +40,9 @@
     <!-- ajax -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-    <!-- select2 -->
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
+    <!-- bootstrap select -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 
 <body>
@@ -71,8 +66,12 @@
         <?= $this->renderSection('content'); ?>
     </div>
 
-    <!-- All Jquery -->
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous">
+    </script>
 
+    <!-- All Jquery -->
     <script src="<?= base_url() ?>/assets/libs/jquery/dist/jquery.min.js">
     </script>
     <script
@@ -81,6 +80,7 @@
     <script
         src="<?= base_url() ?>/assets/libs/bootstrap/dist/js/bootstrap.min.js">
     </script>
+
     <!-- apps -->
     <!-- apps -->
     <script src="<?= base_url() ?>/dist/js/app-style-switcher.js"></script>
@@ -120,11 +120,8 @@
         integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <!-- my script -->>
+    <!-- my script -->
     <script src="<?= base_url() ?>/assets/js/app.js"></script>
-
-    <!-- select2 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
 
 </body>
 

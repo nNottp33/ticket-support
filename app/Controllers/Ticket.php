@@ -10,7 +10,7 @@ class Ticket extends BaseController
     }
 
 
-    public function CATList()
+    public function catList()
     {
         return view('main/admin/cat_list');
     }
