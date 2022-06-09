@@ -3,6 +3,8 @@ $(document).ready(function () {
   $(".clear-modal").on("hidden.bs.modal", function (e) {
     $(this).find("input,textarea,select").val("").end();
   });
+
+  $(".selectpicker").selectpicker();
 });
 
 const editUser = () => {
@@ -38,4 +40,16 @@ const getSubCatagories = () => {
 
 const getAdminDetail = (data) => {
   $("#adminDetailModal").modal("show");
+};
+
+const test = () => {
+  let option = $("#selectCategory :selected").val();
+
+  // when select option add show text input
+
+  if (option == 0) {
+    $("#inputNewCatagory").show();
+  } else {
+    $("#inputNewCatagory").hide();
+  }
 };

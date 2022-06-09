@@ -15,13 +15,12 @@
     </title>
     </title>
 
-
     <!-- Custom CSS -->
     <link href="<?= base_url() ?>/assets/extra-libs/c3/c3.min.css"
         rel="stylesheet">
-    <link
+    <!-- <link
         href="<?= base_url() ?>/assets/libs/chartist/dist/chartist.min.css"
-        rel="stylesheet">
+    rel="stylesheet"> -->
     <link
         href="<?= base_url() ?>/assets/extra-libs/jvector/jquery-jvectormap-2.0.2.css"
         rel="stylesheet" />
@@ -37,12 +36,15 @@
         href="<?= base_url() ?>/assets/css/index.css"
         type="text/css" />
 
+
     <!-- ajax -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <!-- bootstrap select -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+
 </head>
 
 <body>
@@ -82,7 +84,6 @@
     </script>
 
     <!-- apps -->
-    <!-- apps -->
     <script src="<?= base_url() ?>/dist/js/app-style-switcher.js"></script>
     <script src="<?= base_url() ?>/dist/js/feather.min.js"></script>
     <script
@@ -95,8 +96,8 @@
     <script src="<?= base_url() ?>/assets/extra-libs/c3/d3.min.js"></script>
     <script src="<?= base_url() ?>/assets/extra-libs/c3/c3.min.js"></script>
     <!-- <script src="<?= base_url() ?>/assets/libs/chartist/dist/chartist.min.js">
-    </script>
-    <script
+    </script> -->
+    <!-- <script
         src="<?= base_url() ?>/assets/libs/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js">
     </script> -->
     <script
@@ -106,7 +107,8 @@
         src="<?= base_url() ?>/assets/extra-libs/jvector/jquery-jvectormap-world-mill-en.js">
     </script>
     <!-- <script src="<?= base_url() ?>/dist/js/pages/dashboards/dashboard1.min.js">
-    </script> -->
+    -->
+    </script>
 
     <!-- datatables -->
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
@@ -119,6 +121,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
         integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 
     <!-- my script -->
     <script src="<?= base_url() ?>/assets/js/app.js"></script>

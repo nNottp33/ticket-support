@@ -39,6 +39,9 @@ $routes->group('admin', function ($routes) {
     $routes->get('ticket/catagories', 'Ticket::catList');
 });
 
+$routes->group('user', function ($routes) {
+    $routes->get('home', 'UserTicket::index');
+});
 
 
 /*

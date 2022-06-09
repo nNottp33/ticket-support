@@ -3,15 +3,31 @@
                 <nav class="sidebar-nav">
                     <ul id="sidebarnav">
                         <li class="sidebar-item">
-                            <a class="sidebar-link sidebar-link"
+                            <?php  // if (session()->get('class') == 'user') :?>
+
+                            <!-- <a class="sidebar-link sidebar-link"
                                 href="<?php echo base_url();?>"
+                            aria-expanded="false">
+                            <i data-feather="home" class="feather-icon"></i>
+                            <span class="hide-menu">Dashboard
+                                <div class="sub-title">แดชบอร์ด</div>
+                            </span>
+
+                            </a> -->
+
+                            <?php // endif;?>
+
+                            <?php  // if (session()->get('class') == 'user') :?>
+                            <a class="sidebar-link sidebar-link"
+                                href="<?php echo base_url('user/home');?>"
                                 aria-expanded="false">
                                 <i data-feather="home" class="feather-icon"></i>
-                                <span class="hide-menu">Dashboard
-                                    <div class="sub-title">แดชบอร์ด</div>
+                                <span class="hide-menu">Home
+                                    <div class="sub-title">หน้าแรก</div>
                                 </span>
-
                             </a>
+
+                            <?php // endif;?>
                         </li>
                         <li class="list-divider"></li>
                         <li class="nav-small-cap">
@@ -49,6 +65,7 @@
                             </a>
                         </li>
 
+                        <li class="list-divider"></li>
                         <li class="nav-small-cap">
                             <span class="hide-menu">Report</span>
                         </li>

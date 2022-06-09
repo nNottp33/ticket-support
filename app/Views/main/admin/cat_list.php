@@ -95,12 +95,22 @@
              </div>
              <div class="modal-body">
                  <div class="form-group mb-4">
-                     <select class="js-example-basic-single" name="state">
-                         <option value="AL">Alabama</option>
-                         ...
-                         <option value="WY">Wyoming</option>
+                     <select id="selectCategory" name="category" onchange="test()" title="กรุณาเลือกหมวดหมู่"
+                         class="selectpicker form-control" data-live-search="true" data-width="100%">
+                         <option value="0"
+                             data-content="<span class='btn btn-link text-dark'><i class='fa fa-plus text-dark'></i> เพิ่ม</span>">
+                         </option>
+                         <option value="1">ขอร้อง MIS</option>
+                         <option value="2">ขอร้อง NAV</option>
                      </select>
                  </div>
+
+
+                 <div class="form-group">
+                     <input type="text" class="form-control" id="inputNewCatagory" aria-describedby="subCatText"
+                         placeholder="New catagory">
+                 </div>
+
 
                  <div class="form-group">
                      <input type="text" class="form-control" id="inputSubCat" aria-describedby="subCatText"
