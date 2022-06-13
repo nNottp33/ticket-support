@@ -118,8 +118,14 @@
                  </div>
 
                  <div class="form-group">
-                     <input type="email" class="form-control" id="inputEmail" aria-describedby="subCatText"
-                         placeholder="Email">
+                     <select id="selectCategory" name="category" onchange="checkAdmin()" title="กรุณาเลือกผู้รับผิดชอบ"
+                         class="selectpicker form-control" data-live-search="true" data-width="100%">
+                         <!-- <option value="0"
+                             data-content="<span class='btn btn-link text-dark'><i class='fa fa-plus text-dark'></i> เพิ่ม</span>">
+                         </option> -->
+                         <option value="1">นาย A</option>
+                         <option value="2">นาย B</option>
+                     </select>
                  </div>
              </div>
              <div class="modal-footer">
@@ -196,7 +202,21 @@
                  <a href="#" class="icon-close" data-bs-dismiss="modal" aria-label="Close"></a>
              </div>
              <div class="modal-body">
+                 <div>
+                     <div class="m-auto text-center mb-4 justify-content-center">
+                         <img src="<?= base_url(); ?>/assets/images/users/5.jpg"
+                             alt="image" class="rounded-circle" width="150">
+                         <p class="mt-3 mb-0">
+                     </div>
 
+                     <div class="px-5">
+                         <div> ชื่อ สกุล </div>
+                         <div> ตำแหน่ง </div>
+                         <div> แผนก </div>
+                         <div id="userDetails"></div>
+                         <div> เบอร์โทร </div>
+                     </div>
+                 </div>
              </div>
              <div class="modal-footer">
                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
