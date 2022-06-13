@@ -5,27 +5,27 @@
                         <li class="sidebar-item">
                             <?php  // if (session()->get('class') == 'user') :?>
 
-                            <!-- <a class="sidebar-link sidebar-link"
+                            <a class="sidebar-link sidebar-link"
                                 href="<?php echo base_url();?>"
-                            aria-expanded="false">
-                            <i data-feather="home" class="feather-icon"></i>
-                            <span class="hide-menu">Dashboard
-                                <div class="sub-title">แดชบอร์ด</div>
-                            </span>
+                                aria-expanded="false">
+                                <i data-feather="home" class="feather-icon"></i>
+                                <span class="hide-menu">Dashboard
+                                    <div class="sub-title">แดชบอร์ด</div>
+                                </span>
 
-                            </a> -->
+                            </a>
 
                             <?php // endif;?>
 
                             <?php  // if (session()->get('class') == 'user') :?>
-                            <a class="sidebar-link sidebar-link"
+                            <!-- <a class="sidebar-link sidebar-link"
                                 href="<?php echo base_url('user/home');?>"
-                                aria-expanded="false">
-                                <i data-feather="home" class="feather-icon"></i>
-                                <span class="hide-menu">Home
-                                    <div class="sub-title">หน้าแรก</div>
-                                </span>
-                            </a>
+                            aria-expanded="false">
+                            <i data-feather="home" class="feather-icon"></i>
+                            <span class="hide-menu">Home
+                                <div class="sub-title">หน้าแรก</div>
+                            </span>
+                            </a> -->
 
                             <?php // endif;?>
                         </li>

@@ -118,3 +118,23 @@ table,
 }
 
 /* floating button end */
+
+.card-sub-detail {
+  font-size: 0.8rem !important;
+}
+
+.card {
+  border-color: #ee4d2d;
+  border-radius: 10px;
+  box-shadow: 0 1px 10px -4px rgb(255 151 32);
+}
+
+.card-ticketDetail {
+  cursor: pointer;
+}
+
+.ticket-detail-status {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #ee4d2d;
+}

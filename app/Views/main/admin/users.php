@@ -220,35 +220,119 @@
  <!--  add user Modal-->
  <div class="modal fade clear-modal" id="userModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="userModalLabel" aria-hidden="true">
-     <div class="modal-dialog">
+     <div class="modal-dialog modal-lg">
          <div class="modal-content">
              <div class="modal-header">
                  <h5 class="modal-title" id="staticBackdropLabel">ข้อมูลผู้ใช้</h5>
                  <a href="#" class="icon-close" data-bs-dismiss="modal" aria-label="Close"></a>
              </div>
              <div class="modal-body">
-                 <div>
+                 <div class="px-5 py-4">
+
+                     <div class="input-group mb-3">
+                         <div class="customize-input mx-1">
+                             <input type="text" class="form-control" id="inputEmpId" placeholder="รหัสพนักงาน">
+                         </div>
+                     </div>
+
+                     <div class="input-group mb-3">
+
+                         <div class="customize-input mx-1">
+                             <select class="form-control selectpicker" title="คำนำหน้าชื่อ" id="selectPrefix">
+                                 <option value="นาย">นาย</option>
+                                 <option value="นาง">นาง</option>
+                                 <option value="นางสาว">นางสาว</option>
+                             </select>
+                         </div>
+
+                         <div class="customize-input mx-1">
+                             <input type="text" class="form-control" id="inputName" placeholder="ชื่อ">
+                         </div>
+
+
+                         <div class="customize-input mx-1">
+                             <input type="text" class="form-control" id="inputLastname" placeholder="นามสกุล">
+                         </div>
+                     </div>
+
+                     <div class="input-group mb-3">
+                         <div class="customize-input mx-1">
+                             <input type="text" class="form-control" id="inputNickname" placeholder="ชื่อเล่น">
+                         </div>
+                     </div>
+
+
+                     <div class="input-group mb-3">
+                         <div class="customize-input mx-1">
+                             <input type="text" class="form-control" id="inputEmail" placeholder="Email">
+                         </div>
+
+                     </div>
+
+                     <div class="input-group mb-3">
+                         <div class="customize-input mx-1">
+                             <input type="text" class="form-control" id="inputPhone" placeholder="เบอร์ติดต่อ">
+                         </div>
+                     </div>
+
+                     <div class="input-group mb-3">
+                         <div class="customize-input mx-1">
+                             <select class="form-control selectpicker" title="แผนก" id="selectDepartment">
+                                 <option value="นาย">IT</option>
+                                 <option value="นาง">Marketing</option>
+                                 <option value="นางสาว">HR</option>
+                             </select>
+                         </div>
+                     </div>
+
+                     <div class="input-group mb-3">
+                         <div class="customize-input mx-1">
+                             <select class="form-control selectpicker" title="ตำแหน่ง" id="selectPosition">
+                                 <option value="นาย">Support NAV</option>
+                                 <option value="นาง">Infrastructure</option>
+                                 <option value="นางสาว">Developer</option>
+                             </select>
+                         </div>
+                     </div>
+
+                     <div class="input-group mb-3">
+                         <div class="customize-input mx-1">
+                             <select class="form-control selectpicker" title="ระดับผู้ใช้งาน" id="classUser">
+                                 <option value="1">Admin</option>
+                                 <option value="2">User</option>
+                             </select>
+                         </div>
+                     </div>
+
+                     <div class="input-group mb-3">
+                         <div class="customize-input mx-1">
+                             <select class="form-control selectpicker" title="สถานะผู้ใช้งาน" id="selectPosition">
+                                 <option value="0">ปิดใช้งาน</option>
+                                 <option value="1">เปิดใช้งาน</option>
+                                 <option value="2">ล็อค</option>
+                             </select>
+                         </div>
+                     </div>
 
                  </div>
-             </div>
-             <div class="modal-footer">
-                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-                 <button type="button" class="btn btn-primary">บันทึกข้อมูล</button>
+                 <div class="modal-footer">
+                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                     <button type="button" class="btn btn-primary">บันทึกข้อมูล</button>
+                 </div>
              </div>
          </div>
      </div>
- </div>
- <!-- end add user modal-->
+     <!-- end add user modal-->
 
- <script>
-     $(document).ready(function() {
-         var table = $("#tableUser").dataTable({
-             "processing": true,
-             "stateSave": true,
-             "searching": true,
-             "responsive": true,
-             "bDestroy": true,
+     <script>
+         $(document).ready(function() {
+             var table = $("#tableUser").dataTable({
+                 "processing": true,
+                 "stateSave": true,
+                 "searching": true,
+                 "responsive": true,
+                 "bDestroy": true,
+             });
          });
-     });
- </script>
- <?= $this->endSection();
+     </script>
+     <?= $this->endSection();

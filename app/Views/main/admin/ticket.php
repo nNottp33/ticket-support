@@ -71,7 +71,7 @@
                              <table id="tableTicket" class="table table-striped table-bordered no-wrap">
                                  <thead>
                                      <tr>
-                                         <th>สถานนะ</th>
+                                         <th>สถานะ</th>
                                          <th>หัวข้อ</th>
                                          <th>รายละเอียด</th>
                                          <th>ผู้แจ้งปัญหา</th>
@@ -244,6 +244,40 @@
              </div>
              <div class="modal-body">
                  <p id="aticleDetails"></p>
+                 <div class="">
+                     <div class="row">
+                         <div class="col-md-12">
+                             <div class="form-group">
+                                 <h4> <b> ขอร้อง NAV </b></h4>
+                                 <label for="">รายละเอียด</label>
+                                 <p class="">
+                                     ขอสร้างข้อมูลบน Dashboard .....
+                                 </p>
+                             </div>
+                         </div>
+                     </div>
+                     <div class="m-auto text-center justify-content-center">
+                         <svg class="bd-placeholder-img card-img-top" width="100%" height="180"
+                             xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image cap"
+                             preserveAspectRatio="xMidYMid slice" focusable="false">
+                             <title>Placeholder</title>
+                             <rect width="100%" height="100%" fill="#868e96"></rect><text x="50%" y="50%" fill="#dee2e6"
+                                 dy=".3em">Image cap</text>
+                         </svg>
+                     </div>
+
+                     <div class="my-2">
+                         <span>
+                             ระยะเวลาดำเนินการ 60 นาที
+                         </span>
+                     </div>
+
+                     <div class="my-2">
+                         <span>
+                             สถานะ <b class="ml-2 ticket-detail-status"> กำลังดำเนินการ </b>
+                         </span>
+                     </div>
+                 </div>
              </div>
              <div class="modal-footer">
                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
@@ -257,11 +291,25 @@
      <div class="modal-dialog">
          <div class="modal-content">
              <div class="modal-header">
-                 <h5 class="modal-title" id="getUserDetaillModalLabel">ข้อมูลผู้ใช้</h5>
+                 <h5 class="modal-title" id="getUserDetaillModalLabel">ข้อมูลผู้ดูแลระบบ</h5>
                  <a href="#" class="icon-close" data-bs-dismiss="modal" aria-label="Close"></a>
              </div>
              <div class="modal-body">
-                 <p id="userDetails"></p>
+                 <div>
+                     <div class="m-auto text-center mb-4 justify-content-center">
+                         <img src="<?= base_url(); ?>/assets/images/users/5.jpg"
+                             alt="image" class="rounded-circle" width="150">
+                         <p class="mt-3 mb-0">
+                     </div>
+
+                     <div class="px-5">
+                         <div> ชื่อ สกุล </div>
+                         <div> ตำแหน่ง </div>
+                         <div> แผนก </div>
+                         <div id="userDetails"></div>
+                         <div> เบอร์โทร </div>
+                     </div>
+                 </div>
              </div>
              <div class="modal-footer">
                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>

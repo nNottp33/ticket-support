@@ -95,7 +95,7 @@
              </div>
              <div class="modal-body">
                  <div class="form-group mb-4">
-                     <select id="selectCategory" name="category" onchange="test()" title="กรุณาเลือกหมวดหมู่"
+                     <select id="selectCategory" name="category" onchange="checkCat()" title="กรุณาเลือกหมวดหมู่"
                          class="selectpicker form-control" data-live-search="true" data-width="100%">
                          <option value="0"
                              data-content="<span class='btn btn-link text-dark'><i class='fa fa-plus text-dark'></i> เพิ่ม</span>">

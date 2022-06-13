@@ -42,7 +42,8 @@ const getAdminDetail = (data) => {
   $("#adminDetailModal").modal("show");
 };
 
-const test = () => {
+// check catagories is option 0 or not
+const checkCat = () => {
   let option = $("#selectCategory :selected").val();
 
   // when select option add show text input
@@ -52,4 +53,8 @@ const test = () => {
   } else {
     $("#inputNewCatagory").hide();
   }
+};
+
+const showDetailUserTicker = (id) => {
+  $("#userTicketDetailModal").modal("show");
 };
