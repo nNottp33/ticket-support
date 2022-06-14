@@ -31,18 +31,21 @@ $routes->setAutoRoute(true);
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.s
-$routes->get('/', 'Home::index', ['filter' => 'auth']);
 
-$routes->group('admin', ['filter' => 'auth'], function ($routes) {
+
+$routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'Home::index');
-    $routes->get('ticket/list', 'Ticket::index');
-    $routes->get('users/list', 'User::index');
-    $routes->get('ticket/catagories', 'Ticket::catList');
-    // $routes->post('');
-});
 
-$routes->group('user', ['filter' => 'auth'], function ($routes) {
-    $routes->get('home', 'UserTicket::index');
+    $routes->group('admin', ['filter' => 'role_admin'], function ($routes) {
+        $routes->get('/', 'Home::index', );
+        $routes->get('ticket/list', 'Ticket::index');
+        $routes->get('users/list', 'User::index');
+        $routes->get('ticket/catagories', 'Ticket::catList');
+    });
+
+    $routes->group('user', ['filter' => 'role_user'], function ($routes) {
+        $routes->get('home', 'UserTicket::index');
+    });
 });
 
 // checked loggedin

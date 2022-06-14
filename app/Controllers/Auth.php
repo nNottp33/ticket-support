@@ -47,10 +47,19 @@ class Auth extends BaseController
 
                     $this->session->set($sessionData);
 
+                    if ($data['class'] == 'admin') {
+                        $url = base_url('/admin');
+                    }
+
+                    if ($data['class'] == 'user') {
+                        $url = base_url('/user/home');
+                    }
+
                     $response = [
                         'status' => 200,
                         'title' => 'Success',
                         'message' => 'เข้าสู่ระบบสำเร็จ',
+                        'redirectUrl' => $url,
                     ];
 
                     return $this->response->setJSON($response);

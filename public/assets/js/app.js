@@ -41,6 +41,9 @@ const login = () => {
       },
       success: function (response) {
         $(".preloader").show();
+
+        console.log(response.redirectUrl);
+
         if (response.status == 200) {
           setTimeout(() => {
             $(".preloader").hide();
@@ -50,7 +53,7 @@ const login = () => {
               showConfirmButton: false,
               timer: 1500,
             }).then((result) => {
-              window.location.href = `${baseUrl}admin`;
+              window.location.href = `${response.redirectUrl}`;
             });
           }, 1000);
         }
@@ -78,8 +81,6 @@ const login = () => {
     });
   }
 };
-
-const preloader = () => {};
 
 // const editUser = () => {
 //   // ajax somthing
