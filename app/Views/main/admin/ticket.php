@@ -291,7 +291,7 @@
      <div class="modal-dialog">
          <div class="modal-content">
              <div class="modal-header">
-                 <h5 class="modal-title" id="getUserDetaillModalLabel">ข้อมูลผู้ดูแลระบบ</h5>
+                 <h5 class="modal-title" id="getUserDetaillModalLabel">ข้อมูลผู้แจ้งปัญหา</h5>
                  <a href="#" class="icon-close" data-bs-dismiss="modal" aria-label="Close"></a>
              </div>
              <div class="modal-body">

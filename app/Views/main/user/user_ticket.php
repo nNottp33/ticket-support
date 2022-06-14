@@ -35,7 +35,7 @@
              <!-- column -->
              <div class="col-lg-3 col-md-6">
                  <!-- Card -->
-                 <div class="card card-ticketDetail" onclick="showDetailUserTicker()">
+                 <div class="card card-ticket card-ticketDetail" onclick="showDetailUserTicker()">
                      <div class="card-body">
                          <h4 class="card-title">Ticket no. 3455234</h4>
                          <h5 class="card-subtitle mb-2 text-muted"> ขอร้อง MIS </h5>
