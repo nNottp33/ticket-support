@@ -39,8 +39,14 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->group('admin', ['filter' => 'role_admin'], function ($routes) {
         $routes->get('/', 'Home::index', );
         $routes->get('ticket/list', 'Ticket::index');
-        $routes->get('users/list', 'User::index');
+        $routes->get('users', 'User::index');
+        $routes->get('users/list', 'User::userList');
+        $routes->post('users/byId', 'User::getUserById');
+        $routes->post('users/new', 'User::insertUser');
+        $routes->post('users/delete', 'User::deleteUser');
         $routes->get('ticket/catagories', 'Ticket::catList');
+        $routes->get('department/list', 'User::getDepartmentList');
+        $routes->post('position/list', 'User::getPositionList');
     });
 
     $routes->group('user', ['filter' => 'role_user'], function ($routes) {
@@ -51,6 +57,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
 // checked loggedin
 $routes->group('', ['filter' => 'loggedin'], function ($routes) {
     $routes->get('/auth', 'Auth::index');
+    $routes->post('/auth/login', 'Auth::login');
 });
 
 

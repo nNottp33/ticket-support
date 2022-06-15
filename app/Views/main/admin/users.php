@@ -20,7 +20,8 @@
              </div>
              <div class="col-5 align-self-center">
                  <div class="customize-input float-right">
-                     <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#userModal">
+                     <a href="#" onclick="addUser()" class="btn btn-primary" data-bs-toggle="modal"
+                         data-bs-target="#userModal">
                          <i class="fas fa-plus"></i>
                          <span class="hide-menu">
                              เพิ่มผู้ใช้
@@ -84,130 +85,33 @@
                                          <th>จัดการข้อมูล</th>
                                          <th>สถานะ</th>
                                          <th>รหัสพนักงาน</th>
+                                         <th>Email</th>
                                          <th>ชื่อ - สกุล</th>
                                          <th>ชื่อเล่น</th>
-                                         <th>Email</th>
                                          <th>เบอร์ติดต่อ</th>
                                          <th>แผนก</th>
                                          <th>ตำแหน่ง</th>
+                                         <th>Role</th>
                                          <th>เข้าสู่ระบบล่าสุด</th>
                                      </tr>
                                  </thead>
-                                 <tbody>
-                                     <tr>
-                                         <td class="text-center">
-                                             <a href="#" onclick="editUser()" class="btn btn-primary btn-sm">
-                                                 <i class="fas fa-edit"></i>
-                                             </a>
-                                             <a href="#" class="btn btn-danger btn-sm">
-                                                 <i class="fas fa-trash"></i>
-                                             </a>
-                                         </td>
-                                         <td class="status-badge">
-                                             <span class="badge badge-success"> เปิดใช้งาน </span>
-                                         </td>
-                                         <td>
-                                             <span>SC0001</span>
-                                         </td>
-                                         <td>
-                                             <span>นาย ศุกร์ หรรษา</span>
-                                         </td>
-                                         <td>
-                                             <span>ศุกร์</span>
-                                         </td>
-                                         <td>Suk@successmore.com</td>
-                                         <td>085-123-4567</td>
-                                         <td>
-                                             <span>ฝ่าย ​IT</span>
-                                         </td>
-                                         <td>
-                                             <span>ผู้ดูแลระบบ</span>
-                                         </td>
-                                         <td>07/06/2565</td>
-                                     </tr>
-
-
-                                     <tr>
-                                         <td class="text-center">
-                                             <a href="#" class="btn btn-primary btn-sm">
-                                                 <i class="fas fa-edit"></i>
-                                             </a>
-                                             <a href="#" class="btn btn-danger btn-sm">
-                                                 <i class="fas fa-trash"></i>
-                                             </a>
-                                         </td>
-                                         <td class="status-badge">
-                                             <span class="badge badge-danger"> ปิดใช้งาน </span>
-                                         </td>
-                                         <td>
-                                             <span>SC0002</span>
-                                         </td>
-                                         <td>
-                                             <span>นาย ประยวย ตวยเร็ว</span>
-                                         </td>
-                                         <td>
-                                             <span>ตูบ</span>
-                                         </td>
-                                         <td>​Toop@successmore.com</td>
-                                         <td>085-123-4567</td>
-                                         <td>
-                                             <span>ฝ่ายรักษาความปลอดภัย</span>
-                                         </td>
-                                         <td>
-                                             <span>รปภ.</span>
-                                         </td>
-                                         <td>07/06/2565</td>
-                                     </tr>
-
-                                     <tr>
-                                         <td class="text-center">
-                                             <a href="#" class="btn btn-primary btn-sm">
-                                                 <i class="fas fa-edit"></i>
-                                             </a>
-                                             <a href="#" class="btn btn-danger btn-sm">
-                                                 <i class="fas fa-trash"></i>
-                                             </a>
-                                         </td>
-                                         <td class="status-badge">
-                                             <span class="badge badge-warning"> ล็อค </span>
-                                         </td>
-                                         <td>
-                                             <span>SC0003</span>
-                                         </td>
-                                         <td>
-                                             <span>นาง ปารี นาโง</span>
-                                         </td>
-                                         <td>
-                                             <span>เอ๋</span>
-                                         </td>
-                                         <td>Ae@successmore.com</td>
-                                         <td>085-123-4567</td>
-                                         <td>
-                                             <span>ฝ่ายประชาสัมพันธ์</span>
-                                         </td>
-                                         <td>
-                                             <span>PR</span>
-                                         </td>
-                                         <td>07/06/2565</td>
-                                     </tr>
-
-                                 </tbody>
+                                 <tbody></tbody>
                                  <tfoot>
                                      <tr>
                                          <th>จัดการข้อมูล</th>
                                          <th>สถานะ</th>
                                          <th>รหัสพนักงาน</th>
+                                         <th>Email</th>
                                          <th>ชื่อ - สกุล</th>
                                          <th>ชื่อเล่น</th>
-                                         <th>Email</th>
                                          <th>เบอร์ติดต่อ</th>
                                          <th>แผนก</th>
                                          <th>ตำแหน่ง</th>
+                                         <th>Role</th>
                                          <th>เข้าสู่ระบบล่าสุด</th>
                                      </tr>
                                  </tfoot>
                              </table>
-
                          </div>
                      </div>
                  </div>
@@ -220,7 +124,7 @@
  <!--  add user Modal-->
  <div class="modal fade clear-modal" id="userModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="userModalLabel" aria-hidden="true">
-     <div class="modal-dialog modal-lg">
+     <div class="modal-dialog">
          <div class="modal-content">
              <div class="modal-header">
                  <h5 class="modal-title" id="staticBackdropLabel">ข้อมูลผู้ใช้</h5>
@@ -230,83 +134,86 @@
                  <div class="px-5 py-4">
 
                      <div class="input-group mb-3">
-                         <div class="customize-input mx-1">
-                             <input type="text" class="form-control" id="inputEmpId" placeholder="รหัสพนักงาน">
+                         <div class="customize-input mx-1 w-100">
+                             <input type="text" class="form-control" required id="inputEmpId" placeholder="รหัสพนักงาน">
                          </div>
                      </div>
 
                      <div class="input-group mb-3">
-
-                         <div class="customize-input mx-1">
-                             <select class="form-control selectpicker" title="คำนำหน้าชื่อ" id="selectPrefix">
+                         <div class="customize-input mx-1 w-100">
+                             <select class="form-control selectpicker" required title="คำนำหน้าชื่อ" id="selectPrefix">
                                  <option value="นาย">นาย</option>
-                                 <option value="นาง">นาง</option>
                                  <option value="นางสาว">นางสาว</option>
-                             </select>
-                         </div>
-
-                         <div class="customize-input mx-1">
-                             <input type="text" class="form-control" id="inputName" placeholder="ชื่อ">
-                         </div>
-
-
-                         <div class="customize-input mx-1">
-                             <input type="text" class="form-control" id="inputLastname" placeholder="นามสกุล">
-                         </div>
-                     </div>
-
-                     <div class="input-group mb-3">
-                         <div class="customize-input mx-1">
-                             <input type="text" class="form-control" id="inputNickname" placeholder="ชื่อเล่น">
-                         </div>
-                     </div>
-
-
-                     <div class="input-group mb-3">
-                         <div class="customize-input mx-1">
-                             <input type="text" class="form-control" id="inputEmail" placeholder="Email">
-                         </div>
-
-                     </div>
-
-                     <div class="input-group mb-3">
-                         <div class="customize-input mx-1">
-                             <input type="text" class="form-control" id="inputPhone" placeholder="เบอร์ติดต่อ">
-                         </div>
-                     </div>
-
-                     <div class="input-group mb-3">
-                         <div class="customize-input mx-1">
-                             <select class="form-control selectpicker" title="แผนก" id="selectDepartment">
-                                 <option value="นาย">IT</option>
-                                 <option value="นาง">Marketing</option>
-                                 <option value="นางสาว">HR</option>
+                                 <option value="นาง">นาง</option>
                              </select>
                          </div>
                      </div>
 
                      <div class="input-group mb-3">
-                         <div class="customize-input mx-1">
-                             <select class="form-control selectpicker" title="ตำแหน่ง" id="selectPosition">
-                                 <option value="นาย">Support NAV</option>
-                                 <option value="นาง">Infrastructure</option>
-                                 <option value="นางสาว">Developer</option>
+                         <div class="customize-input mx-1 w-100">
+                             <input type="text" class="form-control" required id="inputName" placeholder="ชื่อ">
+                         </div>
+                     </div>
+
+                     <div class="input-group mb-3">
+                         <div class="customize-input mx-1 w-100">
+                             <input type="text" class="form-control" required id="inputLastname" placeholder="นามสกุล">
+                         </div>
+                     </div>
+
+                     <div class="input-group mb-3">
+                         <div class="customize-input mx-1 w-100">
+                             <input type="text" class="form-control" required id="inputNickname" placeholder="ชื่อเล่น">
+                         </div>
+                     </div>
+
+                     <div class="input-group mb-3">
+                         <div class="customize-input mx-1 w-100">
+                             <input type="email" class="form-control" required id="inputEmail" placeholder="Email">
+                         </div>
+                     </div>
+
+                     <div class="input-group mb-3" id="div-inputPassword">
+                         <div class="customize-input mx-1 w-100">
+                             <input type="passoword" class="form-control" required id="inputPassword"
+                                 placeholder="รหัสผ่าน">
+                         </div>
+                     </div>
+
+                     <div class="input-group mb-3">
+                         <div class="customize-input mx-1 w-100">
+                             <input type="tel" maxlength="10" class="form-control" required id="inputPhone"
+                                 placeholder="เบอร์ติดต่อ">
+                         </div>
+                     </div>
+
+                     <div class="input-group mb-3">
+                         <div class="customize-input mx-1 w-100">
+                             <select class="form-control selectpicker" title="แผนก" required
+                                 id="selectDepartment"></select>
+                         </div>
+                     </div>
+
+                     <div class="input-group mb-3">
+                         <div class="customize-input mx-1 w-100">
+                             <select class="form-control selectpicker" title="ตำแหน่ง" required id="selectPosition">
+
                              </select>
                          </div>
                      </div>
 
                      <div class="input-group mb-3">
-                         <div class="customize-input mx-1">
-                             <select class="form-control selectpicker" title="ระดับผู้ใช้งาน" id="classUser">
-                                 <option value="1">Admin</option>
-                                 <option value="2">User</option>
+                         <div class="customize-input mx-1 w-100">
+                             <select class="form-control selectpicker" required title="ระดับผู้ใช้งาน" id="classUser">
+                                 <option value="admin">Admin</option>
+                                 <option value="user">User</option>
                              </select>
                          </div>
                      </div>
 
-                     <div class="input-group mb-3">
-                         <div class="customize-input mx-1">
-                             <select class="form-control selectpicker" title="สถานะผู้ใช้งาน" id="selectPosition">
+                     <div class="input-group mb-3" id="select-status">
+                         <div class="customize-input mx-1 w-100" required>
+                             <select class="form-control selectpicker" title="สถานะผู้ใช้งาน" id="selectStatus">
                                  <option value="0">ปิดใช้งาน</option>
                                  <option value="1">เปิดใช้งาน</option>
                                  <option value="2">ล็อค</option>
@@ -317,22 +224,13 @@
                  </div>
                  <div class="modal-footer">
                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-                     <button type="button" class="btn btn-primary">บันทึกข้อมูล</button>
+                     <button type="button" id="btnSaveUser" onclick="saveUser()"
+                         class="btn btn-primary">บันทึกข้อมูล</button>
+                     <button type="button" id="btnUpdateUser" class="btn btn-primary">บันทึกข้อมูล</button>
                  </div>
              </div>
          </div>
      </div>
      <!-- end add user modal-->
 
-     <script>
-         $(document).ready(function() {
-             var table = $("#tableUser").dataTable({
-                 "processing": true,
-                 "stateSave": true,
-                 "searching": true,
-                 "responsive": true,
-                 "bDestroy": true,
-             });
-         });
-     </script>
      <?= $this->endSection();

@@ -47,7 +47,7 @@
                           </li>
                           <li class="sidebar-item">
                               <a class="sidebar-link sidebar-link"
-                                  href="<?= base_url('admin/users/list'); ?>"
+                                  href="<?= base_url('admin/users'); ?>"
                                   aria-expanded="false">
                                   <i class="far fa-user"></i>
                                   <span class="hide-menu">User

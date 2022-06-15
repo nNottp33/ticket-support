@@ -9,8 +9,12 @@ namespace App\Filters;
  {
      public function before(RequestInterface $request, $agument = null)
      {
-         if (session()->get('class') != 'admin') {
-             return redirect()->to(base_url('/user/home'));
+         if (session()->get('logged_in')) {
+             if (session()->get('class') != 'admin') {
+                 return redirect()->to(base_url('/user/home'));
+             }
+         } else {
+             return redirect()->to(base_url('/auth'));
          }
      }
 

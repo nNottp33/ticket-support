@@ -9276,7 +9276,7 @@ a.badge-orange:focus {
 }
 .badge-purple {
   color: #fff;
-  background-color: #ee4d2d;
+  background-color: #5f76e8;
 }
 a.badge-purple:focus,
 a.badge-purple:hover {
@@ -10630,7 +10630,7 @@ button.bg-orange:hover {
   background-color: #c87000 !important;
 }
 .bg-purple {
-  background-color: #ee4d2d !important;
+  background-color: #5f76e8 !important;
 }
 a.bg-purple:focus,
 a.bg-purple:hover,
@@ -10705,7 +10705,7 @@ button.bg-purple:hover {
   border-color: #fb8c00 !important;
 }
 .border-purple {
-  border-color: #ee4d2d !important;
+  border-color: #5f76e8 !important;
 }
 .border-white {
   border-color: #fff !important;
@@ -13750,7 +13750,7 @@ a.text-orange:hover {
   color: #af6100 !important;
 }
 .text-purple {
-  color: #ee4d2d !important;
+  color: #5f76e8 !important;
 }
 a.text-purple:focus,
 a.text-purple:hover {

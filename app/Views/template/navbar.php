@@ -63,7 +63,7 @@
                                   <div class="col-md-2 col-2">
                                       <i data-feather="power" class="svg-icon mr-2 ml-1"></i>
                                   </div>
-                                  <div class="col-md-8 col-8">
+                                  <div class="col-md-8 col-8" onclick="logout()">
                                       <span class=" hide-menu">Logout
                                           <div class="sub-title"> ออกจากระบบ </div>
                                       </span>
