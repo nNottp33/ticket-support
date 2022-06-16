@@ -31,9 +31,31 @@ class Auth extends BaseController
             $email = $this->request->getPost('email');
             $password = $this->request->getPost('password');
 
-            $data = $this->userModel->where('email', $email)->where('status', 1)->first();
+            $data = $this->userModel->where('email', $email)->where('status != 4')->first();
 
-            if ($data) {
+            if ($data['status'] == 0) {
+                $response = [
+                            'status' => 404,
+                            'title' => 'Error',
+                            'message' => 'ยูสเซอร์ของคุณถูกปิดใช้งาน',
+                        ];
+
+                return $this->response->setJSON($response);
+            }
+
+
+            if ($data['status'] == 3) {
+                $response = [
+                            'status' => 404,
+                            'title' => 'Error',
+                            'message' => 'ยูสเซอร์ของคุณถูกล็อค',
+                        ];
+
+                return $this->response->setJSON($response);
+            }
+
+
+            if ($data['status'] == 1) {
                 if (password_verify($password, $data['password'])) {
                     $logData = [
                         'ip' => $this->request->getIPAddress(),
