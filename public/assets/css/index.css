@@ -138,3 +138,12 @@ table,
   font-weight: bold;
   color: #ee4d2d;
 }
+
+.card-counter {
+  cursor: pointer;
+}
+
+.card-counter:hover {
+  box-shadow: 0 10px 10px -10px rgb(255, 94, 0);
+  opacity: 0.8;
+}

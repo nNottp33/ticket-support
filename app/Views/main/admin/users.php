@@ -40,18 +40,18 @@
                          <div class="row">
 
                              <div class="col-md-6 col-lg-3 col-xlg-3">
-                                 <div class="card card-hover">
+                                 <div class="card card-hover card-counter" onclick="userList()">
                                      <div class="p-2 bg-primary text-center">
-                                         <h1 class="font-light text-white">3</h1>
+                                         <h1 id="countTotalUser" class="font-light text-white counter-user"></h1>
                                          <h6 class="text-white">Total Users</h6>
                                      </div>
                                  </div>
                              </div>
 
                              <div class="col-md-6 col-lg-3 col-xlg-3">
-                                 <div class="card card-hover">
+                                 <div class="card card-hover card-counter" onclick="userListByStatus(1)">
                                      <div class="p-2 bg-success text-center">
-                                         <h1 class="font-light text-white">1</h1>
+                                         <h1 id="countOnlineUser" class="font-light text-white counter-user"></h1>
                                          <h6 class="text-white">Online</h6>
                                      </div>
                                  </div>
@@ -59,9 +59,9 @@
 
 
                              <div class="col-md-6 col-lg-3 col-xlg-3">
-                                 <div class="card card-hover">
+                                 <div class="card card-hover card-counter" onclick="userListByStatus(3)">
                                      <div class="p-2 bg-warning text-center">
-                                         <h1 class="font-light text-white">1</h1>
+                                         <h1 id="countLockedUser" class="font-light text-white counter-user"></h1>
                                          <h6 class="text-white">Locked</h6>
                                      </div>
                                  </div>
@@ -69,9 +69,9 @@
 
 
                              <div class="col-md-6 col-lg-3 col-xlg-3">
-                                 <div class="card card-hover">
+                                 <div class="card card-hover card-counter" onclick="userListByStatus(0)">
                                      <div class="p-2 bg-danger text-center">
-                                         <h1 class="font-light text-white">1</h1>
+                                         <h1 id="countSuspendUser" class="font-light text-white counter-user"></h1>
                                          <h6 class="text-white">Denied</h6>
                                      </div>
                                  </div>

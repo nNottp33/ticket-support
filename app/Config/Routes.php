@@ -42,8 +42,10 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->get('users', 'User::index');
         $routes->get('users/list', 'User::userList');
         $routes->post('users/byId', 'User::getUserById');
+        $routes->get('users/list/byStatus', 'User::getUserByStatus');
         $routes->post('users/new', 'User::insertUser');
         $routes->post('users/delete', 'User::deleteUser');
+        $routes->get('users/count', 'User::countUsers');
         $routes->get('ticket/catagories', 'Ticket::catList');
         $routes->get('department/list', 'User::getDepartmentList');
         $routes->post('position/list', 'User::getPositionList');
@@ -53,6 +55,9 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->get('home', 'UserTicket::index');
     });
 });
+
+ 
+
 
 // checked loggedin
 $routes->group('', ['filter' => 'loggedin'], function ($routes) {

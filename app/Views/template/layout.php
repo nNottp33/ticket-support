@@ -55,9 +55,6 @@
         </div>
     </div>
 
-
-
-
     <div id="main-wrapper" data-theme="light" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
         data-sidebar-position="fixed" data-header-position="fixed" data-boxed-layout="full">
 
@@ -131,7 +128,6 @@
 
     <!-- my script -->
     <script src="<?= base_url() ?>/assets/js/app.js"></script>
-
 </body>
 
 </html>

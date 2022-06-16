@@ -35,20 +35,20 @@ class User extends BaseController
             $query = $this->userModel->select('users.class, users.departmentId, users.email, users.empId, users.fullname, users.id, users.lastLogin, users.nickname, users.positionId, users.prefix, users.status, users.tel, department.nameDepart as department, position.namePosition as position')->join('position', 'position.id = users.positionId')->join('department', 'department.id = users.departmentId')->where('status != 4')->where('users.id !=', $this->session->get('id'))->orderBy('id', 'DESC')->limit(100)->get()->getResult();
 
             if ($query) {
-                $data = [
+                $response = [
                     'status' => 200,
                     'title' => 'Success!',
                     'message' => 'ดึงข้อมูลสำเร็จ',
                     'data' => $query,
                 ];
-                return $this->response->setJson(($data));
+                return $this->response->setJson($response);
             } else {
-                $data = [
+                $response = [
                     'status' => 404,
                     'title' => 'Error!',
                     'message' => 'ไม่สามารถดึงข้อมูลได้',
                 ];
-                return $this->response->setJson(($data));
+                return $this->response->setJson($response);
             }
         } else {
             $response = [
@@ -61,6 +61,82 @@ class User extends BaseController
         }
     }
 
+    public function getUserByStatus()
+    {
+        if ($this->request->isAJAX()) {
+            $status =  $this->request->getGet('status');
+    
+            
+            $query = $this->userModel->select('users.class, users.departmentId, users.email, users.empId, users.fullname, users.id, users.lastLogin, users.nickname, users.positionId, users.prefix, users.status, users.tel, department.nameDepart as department, position.namePosition as position')->join('position', 'position.id = users.positionId')->join('department', 'department.id = users.departmentId')->where('status != 4')->where('status', $status)->where('users.id !=', $this->session->get('id'))->orderBy('id', 'DESC')->limit(100)->get()->getResult();
+
+    
+            if ($query) {
+                $response = [
+                    'status' => 200,
+                    'title' => 'Success!',
+                    'message' => 'ดึงข้อมูลสำเร็จ',
+                    'data' => $query,
+                ];
+                return $this->response->setJson($response);
+            } else {
+                $response = [
+                    'status' => 404,
+                    'title' => 'Error!',
+                    'message' => 'ไม่สามารถดึงข้อมูลได้',
+                ];
+                return $this->response->setJson($response);
+            }
+        } else {
+            $response = [
+                'status' => 500,
+                'title' => 'Error',
+                'message' => 'Server internal error'
+            ];
+
+            return $this->response->setJSON($response);
+        }
+    }
+
+
+    public function countUsers()
+    {
+        if ($this->request->isAJAX()) {
+            $query['total'] = $this->userModel->select('count(users.id) as total')->where('id !=', $this->session->get('id'))->where('status != 4')->get()->getResult();
+
+            $query['on'] = $this->userModel->select('count(users.id) as online')->where('id !=', $this->session->get('id'))->where('status', 1)->get()->getResult();
+
+            $query['off'] = $this->userModel->select('count(users.id) as suspended')->where('id !=', $this->session->get('id'))->where('status = 0')->get()->getResult();
+
+            $query['lock'] = $this->userModel->select('count(users.id) as locked')->where('id !=', $this->session->get('id'))->where('status = 3')->get()->getResult();
+
+            $query['terminate'] = $this->userModel->select('count(users.id) as terminate')->where('id !=', $this->session->get('id'))->where('status = 4')->get()->getResult();
+
+            if ($query) {
+                $response = [
+                    'status' => 200,
+                    'title' => 'Success!',
+                    'message' => 'ดึงข้อมูลสำเร็จ',
+                    'data' => $query,
+                ];
+                return $this->response->setJson($response);
+            } else {
+                $response = [
+                    'status' => 404,
+                    'title' => 'Error!',
+                    'message' => 'ไม่สามารถดึงข้อมูลได้',
+                ];
+                return $this->response->setJson($response);
+            }
+        } else {
+            $response = [
+                'status' => 500,
+                'title' => 'Error',
+                'message' => 'Server internal error'
+            ];
+
+            return $this->response->setJSON($response);
+        }
+    }
 
     public function getUserById()
     {

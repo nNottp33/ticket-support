@@ -32,6 +32,8 @@ $(document).ready(function () {
 
   // called function
   let userAll = userList();
+
+  var countTotal = countUser();
 });
 
 // ======================================================================== //
@@ -255,6 +257,138 @@ const userList = () => {
   });
 };
 
+const userListByStatus = (status) => {
+  var tableUsers = $("#tableUser").dataTable({
+    processing: true,
+    stateSave: true,
+    searching: true,
+    responsive: true,
+    bDestroy: true,
+    ajax: {
+      url: `${baseUrl}admin/users/list/byStatus`,
+      type: "GET",
+      data: {
+        status: status,
+      },
+    },
+    columns: [
+      {
+        targets: 0,
+        data: null,
+        className: "text-center",
+        searchable: true,
+        orderable: true,
+        render: function (data, type, full, meta) {
+          return `<div>  
+                      <a href="#" onclick="editUser(${data.id})" class="btn btn-primary btn-sm"> 
+                        <i class="fas fa-edit"></i>
+                      </a>
+                      <a href="#" onclick="deleteUser(${data.id})" class="btn btn-danger btn-sm">
+                        <i class="fas fa-trash"></i>
+                      </a>
+                  </div>`;
+        },
+      },
+      {
+        data: null,
+        className: "text-center",
+        render: function (data, type, full, meta) {
+          if (data.status == 0) {
+            return `<span class="badge badge-danger"> ปิดใช้งาน </span>`;
+          }
+          if (data.status == 1) {
+            return `<span class="badge badge-success"> เปิดใช้งาน </span>`;
+          }
+          if (data.status == 3) {
+            return `<span class="badge badge-warning"> ล็อค </span>`;
+          }
+        },
+      },
+      {
+        data: "empId",
+      },
+      {
+        data: "email",
+      },
+
+      {
+        data: null,
+        render: function (data, type, full, meta) {
+          return `<span> ${data.prefix} ${data.fullname} </span>`;
+        },
+      },
+      {
+        data: "nickname",
+      },
+      {
+        data: null,
+        render: function (data, type, full, meta) {
+          return `<span> ${data.tel.replace(
+            /(\d{3})(\d{3})(\d{4})/,
+            "$1-$2-$3",
+          )} </span>`;
+        },
+      },
+      {
+        data: "department",
+      },
+      {
+        data: "position",
+      },
+      {
+        data: null,
+        className: "text-center",
+        render: function (data, type, full, meta) {
+          if (data.class == "admin") {
+            return `<span class="badge badge-purple"> ${data.class} </span>`;
+          }
+
+          if (data.class == "user") {
+            return `<span class="badge badge-cyan"> ${data.class} </span>`;
+          }
+        },
+      },
+      {
+        data: null,
+        render: function (data, type, full, meta) {
+          if (data.lastLogin == 0) {
+            return `<span class="text-danger"> <b> ไม่พบการเข้าสู่ระบบ </b> </span>`;
+          }
+
+          if (data.lastLogin != 0) {
+            return `<span class="text-success"> <b> ${moment
+              .unix(data.lastLogin)
+              .format("DD/MM/YYYY HH:mm")} </b> </span>`;
+          }
+        },
+      },
+    ],
+  });
+};
+
+const countUser = () => {
+  $.ajax({
+    url: `${baseUrl}admin/users/count`,
+    type: "GET",
+    success: function (response) {
+      if (response.status == 200) {
+        $("#countTotalUser").html(response.data.total[0].total);
+        $("#countOnlineUser").html(response.data.on[0].online);
+        $("#countLockedUser").html(response.data.lock[0].locked);
+        $("#countSuspendUser").html(response.data.off[0].suspended);
+      }
+
+      if (response.status == 404) {
+        $("#countUser").html(0);
+      }
+    },
+
+    error: function (error) {
+      console.log(error);
+    },
+  });
+};
+
 const editUser = (id) => {
   $("#btnUpdateUser").show();
   $("#btnSaveUser").hide();
@@ -416,6 +550,7 @@ const saveUser = () => {
           }).then(() => {
             $("#userModal").modal("hide");
             $("#tableUser").DataTable().ajax.reload();
+            countUser();
           });
         }, 1000);
       }
@@ -458,6 +593,7 @@ const deleteUser = (id) => {
               timer: 1500,
             }).then(() => {
               $("#tableUser").DataTable().ajax.reload();
+              countUser();
             });
           }
 
