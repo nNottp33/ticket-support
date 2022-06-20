@@ -197,7 +197,6 @@
                      <div class="input-group mb-3">
                          <div class="customize-input mx-1 w-100">
                              <select class="form-control selectpicker" title="ตำแหน่ง" required id="selectPosition">
-
                              </select>
                          </div>
                      </div>

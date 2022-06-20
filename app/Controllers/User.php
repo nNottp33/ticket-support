@@ -241,12 +241,18 @@ class User extends BaseController
     public function insertUser()
     {
         if ($this->request->isAJAX()) {
+            $email = $this->request->getPost('email');
+            $empId = $this->request->getPost('empId');
+            $fname = $this->request->getPost('fullname');
+
+            $checkUsername = $this->userModel->where('status !=4')->where('email', $email)->orWHere('empId', $empId)->orWhere('fullname', $fname)->first();
+
             $saveData = [
-                'empId' => $this->request->getPost('empId'),
+                'empId' =>$empId,
                 'prefix' => $this->request->getPost('prefix'),
-                'fullname' => $this->request->getPost('fullname'),
+                'fullname' => $fname,
                 'nickname' => $this->request->getPost('nickname'),
-                'email' => $this->request->getPost('email'),
+                'email' => $email,
                 'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
                 'tel' => $this->request->getPost('tel'),
                 'class' => $this->request->getPost('class'),
@@ -262,6 +268,15 @@ class User extends BaseController
                 'createdAt' => $this->time->getTimestamp(),
                 'userId' => $this->session->get('id'),
             ];
+
+            if ($checkUsername) {
+                $response = [
+                    'status' => 404,
+                    'title' => 'Error!',
+                    'message' => 'มีข้อมูลนี้อยู่ในระบบแล้ว',
+                ];
+                return $this->response->setJson(($response));
+            }
 
             
             if ($this->LogUsageModel->insert($logData)) {

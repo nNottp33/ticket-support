@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use CodeIgniter\Cookie\Cookie;
 use CodeIgniter\I18n\Time;
 
 class Auth extends BaseController
@@ -10,6 +11,7 @@ class Auth extends BaseController
     protected $session;
     protected $userModel;
     protected $LogUsageModel;
+    protected $cookie;
 
     public function __construct()
     {
@@ -76,8 +78,12 @@ class Auth extends BaseController
                     ];
 
                     if ($this->LogUsageModel->insert($logData)) {
+                        $dataEncode = $data['username'] . '-' . $data['status'] . '-' . $this->request->getIPAddress() . '-' . $this->time->getTimestamp();
+
+                        $tokenLogin = base64_encode($dataEncode);
+
                         $this->session->set($sessionData);
-                        $this->userModel->update($data['id'], ['lastLogin' => $this->time->getTimestamp()]);
+                        $this->userModel->update($data['id'], ['lastLogin' => $this->time->getTimestamp(), 'tokenLogin' => $tokenLogin]);
 
                         if ($data['class'] == 'admin') {
                             $url = base_url('/admin');

@@ -409,13 +409,16 @@ const editUser = (id) => {
 
         $("#userModal").modal("show");
         $("#inputEmpId").val(response.data[0].empId);
-        // $("#selectPrefix option")(response.data[0].prefix);
 
         $("#inputName").val(name);
         $("#inputLastname").val(lastName);
         $("#inputNickname").val(response.data[0].nickname);
         $("#inputEmail").val(response.data[0].email);
         $("#inputPhone").val(response.data[0].tel);
+
+        $("#selectPrefix ::selected").val(response.data[0].prefix);
+        $("#classUser ::selected").val(response.data[0].class);
+        $("#selectStatus ::selected").val(response.data[0].status);
 
         $("#btnUpdateUser").click(function () {
           // update user
