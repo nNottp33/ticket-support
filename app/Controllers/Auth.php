@@ -78,19 +78,20 @@ class Auth extends BaseController
                     ];
 
                     if ($this->LogUsageModel->insert($logData)) {
-                        $dataEncode = $data['username'] . '-' . $data['status'] . '-' . $this->request->getIPAddress() . '-' . $this->time->getTimestamp();
-
-                        $tokenLogin = base64_encode($dataEncode);
-
                         $this->session->set($sessionData);
-                        $this->userModel->update($data['id'], ['lastLogin' => $this->time->getTimestamp(), 'tokenLogin' => $tokenLogin]);
+                        $this->userModel->update($data['id'], ['lastLogin' => $this->time->getTimestamp()]);
 
-                        if ($data['class'] == 'admin') {
+                        if ($data['class'] == 'admin' && $data['lastLogin'] != 0) {
                             $url = base_url('/admin');
                         }
 
-                        if ($data['class'] == 'user') {
+                        if ($data['class'] == 'user' && $data['lastLogin'] != 0) {
                             $url = base_url('/user/home');
+                        }
+
+                  
+                        if ($data['lastLogin'] == 0) {
+                            $url = base_url('/profile');
                         }
 
                         $response = [
@@ -138,10 +139,6 @@ class Auth extends BaseController
             return $this->response->setJSON($response);
         }
     }
-
-
-
-
 
     public function logout()
     {

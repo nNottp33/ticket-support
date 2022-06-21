@@ -18,6 +18,9 @@ namespace App\Filters;
                  return redirect()->to(base_url('/admin'));
              }
          } else {
+             if (session()->get('logged_in')) {
+                 session()->destroy();
+             }
              return redirect()->to(base_url('/auth'));
          }
      }

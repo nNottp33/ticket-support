@@ -141,7 +141,7 @@
 
                      <div class="input-group mb-3">
                          <div class="customize-input mx-1 w-100">
-                             <select class="form-control selectpicker" required title="คำนำหน้าชื่อ" id="selectPrefix">
+                             <select class="form-control selectpicker" title="คำนำหน้าชื่อ" required id="selectPrefix">
                                  <option value="นาย">นาย</option>
                                  <option value="นางสาว">นางสาว</option>
                                  <option value="นาง">นาง</option>
@@ -196,7 +196,8 @@
 
                      <div class="input-group mb-3">
                          <div class="customize-input mx-1 w-100">
-                             <select class="form-control selectpicker" title="ตำแหน่ง" required id="selectPosition">
+                             <select class="form-control selectpicker" data-live-search="true" title="ตำแหน่ง" required
+                                 id="selectPosition">
                              </select>
                          </div>
                      </div>

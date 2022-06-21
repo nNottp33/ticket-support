@@ -36,6 +36,16 @@ $(document).ready(function () {
   var countTotal = countUser();
 });
 
+const togglePassword = (id) => {
+  $("#pwd").attr("type", $("#pwd").is(":password") ? "text" : "password");
+
+  if ($("#pwd").attr("type") === "password") {
+    $(`#${id}`).removeClass("fas fa-eye").addClass("fas fa-eye-slash");
+  } else {
+    $(`#${id}`).removeClass("fas fa-eye-slash").addClass("fas fa-eye");
+  }
+};
+
 // ======================================================================== //
 
 // ------------------------------------------------------------------------ //
@@ -104,7 +114,8 @@ const logout = () => {
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",
-    confirmButtonText: "Yes!",
+    confirmButtonText: "ใช่!",
+    cancelButtonText: "ยังก่อน",
   }).then((result) => {
     if (result.isConfirmed) {
       $(".preloader").show();
@@ -112,8 +123,6 @@ const logout = () => {
         url: `${baseUrl}auth/logout`,
         type: "GET",
         success: function (response) {
-          console.log(response);
-
           if (response.status == 200) {
             setTimeout(() => {
               $(".preloader").hide();
@@ -130,7 +139,16 @@ const logout = () => {
           }
 
           if (response.status == 404) {
-            Swal.fire(response.title, response.message, "error");
+            setTimeout(() => {
+              $(".preloader").hide();
+              Swal.fire({
+                icon: "error",
+                title: response.title,
+                text: response.message,
+                showConfirmButton: false,
+                timer: 1500,
+              });
+            }, 1000);
           }
         },
 
@@ -152,6 +170,7 @@ const logout = () => {
 // ==========================  Role ADMIN ================================= //
 // ======================================================================== //
 
+// ============================= User page ================================ //
 // user list page
 const userList = () => {
   // table user in admin user page
@@ -171,11 +190,14 @@ const userList = () => {
         orderable: true,
         render: function (data, type, full, meta) {
           return `<div>  
-                      <a href="#" onclick="editUser(${data.id})" class="btn btn-primary btn-sm"> 
+                      <a href="#" data-toggle="tooltip" title="แก้ไขข้อมูล" onclick="editUser(${data.id})" class="btn btn-primary btn-sm"> 
                         <i class="fas fa-edit"></i>
                       </a>
-                      <a href="#" onclick="deleteUser(${data.id})" class="btn btn-danger btn-sm">
+                      <a href="#" data-toggle="tooltip" title="ลบข้อมูลผู้ใช้" onclick="deleteUser(${data.id})" class="btn btn-danger btn-sm">
                         <i class="fas fa-trash"></i>
+                      </a>
+                       <a href="#" data-toggle="tooltip" title="รีเซ็ตรหัสผ่าน" onclick="resetPassword(${data.id})" class="btn btn-info btn-sm">
+                        <i class="fas fa-key"></i>
                       </a>
                   </div>`;
         },
@@ -280,11 +302,14 @@ const userListByStatus = (status) => {
         orderable: true,
         render: function (data, type, full, meta) {
           return `<div>  
-                      <a href="#" onclick="editUser(${data.id})" class="btn btn-primary btn-sm"> 
+                      <a href="#" data-toggle="tooltip" title="แก้ไขข้อมูล" onclick="editUser(${data.id})" class="btn btn-primary btn-sm"> 
                         <i class="fas fa-edit"></i>
                       </a>
-                      <a href="#" onclick="deleteUser(${data.id})" class="btn btn-danger btn-sm">
+                      <a href="#" data-toggle="tooltip" title="ลบข้อมูลผู้ใช้" onclick="deleteUser(${data.id})" class="btn btn-danger btn-sm">
                         <i class="fas fa-trash"></i>
+                      </a>
+                       <a href="#" data-toggle="tooltip" title="รีเซ็ตรหัสผ่าน" onclick="resetPassword(${data.id})" class="btn btn-info btn-sm">
+                        <i class="fas fa-key"></i>
                       </a>
                   </div>`;
         },
@@ -403,30 +428,98 @@ const editUser = (id) => {
     },
     success: function (response) {
       if (response.status == 200) {
+        $("#userModal").modal("show");
         let splitFullname = response.data[0].fullname.split(" ");
         let name = splitFullname[0];
         let lastName = splitFullname[1];
+        let resultDepartmentList = getDepartments();
 
-        $("#userModal").modal("show");
         $("#inputEmpId").val(response.data[0].empId);
-
         $("#inputName").val(name);
         $("#inputLastname").val(lastName);
         $("#inputNickname").val(response.data[0].nickname);
         $("#inputEmail").val(response.data[0].email);
         $("#inputPhone").val(response.data[0].tel);
 
-        $("#selectPrefix ::selected").val(response.data[0].prefix);
-        $("#classUser ::selected").val(response.data[0].class);
-        $("#selectStatus ::selected").val(response.data[0].status);
+        $("#selectPrefix").val(response.data[0].prefix);
+        $("#classUser").val(response.data[0].class);
+        $("#selectStatus").val(response.data[0].status);
+
+        $("#selectDepartment").val(response.data[0].depId);
+        $("#selectPosition").val(response.data[0].posId);
+
+        $(".selectpicker").selectpicker("refresh");
 
         $("#btnUpdateUser").click(function () {
           // update user
+          let name = $("#inputName").val();
+          let lastName = $("#inputLastname").val();
+
+          $(".preloader").show();
+          $.ajax({
+            url: `${baseUrl}admin/users/update`,
+            type: "POST",
+            data: {
+              id: response.data[0].id,
+              empId: $("#inputEmpId").val(),
+              prefix: $("#selectPrefix").val(),
+              fullname: `${name} ${lastName}`,
+              nickname: $("#inputNickname").val(),
+              email: $("#inputEmail").val(),
+              tel: $("#inputPhone").val(),
+              class: $("#classUser").val(),
+              status: $("#selectStatus").val(),
+              departmentId: $("#selectDepartment").val(),
+              positionId: $("#selectPosition").val(),
+            },
+            success: function (response) {
+              if (response.status == 200) {
+                setTimeout(() => {
+                  $(".preloader").hide();
+                  Swal.fire({
+                    icon: "success",
+                    title: response.title,
+                    text: response.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                  });
+                  $("#userModal").modal("hide");
+                  $("#tableUser").DataTable().ajax.reload();
+                }, 1000);
+              }
+
+              if (response.status == 404) {
+                setTimeout(() => {
+                  $(".preloader").hide();
+                  Swal.fire({
+                    icon: "error",
+                    title: response.title,
+                    text: response.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                  });
+                }, 1000);
+              }
+            },
+
+            error: function (error) {
+              console.log(error);
+            },
+          });
         });
       }
 
       if (response.status == 404) {
-        Swal.fire(response.title, response.message, "error");
+        setTimeout(() => {
+          $(".preloader").hide();
+          Swal.fire({
+            icon: "error",
+            title: response.title,
+            text: response.message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }, 1000);
       }
     },
     error: function (error) {
@@ -559,7 +652,16 @@ const saveUser = () => {
       }
 
       if (response.status == 404) {
-        Swal.fire(response.title, response.message, "error");
+        setTimeout(() => {
+          $(".preloader").hide();
+          Swal.fire({
+            icon: "error",
+            title: response.title,
+            text: response.message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }, 1000);
       }
     },
     error: function (error) {
@@ -601,7 +703,16 @@ const deleteUser = (id) => {
           }
 
           if (response.status == 404) {
-            Swal.fire(response.title, response.message, "error");
+            setTimeout(() => {
+              $(".preloader").hide();
+              Swal.fire({
+                icon: "error",
+                title: response.title,
+                text: response.message,
+                showConfirmButton: false,
+                timer: 1500,
+              });
+            }, 1000);
           }
         },
         error: function (error) {
@@ -611,6 +722,64 @@ const deleteUser = (id) => {
     }
   });
 };
+
+const resetPassword = (id) => {
+  Swal.fire({
+    title: "คุณแน่ใจใช่ไหม?",
+    text: "คุณต้องการรีเซตรหัสผ่านผู้ใช้คนนี้ใช่หรือไม่!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "ใช่, รีเซต!",
+    cancelButtonText: "ไม่",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $(".preloader").show();
+      $.ajax({
+        url: `${baseUrl}admin/users/reset/password`,
+        type: "POST",
+        data: {
+          id: id,
+        },
+        success: function (response) {
+          if (response.status == 200) {
+            setTimeout(() => {
+              $(".preloader").hide();
+              Swal.fire({
+                icon: "success",
+                title: response.title,
+                text: response.message,
+                showConfirmButton: false,
+                timer: 1000,
+              });
+
+              $("#tableUser").DataTable().ajax.reload();
+            }, 1000);
+          }
+
+          if (response.status == 404) {
+            setTimeout(() => {
+              $(".preloader").hide();
+              Swal.fire({
+                icon: "error",
+                title: response.title,
+                text: response.message,
+                showConfirmButton: false,
+                timer: 1000,
+              });
+            }, 1000);
+          }
+        },
+        error: function (error) {
+          console.log(error);
+        },
+      });
+    }
+  });
+};
+
+// =========================== end User page ============================== //
 
 // ======================================================================== //
 // ========================== Role ADMIN end ============================== //

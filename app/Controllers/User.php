@@ -12,6 +12,7 @@ class User extends BaseController
     protected $LogUsageModel;
     protected $departmentModel;
     protected $positionModel;
+    protected $email;
 
     public function __construct()
     {
@@ -21,6 +22,8 @@ class User extends BaseController
         $this->LogUsageModel = new \App\Models\LogUsageModel();
         $this->departmentModel = new \App\Models\DepartmentModel();
         $this->positionModel = new \App\Models\PositionModel();
+        $this->email = \Config\Services::email();
+
         helper('url');
     }
 
@@ -354,6 +357,172 @@ class User extends BaseController
                     'title' => 'Error!',
                     'message' => 'ไม่สามารถบันทึก log ได้',
                 ];
+                return $this->response->setJson($response);
+            }
+        } else {
+            $response = [
+                'status' => 500,
+                'title' => 'Error',
+                'message' => 'Server internal error'
+            ];
+
+            $this->response->setJson($response);
+        }
+    }
+
+
+    public function updateUser()
+    {
+        if ($this->request->isAJAX()) {
+            $id = $this->request->getPost('id');
+            $empId = $this->request->getPost('empId');
+            $prefix = $this->request->getPost('prefix');
+            $fullname = $this->request->getPost('fullname');
+            $nickname = $this->request->getPost('nickname');
+            $email = $this->request->getPost('email');
+            $tel = $this->request->getPost('tel');
+            $class = $this->request->getPost('class');
+            $status = $this->request->getPost('status');
+            $departmentId = $this->request->getPost('departmentId');
+            $positionId = $this->request->getPost('positionId');
+
+     
+            $updateData = [
+                'id' => $id,
+                'empId' => $empId,
+                'prefix' => $prefix,
+                'fullname'=>  $fullname,
+                'nickname' => $nickname,
+                'email' =>  $email,
+                'tel' => $tel,
+                'class' => $class,
+                'status' =>  $status ,
+                // 'departmentId' => $departmentId,
+                // 'positionId' => $positionId,
+              ];
+
+            $beforeData = $this->userModel->where('id', $id)->first();
+
+            $logData = [
+                'ip' => $this->request->getIPAddress(),
+                'action' => 'updated user data',
+                'detail' => 'BEFORE => ' . json_encode($beforeData) .'AFTER =>' . json_encode($updateData),
+                'createdAt' => $this->time->getTimestamp(),
+                'userId' => $this->session->get('id'),
+            ];
+
+
+            if ($this->LogUsageModel->insert($logData)) {
+                if ($this->userModel->update($id, $updateData)) {
+                    $response = [
+                        'status' => 200,
+                        'title' => 'Success!',
+                        'message' => 'แก้ไขข้อมูลสำเร็จ',
+                    ];
+                    return $this->response->setJson($response);
+                } else {
+                    $response = [
+                        'status' => 404,
+                        'title' => 'Error!',
+                        'message' => 'ไม่สามารถแก้ไขข้อมูลได้',
+                    ];
+                    return $this->response->setJson($response);
+                }
+            } else {
+                $response = [
+                        'status' => 404,
+                        'title' => 'Error!',
+                        'message' => 'ไม่สามารถบันทึก log ได้',
+                    ];
+                return $this->response->setJson($response);
+            }
+        } else {
+            $response = [
+                'status' => 500,
+                'title' => 'Error',
+                'message' => 'Server internal error'
+            ];
+
+            $this->response->setJson($response);
+        }
+    }
+
+
+    public function resetPassword()
+    {
+        if ($this->request->isAJAX()) {
+            $id = $this->request->getPost('id');
+            $password = $this->generateRandomString();
+
+            $userData = $this->userModel->where('id', $id)->first();
+
+            $updateData = [
+                'id' => $id,
+                'password' => password_hash($password, PASSWORD_DEFAULT),
+            ];
+
+            $logData = [
+                'ip' => $this->request->getIPAddress(),
+                'action' => 'reset user password',
+                'detail' => 'Admin ' . $this->session->get('email') . ' รีเซ็ตรหัสผ่านของผู้ใช้ ' . json_encode($userData['email']),
+                'createdAt' => $this->time->getTimestamp(),
+                'userId' => $this->session->get('id'),
+            ];
+
+            if ($this->LogUsageModel->insert($logData)) {
+                if (!isset($userData['email'])) {
+                    $response = [
+                        'status' => 404,
+                        'title' => 'Error!',
+                        'message' => 'ไม่พบ Email',
+                    ];
+                    return $this->response->setJson($response);
+                }
+
+                $messageEmail = "<div style='color: #ec6826;font-size: 41px;'>รหัสผ่านใหม่</div> <br /> <div style='font-size: 14px; padding-top: 25px;'>รหัสผ่านใหม่ของคุณ : <span style='font-size: 14px;font-weight: bold;color: #2a2a2a;'>" . $password . " </span></div> <br /> <div style='
+                                padding-top: 25px;;
+                                font-size: 14px;
+                                font-weight: bold;
+                                color: red;
+                            '> **กรุณาเปลี่ยนรหัสผ่านอีกครั้งเพื่อความปลอดภัย </div>";
+
+                $this->email->setFrom($_ENV['email.SMTPUser'], $_ENV['EMAIL_NAME']);
+                $this->email->setTo('Nattapon.Ph@successmore.com');
+                // $this->email->setTo($userData['email']);
+                $this->email->setSubject('รีเซ็ตรหัสผ่านใหม่');
+                $this->email->setMessage($messageEmail);
+                $sendMail = $this->email->send();
+                if ($sendMail) {
+                    if ($this->userModel->update($id, $updateData)) {
+                        $response = [
+                            'status' => 200,
+                            'title' => 'Success!',
+                            'message' => 'รีเซ็ตรหัสผ่านสำเร็จ',
+                        ];
+                        return $this->response->setJson($response);
+                    } else {
+                        $response = [
+                            'status' => 404,
+                            'title' => 'Error!',
+                            'message' => 'ไม่สามารถรีเซ็ตรหัสผ่านได้',
+                        ];
+                        return $this->response->setJson($response);
+                    }
+                } else {
+                    $response = [
+                    'status' => 404,
+                    'title' => 'ไม่สำเร็จ',
+                    'message' => 'ไม่สามารถส่งอีเมล์ได้'
+                ];
+
+                    return $this->response->setJSON($response);
+                }
+            } else {
+                $response = [
+                        'status' => 404,
+                        'title' => 'Error!',
+                        'message' => 'ไม่สามารถบันทึก log ได้',
+                    ];
                 return $this->response->setJson($response);
             }
         } else {

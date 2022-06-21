@@ -34,8 +34,8 @@ $routes->setAutoRoute(true);
 
 
 $routes->group('', ['filter' => 'auth'], function ($routes) {
-    $routes->get('/', 'Home::index');
-
+    $routes->get('/profile', 'Profile::index');
+    $routes->get('/', 'Home::index', ['filter' => 'role_admin']);
     $routes->group('admin', ['filter' => 'role_admin'], function ($routes) {
         $routes->get('/', 'Home::index', );
         $routes->get('ticket/list', 'Ticket::index');
@@ -44,7 +44,9 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->post('users/byId', 'User::getUserById');
         $routes->get('users/list/byStatus', 'User::getUserByStatus');
         $routes->post('users/new', 'User::insertUser');
+        $routes->post('users/update', 'User::updateUser');
         $routes->post('users/delete', 'User::deleteUser');
+        $routes->post('users/reset/password', 'User::resetPassword');
         $routes->get('users/count', 'User::countUsers');
         $routes->get('ticket/catagories', 'Ticket::catList');
         $routes->get('department/list', 'User::getDepartmentList');

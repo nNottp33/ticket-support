@@ -25,8 +25,14 @@
                          <div class="col-lg-12">
                              <div class="form-group">
                                  <label class="text-dark" for="pwd">รหัสผ่าน</label>
-                                 <input class="form-control input-login" id="pwd" type="password"
-                                     placeholder="กรอกรหัสผ่าน">
+                                 <div class="input-group">
+                                     <input class="form-control input-login" id="pwd" type="password"
+                                         placeholder="กรอกรหัสผ่าน">
+                                     <span class="input-group-text cursor-pointer">
+                                         <i onclick="togglePassword(this.id)" id="togglePassLogin"
+                                             class="fas fa-eye-slash"></i>
+                                     </span>
+                                 </div>
                              </div>
                          </div>
                          <div class="col-lg-12 text-center mb-5">

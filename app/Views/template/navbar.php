@@ -44,7 +44,8 @@
                               <i data-feather="chevron-down" class="svg-icon"></i></span>
                       </a>
                       <div class="dropdown-menu dropdown-menu-right user-dd animated flipInY">
-                          <a class="dropdown-item" href="javascript:void(0)">
+                          <a class="dropdown-item"
+                              href="<?= base_url('/profile') ?>">
                               <div class="row">
                                   <div class="col-md-2 col-2">
                                       <i data-feather="user" class="svg-icon mr-2 ml-1"></i>

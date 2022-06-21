@@ -147,3 +147,11 @@ table,
   box-shadow: 0 10px 10px -10px rgb(255, 94, 0);
   opacity: 0.8;
 }
+
+.card-profile div {
+  border-radius: 0px !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
