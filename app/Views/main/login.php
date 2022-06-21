@@ -18,7 +18,7 @@
                              <div class="form-group">
                                  <label class="text-dark" for="uname">Email</label>
                                  <input class="form-control input-login" id="email" type="email"
-                                     placeholder="กรอก Email" required>
+                                     placeholder="กรอก Email">
                              </div>
                          </div>
 
@@ -29,7 +29,7 @@
                                      <input class="form-control input-login" id="pwd" type="password"
                                          placeholder="กรอกรหัสผ่าน">
                                      <span class="input-group-text cursor-pointer">
-                                         <i onclick="togglePassword(this.id)" id="togglePassLogin"
+                                         <i onclick="togglePassword(this.id, 'loginEye')" id="togglePassLogin"
                                              class="fas fa-eye-slash"></i>
                                      </span>
                                  </div>

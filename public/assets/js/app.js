@@ -1,5 +1,6 @@
 const baseUrl = `${window.location.protocol}//${window.location.host}/`;
-
+const filters =
+  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 // ======================================================================== //
 // ============================== GLOBAL ================================== //
 // ======================================================================== //
@@ -29,17 +30,26 @@ $(document).ready(function () {
       $("#btnLogin").attr("disabled", true);
     }
   });
-
   // called function
   let userAll = userList();
 
   var countTotal = countUser();
 });
 
-const togglePassword = (id) => {
-  $("#pwd").attr("type", $("#pwd").is(":password") ? "text" : "password");
+const togglePassword = (id, inputParent) => {
+  let inputId;
 
-  if ($("#pwd").attr("type") === "password") {
+  if (inputParent == "loginEye") inputId = "pwd";
+  if (inputParent == "insertEye") inputId = "inputPassword";
+  if (inputParent == "changePassEye") inputId = "newPassword";
+  if (inputParent == "confirmChangePassEye") inputId = "confirmNewPassword";
+
+  $(`#${inputId}`).attr(
+    "type",
+    $(`#${inputId}`).is(":password") ? "text" : "password",
+  );
+
+  if ($(`#${inputId}`).attr("type") === "password") {
     $(`#${id}`).removeClass("fas fa-eye").addClass("fas fa-eye-slash");
   } else {
     $(`#${id}`).removeClass("fas fa-eye-slash").addClass("fas fa-eye");
@@ -57,7 +67,17 @@ const login = () => {
   let email = $("#email").val();
   let password = $("#pwd").val();
 
-  if (email && password) {
+  if (!filters.test(String(email).toLowerCase())) {
+    Swal.fire({
+      icon: "warning",
+      title: "รูปแบบอีเมล์ไม่ถูกต้อง",
+    }).then((result) => {
+      $("input[type=email]").focus();
+      return;
+    });
+  }
+
+  if (filters.test(String(email).toLowerCase()) && password) {
     $.ajax({
       url: `${baseUrl}auth/login`,
       type: "POST",

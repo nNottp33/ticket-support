@@ -175,8 +175,15 @@
 
                      <div class="input-group mb-3" id="div-inputPassword">
                          <div class="customize-input mx-1 w-100">
-                             <input type="passoword" class="form-control" required id="inputPassword"
-                                 placeholder="รหัสผ่าน">
+
+                             <div class="input-group">
+                                 <input type="passoword" class="form-control" required id="inputPassword"
+                                     placeholder="รหัสผ่าน">
+                                 <span class="input-group-text cursor-pointer">
+                                     <i onclick="togglePassword(this.id, 'insertEye')" id="togglePassInsertUser"
+                                         class="fas fa-eye-slash"></i>
+                                 </span>
+                             </div>
                          </div>
                      </div>
 
