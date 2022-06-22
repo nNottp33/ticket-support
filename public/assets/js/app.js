@@ -456,6 +456,9 @@ const editUser = (id) => {
   $("#select-status").css("display", "block");
   $("#div-inputPassword").css("display", "none");
 
+  $("#div-selectDepartment").css("display", "none");
+  $("#div-selectPosition").css("display", "none");
+
   $.ajax({
     url: `${baseUrl}admin/users/byId`,
     type: "POST",
@@ -481,8 +484,8 @@ const editUser = (id) => {
         $("#classUser").val(response.data[0].class);
         $("#selectStatus").val(response.data[0].status);
 
-        $("#selectDepartment").val(response.data[0].depId);
-        $("#selectPosition").val(response.data[0].posId);
+        // $("#selectDepartment").val(response.data[0].depId);
+        // $("#selectPosition").val(response.data[0].posId);
 
         $(".selectpicker").selectpicker("refresh");
 
@@ -505,8 +508,8 @@ const editUser = (id) => {
               tel: $("#inputPhone").val(),
               class: $("#classUser :selected").val(),
               status: $("#selectStatus :selected").val(),
-              departmentId: $("#selectDepartment :selected").val(),
-              positionId: $("#selectPosition :selected").val(),
+              // departmentId: $("#selectDepartment :selected").val(),
+              // positionId: $("#selectPosition :selected").val(),
             },
             success: function (response) {
               if (response.status == 200) {

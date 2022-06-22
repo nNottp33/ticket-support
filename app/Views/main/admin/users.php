@@ -202,16 +202,16 @@
                          </div>
                      </div>
 
-                     <div class="input-group mb-3">
+                     <div class="input-group mb-3" id="div-selectDepartment">
                          <div class="customize-input mx-1 w-100">
                              <small class="form-text text-muted">แผนก</small>
-                             <select class="form-control selectpicker" title="แผนก" required id="selectDepartment">
-
+                             <select class="form-control selectpicker" data-live-search="true" name="selectDepartment"
+                                 title="แผนก" required id="selectDepartment">
                              </select>
                          </div>
                      </div>
 
-                     <div class="input-group mb-3">
+                     <div class="input-group mb-3" id="div-selectPosition">
                          <div class="customize-input mx-1 w-100">
                              <small class="form-text text-muted">ตำแหน่ง</small>
                              <select class="form-control selectpicker" data-live-search="true" title="ตำแหน่ง" required
