@@ -11,9 +11,9 @@ namespace App\Filters;
      {
          $userModel = new \App\Models\UserModel();
 
-         $checkStatus = $userModel->where('email', session()->get('email'))->first();
+         $checkStatus = $userModel->where('id', session()->get('id'))->first();
 
-         if (session()->get('logged_in') && $checkStatus['status'] == 1) {
+         if (session()->get('logged_in') && $checkStatus['status'] == 1  && $checkStatus['class'] == session()->get('class')) {
              if (session()->get('class') != 'user') {
                  return redirect()->to(base_url('/admin'));
              }

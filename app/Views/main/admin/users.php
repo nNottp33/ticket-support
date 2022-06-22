@@ -135,12 +135,15 @@
 
                      <div class="input-group mb-3">
                          <div class="customize-input mx-1 w-100">
+                             <small class="form-text text-muted">รหัสพนักงาน</small>
                              <input type="text" class="form-control" required id="inputEmpId" placeholder="รหัสพนักงาน">
                          </div>
                      </div>
 
+
                      <div class="input-group mb-3">
                          <div class="customize-input mx-1 w-100">
+                             <small class="form-text text-muted">คำนำหน้าชื่อ</small>
                              <select class="form-control selectpicker" title="คำนำหน้าชื่อ" required id="selectPrefix">
                                  <option value="นาย">นาย</option>
                                  <option value="นางสาว">นางสาว</option>
@@ -151,31 +154,35 @@
 
                      <div class="input-group mb-3">
                          <div class="customize-input mx-1 w-100">
+                             <small class="form-text text-muted">ชื่อ</small>
                              <input type="text" class="form-control" required id="inputName" placeholder="ชื่อ">
                          </div>
                      </div>
 
                      <div class="input-group mb-3">
                          <div class="customize-input mx-1 w-100">
+                             <small class="form-text text-muted">นามสกุล</small>
                              <input type="text" class="form-control" required id="inputLastname" placeholder="นามสกุล">
                          </div>
                      </div>
 
                      <div class="input-group mb-3">
                          <div class="customize-input mx-1 w-100">
+                             <small class="form-text text-muted">ชื่อเล่น</small>
                              <input type="text" class="form-control" required id="inputNickname" placeholder="ชื่อเล่น">
                          </div>
                      </div>
 
                      <div class="input-group mb-3">
                          <div class="customize-input mx-1 w-100">
+                             <small class="form-text text-muted">Email</small>
                              <input type="email" class="form-control" required id="inputEmail" placeholder="Email">
                          </div>
                      </div>
 
                      <div class="input-group mb-3" id="div-inputPassword">
                          <div class="customize-input mx-1 w-100">
-
+                             <small class="form-text text-muted">รหัสผ่าน</small>
                              <div class="input-group">
                                  <input type="passoword" class="form-control" required id="inputPassword"
                                      placeholder="รหัสผ่าน">
@@ -189,6 +196,7 @@
 
                      <div class="input-group mb-3">
                          <div class="customize-input mx-1 w-100">
+                             <small class="form-text text-muted">เบอร์ติดต่อ</small>
                              <input type="tel" maxlength="10" class="form-control" required id="inputPhone"
                                  placeholder="เบอร์ติดต่อ">
                          </div>
@@ -196,13 +204,16 @@
 
                      <div class="input-group mb-3">
                          <div class="customize-input mx-1 w-100">
-                             <select class="form-control selectpicker" title="แผนก" required
-                                 id="selectDepartment"></select>
+                             <small class="form-text text-muted">แผนก</small>
+                             <select class="form-control selectpicker" title="แผนก" required id="selectDepartment">
+
+                             </select>
                          </div>
                      </div>
 
                      <div class="input-group mb-3">
                          <div class="customize-input mx-1 w-100">
+                             <small class="form-text text-muted">ตำแหน่ง</small>
                              <select class="form-control selectpicker" data-live-search="true" title="ตำแหน่ง" required
                                  id="selectPosition">
                              </select>
@@ -211,6 +222,7 @@
 
                      <div class="input-group mb-3">
                          <div class="customize-input mx-1 w-100">
+                             <small class="form-text text-muted">ระดับผู้ใช้งาน</small>
                              <select class="form-control selectpicker" required title="ระดับผู้ใช้งาน" id="classUser">
                                  <option value="admin">Admin</option>
                                  <option value="user">User</option>
@@ -220,6 +232,7 @@
 
                      <div class="input-group mb-3" id="select-status">
                          <div class="customize-input mx-1 w-100" required>
+                             <small class="form-text text-muted">สถานะผู้ใช้งาน</small>
                              <select class="form-control selectpicker" title="สถานะผู้ใช้งาน" id="selectStatus">
                                  <option value="0">ปิดใช้งาน</option>
                                  <option value="1">เปิดใช้งาน</option>
@@ -238,6 +251,7 @@
              </div>
          </div>
      </div>
-     <!-- end add user modal-->
+ </div>
+ <!-- end add user modal-->
 
-     <?= $this->endSection();
+ <?= $this->endSection();

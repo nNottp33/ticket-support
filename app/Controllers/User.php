@@ -397,8 +397,8 @@ class User extends BaseController
                 'tel' => $tel,
                 'class' => $class,
                 'status' =>  $status ,
-                // 'departmentId' => $departmentId,
-                // 'positionId' => $positionId,
+                'departmentId' => $departmentId,
+                'positionId' => $positionId,
               ];
 
             $beforeData = $this->userModel->where('id', $id)->first();

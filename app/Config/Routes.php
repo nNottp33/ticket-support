@@ -35,7 +35,13 @@ $routes->setAutoRoute(true);
 
 $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->get('/profile', 'Profile::index');
+    $routes->post('/profile/send/otp', 'Profile::sendEmailCode');
+    $routes->post('/profile/change/password', 'Profile::changePassword');
+    $routes->get('/profile/show', 'Profile::getProfile');
+    $routes->post('/profile/update', 'Profile::updateProfile');
+
     $routes->get('/', 'Home::index', ['filter' => 'role_admin']);
+
     $routes->group('admin', ['filter' => 'role_admin'], function ($routes) {
         $routes->get('/', 'Home::index', );
         $routes->get('ticket/list', 'Ticket::index');

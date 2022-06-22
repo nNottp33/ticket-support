@@ -155,3 +155,7 @@ table,
 .cursor-pointer {
   cursor: pointer;
 }
+
+#btnUpdateProfile {
+  display: none;
+}

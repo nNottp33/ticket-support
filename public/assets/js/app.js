@@ -30,6 +30,9 @@ $(document).ready(function () {
       $("#btnLogin").attr("disabled", true);
     }
   });
+
+  $(".profile-input").attr("disabled", "disabled");
+
   // called function
   let userAll = userList();
 
@@ -39,10 +42,23 @@ $(document).ready(function () {
 const togglePassword = (id, inputParent) => {
   let inputId;
 
-  if (inputParent == "loginEye") inputId = "pwd";
-  if (inputParent == "insertEye") inputId = "inputPassword";
-  if (inputParent == "changePassEye") inputId = "newPassword";
-  if (inputParent == "confirmChangePassEye") inputId = "confirmNewPassword";
+  switch (inputParent) {
+    case "loginEye":
+      inputId = "pwd";
+      break;
+    case "insertEye":
+      inputId = "inputPassword";
+      break;
+    case "changePassEye":
+      inputId = "newPassword";
+      break;
+    case "confirmChangePassEye":
+      inputId = "confirmNewPassword";
+      break;
+    default:
+      console.log("No input parent");
+      break;
+  }
 
   $(`#${inputId}`).attr(
     "type",
@@ -487,10 +503,10 @@ const editUser = (id) => {
               nickname: $("#inputNickname").val(),
               email: $("#inputEmail").val(),
               tel: $("#inputPhone").val(),
-              class: $("#classUser").val(),
-              status: $("#selectStatus").val(),
-              departmentId: $("#selectDepartment").val(),
-              positionId: $("#selectPosition").val(),
+              class: $("#classUser :selected").val(),
+              status: $("#selectStatus :selected").val(),
+              departmentId: $("#selectDepartment :selected").val(),
+              positionId: $("#selectPosition :selected").val(),
             },
             success: function (response) {
               if (response.status == 200) {
@@ -800,6 +816,225 @@ const resetPassword = (id) => {
 };
 
 // =========================== end User page ============================== //
+
+// ============================ profile page ============================== //
+
+// update profile
+const showProfile = () => {
+  $.ajax({
+    url: `${baseUrl}profile/show`,
+    type: "GET",
+    success: function (response) {
+      if (response.status == 200) {
+        $("#profileModal").modal("show");
+
+        $("#profileEmpId").val(response.data.empId);
+        $("#profileEmail").val(response.data.email);
+        $("#profileName").val(response.data.fullname);
+        $("#profileNickname").val(response.data.nickname);
+        $("#profileTel").val(response.data.tel);
+      }
+
+      if (response.status == 404 || response.status == 400) {
+        Swal.fire({
+          icon: "error",
+          title: res.title,
+          text: res.message,
+          showConfirmButton: false,
+          timer: 1000,
+        });
+      }
+    },
+  });
+};
+
+const checkModal = () => {
+  if (!$("#profileModal").hasClass("in")) {
+    $(".profile-input").attr("disabled", "disabled");
+    $("#btnUpdateProfile").hide();
+    $("#btnProfile").show();
+  }
+};
+
+const toggleEditProfile = () => {
+  $(".profile-input").removeAttr("disabled");
+  $("#btnProfile").hide();
+  $("#btnUpdateProfile").show();
+};
+
+const updateProfile = () => {
+  $(".preloader").show();
+  $.ajax({
+    url: `${baseUrl}profile/update`,
+    type: "POST",
+    data: {
+      fullname: $("#profileName").val(),
+      nickname: $("#profileNickname").val(),
+      tel: $("#profileTel").val(),
+    },
+    success: function (response) {
+      if (response.status == 200) {
+        setTimeout(() => {
+          $(".preloader").hide();
+          Swal.fire({
+            icon: "success",
+            title: response.title,
+            text: response.message,
+            showConfirmButton: false,
+            timer: 1500,
+          }).then((result) => {
+            if (result.isDismissed) {
+              location.reload();
+            }
+          });
+        }, 1000);
+      }
+
+      if (response.status == 404 || response.status == 400) {
+        setTimeout(() => {
+          $(".preloader").hide();
+          Swal.fire({
+            icon: "error",
+            title: res.title,
+            text: res.message,
+            showConfirmButton: false,
+            timer: 1000,
+          });
+        }, 1000);
+      }
+    },
+  });
+};
+
+// change password
+$("#btnShowChangePass").click(function () {
+  $("#changePassModal").modal("show");
+});
+
+$("#btnCancelOtp").click(function () {
+  $("#confirmOtpModal").modal("hide");
+});
+
+$("#btnCancelChangePass").click(function () {
+  $("#changePassModal").modal("hide");
+});
+
+const getOTP = () => {
+  let newPass = $("#newPassword").val();
+  let confirmPass = $("#confirmNewPassword").val();
+
+  if (!newPass && !confirmPass) {
+    Swal.fire({
+      icon: "warning",
+      title: "กรุณากรอกข้อมูลให้ครบถ้วน!",
+    }).then((result) => {
+      return false;
+    });
+  }
+
+  if (newPass == confirmPass) {
+    $.ajax({
+      url: `${baseUrl}profile/send/otp`,
+      type: "POST",
+      success: function (response) {
+        if (response.status == 200 || response.status == 201) {
+          let refOtp = response.ref;
+
+          Swal.fire({
+            icon: "success",
+            title: response.title,
+            text: response.message,
+            showConfirmButton: false,
+            timer: 1500,
+          }).then((result) => {
+            if (result.isDismissed) {
+              $("#changePassModal").modal("hide");
+              $("#confirmOtpModal").modal("show");
+              $("#textRefOtp").text(refOtp);
+
+              $("#btnChangePassword").click(function () {
+                if (!$("#otp").val()) {
+                  Swal.fire({
+                    icon: "error",
+                    title: "กรุณากรอก otp!",
+                    showConfirmButton: false,
+                    timer: 1500,
+                  }).then((result) => {
+                    return;
+                  });
+                }
+
+                if ($("#otp").val()) {
+                  $(".preloader").show();
+                  $.ajax({
+                    url: `${baseUrl}profile/change/password`,
+                    type: "POST",
+                    data: {
+                      ref: refOtp,
+                      otp: $("#otp").val(),
+                      newPass: newPass,
+                    },
+                    success: function (res) {
+                      if (res.status == 200 || res.status == 201) {
+                        setTimeout(() => {
+                          $(".preloader").hide();
+                          Swal.fire({
+                            icon: "success",
+                            title: res.title,
+                            text: res.message,
+                            showConfirmButton: false,
+                            timer: 1500,
+                          }).then((result) => {
+                            if (result.isDismissed) {
+                              $("#confirmOtpModal").modal("hide");
+                              location.reload();
+                            }
+                          });
+                        }, 1000);
+                      }
+
+                      if (res.status == 404 || res.status == 400) {
+                        Swal.fire({
+                          icon: "error",
+                          title: res.title,
+                          text: res.message,
+                          showConfirmButton: false,
+                          timer: 1000,
+                        });
+                      }
+                    },
+                  });
+                }
+              });
+            }
+          });
+        }
+
+        if (response.status == 404 || response.status == 400) {
+          Swal.fire({
+            icon: "error",
+            title: response.title,
+            text: response.message,
+            showConfirmButton: false,
+            timer: 1000,
+          });
+        }
+      },
+      error: function (error) {
+        console.log(error);
+      },
+    });
+  } else {
+    Swal.fire({
+      icon: "error",
+      title: "รหัสผ่านไม่ตรงกัน!",
+    }).then((result) => {
+      return false;
+    });
+  }
+};
+
+// =========================== profile page end =========================== //
 
 // ======================================================================== //
 // ========================== Role ADMIN end ============================== //
