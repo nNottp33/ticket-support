@@ -207,6 +207,8 @@
                              <small class="form-text text-muted">แผนก</small>
                              <select class="form-control selectpicker" data-live-search="true" name="selectDepartment"
                                  title="แผนก" required id="selectDepartment">
+                                 <option value="1">Information technology</option>
+                                 <option value="2">test</option>
                              </select>
                          </div>
                      </div>

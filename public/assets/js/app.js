@@ -456,8 +456,8 @@ const editUser = (id) => {
   $("#select-status").css("display", "block");
   $("#div-inputPassword").css("display", "none");
 
-  $("#div-selectDepartment").css("display", "none");
-  $("#div-selectPosition").css("display", "none");
+  // $("#div-selectDepartment").css("display", "none");
+  // $("#div-selectPosition").css("display", "none");
 
   $.ajax({
     url: `${baseUrl}admin/users/byId`,
@@ -484,8 +484,58 @@ const editUser = (id) => {
         $("#classUser").val(response.data[0].class);
         $("#selectStatus").val(response.data[0].status);
 
-        // $("#selectDepartment").val(response.data[0].depId);
-        // $("#selectPosition").val(response.data[0].posId);
+        // var options = {
+        //   values: "a, b, c",
+        //   ajax: {
+        //     url: "ajax.php",
+        //     type: "POST",
+        //     dataType: "json",
+        //     // Use "{{{q}}}" as a placeholder and Ajax Bootstrap Select will
+        //     // automatically replace it with the value of the search query.
+        //     data: {
+        //       q: "{{{q}}}",
+        //     },
+        //   },
+        //   locale: {
+        //     emptyTitle: "Select and Begin Typing",
+        //   },
+        //   log: 3,
+        //   preprocessData: function (data) {
+        //     var i,
+        //       l = data.length,
+        //       array = [];
+        //     if (l) {
+        //       for (i = 0; i < l; i++) {
+        //         array.push(
+        //           $.extend(true, data[i], {
+        //             text: data[i].Name,
+        //             value: data[i].Email,
+        //             data: {
+        //               subtext: data[i].Email,
+        //             },
+        //           }),
+        //         );
+        //       }
+        //     }
+        //     // You must always return a valid array when processing data. The
+        //     // data argument passed is a clone and cannot be modified directly.
+        //     return array;
+        //   },
+        // };
+
+        // $(".selectpicker")
+        //   .selectpicker()
+
+        //   .ajaxSelectPicker(options);
+        // $("select").trigger("change");
+
+        // function chooseSelectpicker(index, selectpicker) {
+        //   $(selectpicker).val(index);
+        //   $(selectpicker).selectpicker("refresh");
+        // }
+
+        $("#selectDepartment :selected").val(response.data[0].depId);
+        $("#selectPosition :selected").val(response.data[0].posId);
 
         $(".selectpicker").selectpicker("refresh");
 
