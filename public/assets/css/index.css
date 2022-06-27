@@ -159,3 +159,7 @@ table,
 #btnUpdateProfile {
   display: none;
 }
+
+table {
+  width: 100% !important;
+}

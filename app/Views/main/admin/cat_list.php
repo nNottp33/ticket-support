@@ -42,34 +42,7 @@
                          <th>รายละเอียดหมวดย่อย</th>
                      </tr>
                  </thead>
-                 <tbody>
-                     <tr>
-                         <td class="text-center">
-                             <a href="#" onclick="editCat()" class="btn btn-primary btn-sm">
-                                 <i class="fas fa-edit"></i>
-                             </a>
-                             <a href="#" class="btn btn-danger btn-sm">
-                                 <i class="fas fa-trash"></i>
-                             </a>
-                         </td>
-                         <td class="status-badge">
-                             <span class="badge badge-success"> เปิดใช้งาน </span>
-                         </td>
-                         <td class="text-center">หมวดหมู่ 1</td>
-                         <td class="text-center">
-                             <a href="#" onclick="getAdminDetail('ข้อมูลนาย A')" data-bs-toggle="tooltip"
-                                 data-bs-placement="bottom" title="more" class="btn btn-sm btn-light">
-                                 นาย A
-                             </a>
-                         </td>
-                         <td class="text-center">
-                             <a href="#" onclick="getSubCatagories('id ? ขอร้อง POS')" data-bs-toggle="tooltip"
-                                 data-bs-placement="bottom" title="more" class="btn btn-sm btn-dark">
-                                 <i class="fas fa-list"></i>
-                             </a>
-                         </td>
-                     </tr>
-                 </tbody>
+                 <tbody></tbody>
                  <tfoot>
                      <tr>
                          <th>จัดการข้อมูล</th>
@@ -146,6 +119,9 @@
                  <a href="#" class="icon-close" data-bs-dismiss="modal" aria-label="Close"></a>
              </div>
              <div class="modal-body">
+                 <div class="float-right my-2">
+                     <a href="#" onclick="" class="btn btn-primary">เพิ่มข้อมูล</a>
+                 </div>
                  <div class="table-responsive">
                      <table id="tableSubCat" class="table table-striped table-bordered no-wrap">
                          <thead>
@@ -153,36 +129,21 @@
                                  <th>จัดการข้อมูล</th>
                                  <th>สถานะ</th>
                                  <th>ชื่อหมวดหมู่ย่อย</th>
+                                 <th>รายละเอียด</th>
                                  <th>ระยะเวลาดำเนินการ</th>
                              </tr>
                          </thead>
-                         <tbody>
-                             <tr>
-                                 <td class="text-center">
-                                     <a href="#" onclick="editSubCat()" class="btn btn-primary btn-sm">
-                                         <i class="fas fa-edit"></i>
-                                     </a>
-                                     <a href="#" class="btn btn-danger btn-sm">
-                                         <i class="fas fa-trash"></i>
-                                     </a>
-                                 </td>
-                                 <td class="status-badge">
-                                     <span class="badge badge-success"> เปิดใช้งาน </span>
-                                 </td>
-                                 <td class="text-center">หมวดหมู่ 1</td>
-                                 <td class="text-center">1 ชม</td>
-                             </tr>
-                         </tbody>
+                         <tbody></tbody>
                          <tfoot>
                              <tr>
                                  <th>จัดการข้อมูล</th>
                                  <th>สถานะ</th>
                                  <th>ชื่อหมวดหมู่ย่อย</th>
+                                 <th>รายละเอียด</th>
                                  <th>ระยะเวลาดำเนินการ</th>
                              </tr>
                          </tfoot>
                      </table>
-
                  </div>
              </div>
              <div class="modal-footer">
@@ -192,30 +153,38 @@
      </div>
  </div>
 
-
+ <!-- modal admin detail -->
  <div class="modal fade clear-modal" id="adminDetailModal" data-bs-backdrop="static" data-bs-keyboard="false"
      tabindex="-1" aria-labelledby="catModalLabel" aria-hidden="true">
-     <div class="modal-dialog">
+     <div class="modal-dialog modal-xl">
          <div class="modal-content">
              <div class="modal-header">
                  <h5 class="modal-title" id="catModalLabel">ข้อมูลผู้รับผิดชอบ</h5>
                  <a href="#" class="icon-close" data-bs-dismiss="modal" aria-label="Close"></a>
              </div>
              <div class="modal-body">
-                 <div>
-                     <div class="m-auto text-center mb-4 justify-content-center">
-                         <img src="<?= base_url(); ?>/assets/images/users/5.jpg"
-                             alt="image" class="rounded-circle" width="150">
-                         <p class="mt-3 mb-0">
-                     </div>
-
-                     <div class="px-5">
-                         <div> ชื่อ สกุล </div>
-                         <div> ตำแหน่ง </div>
-                         <div> แผนก </div>
-                         <div id="userDetails"></div>
-                         <div> เบอร์โทร </div>
-                     </div>
+                 <div class="table-responsive">
+                     <table id="tableListOwner" class="table table-striped table-bordered no-wrap">
+                         <thead>
+                             <tr>
+                                 <th>จัดการข้อมูล</th>
+                                 <th>สถานะ</th>
+                                 <th>รหัสพนักงาน</th>
+                                 <th>ชื่อ</th>
+                                 <th>Email</th>
+                             </tr>
+                         </thead>
+                         <tbody></tbody>
+                         <tfoot>
+                             <tr>
+                                 <th>จัดการข้อมูล</th>
+                                 <th>สถานะ</th>
+                                 <th>รหัสพนักงาน</th>
+                                 <th>ชื่อ</th>
+                                 <th>Email</th>
+                             </tr>
+                         </tfoot>
+                     </table>
                  </div>
              </div>
              <div class="modal-footer">
@@ -225,23 +194,5 @@
      </div>
  </div>
 
- <script>
-     $(document).ready(function() {
-         var tableCat = $("#tableCat").dataTable({
-             "processing": true,
-             "stateSave": true,
-             "searching": true,
-             "responsive": true,
-             "bDestroy": true,
-         });
-
-         var tableSubCat = $("#tableSubCat").dataTable({
-             "processing": true,
-             "stateSave": true,
-             "searching": true,
-             "responsive": true,
-             "bDestroy": true,
-         });
-     });
- </script>
+ <!-- modal admin detail end -->
  <?= $this->endSection();

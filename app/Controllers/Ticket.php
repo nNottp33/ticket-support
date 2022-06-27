@@ -8,10 +8,4 @@ class Ticket extends BaseController
     {
         return view('main/admin/ticket');
     }
-
-
-    public function catList()
-    {
-        return view('main/admin/cat_list');
-    }
 }

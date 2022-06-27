@@ -34,9 +34,12 @@ $(document).ready(function () {
   $(".profile-input").attr("disabled", "disabled");
 
   // called function
+  // user page
   let userAll = userList();
-
   var countTotal = countUser();
+
+  // catagory page
+  let catAll = catList();
 });
 
 const togglePassword = (id, inputParent) => {
@@ -484,57 +487,7 @@ const editUser = (id) => {
         $("#classUser").val(response.data[0].class);
         $("#selectStatus").val(response.data[0].status);
 
-        // var options = {
-        //   values: "a, b, c",
-        //   ajax: {
-        //     url: "ajax.php",
-        //     type: "POST",
-        //     dataType: "json",
-        //     // Use "{{{q}}}" as a placeholder and Ajax Bootstrap Select will
-        //     // automatically replace it with the value of the search query.
-        //     data: {
-        //       q: "{{{q}}}",
-        //     },
-        //   },
-        //   locale: {
-        //     emptyTitle: "Select and Begin Typing",
-        //   },
-        //   log: 3,
-        //   preprocessData: function (data) {
-        //     var i,
-        //       l = data.length,
-        //       array = [];
-        //     if (l) {
-        //       for (i = 0; i < l; i++) {
-        //         array.push(
-        //           $.extend(true, data[i], {
-        //             text: data[i].Name,
-        //             value: data[i].Email,
-        //             data: {
-        //               subtext: data[i].Email,
-        //             },
-        //           }),
-        //         );
-        //       }
-        //     }
-        //     // You must always return a valid array when processing data. The
-        //     // data argument passed is a clone and cannot be modified directly.
-        //     return array;
-        //   },
-        // };
-
-        // $(".selectpicker")
-        //   .selectpicker()
-
-        //   .ajaxSelectPicker(options);
-        // $("select").trigger("change");
-
-        // function chooseSelectpicker(index, selectpicker) {
-        //   $(selectpicker).val(index);
-        //   $(selectpicker).selectpicker("refresh");
-        // }
-
-        $("#selectDepartment :selected").val(response.data[0].depId);
+        $("#selectDepartment").val(response.data[0].depId);
         $("#selectPosition :selected").val(response.data[0].posId);
 
         $(".selectpicker").selectpicker("refresh");
@@ -1089,6 +1042,195 @@ const getOTP = () => {
 
 // =========================== profile page end =========================== //
 
+// ============================ Catagory page ============================= //
+const catList = () => {
+  var tableCat = $("#tableCat").dataTable({
+    processing: true,
+    stateSave: true,
+    searching: true,
+    responsive: true,
+    bDestroy: true,
+    ajax: `${baseUrl}admin/catagories/list`,
+    columns: [
+      {
+        targets: 0,
+        data: null,
+        className: "text-center",
+        searchable: true,
+        orderable: true,
+        render: function (data, type, full, meta) {
+          return `<div>  
+                      <a href="#" data-toggle="tooltip" title="แก้ไขข้อมูล" onclick="editUser(${data.id})" class="btn btn-primary btn-sm"> 
+                        <i class="fas fa-edit"></i>
+                      </a>
+                      <a href="#" data-toggle="tooltip" title="ลบข้อมูลผู้ใช้" onclick="deleteUser(${data.id})" class="btn btn-danger btn-sm">
+                        <i class="fas fa-trash"></i>
+                      </a>
+                  </div>`;
+        },
+      },
+      {
+        data: null,
+        className: "text-center",
+        render: function (data, type, full, meta) {
+          if (data.status == 0) {
+            return `<span class="badge badge-danger"> ปิดใช้งาน </span>`;
+          }
+          if (data.status == 1) {
+            return `<span class="badge badge-success"> เปิดใช้งาน </span>`;
+          }
+        },
+      },
+      {
+        data: "nameCatTh",
+        className: "text-center",
+      },
+      {
+        data: null,
+        className: "text-center",
+        render: function (data, type, full, meta) {
+          return `<a href="#" onclick="getOwner(${data.owner_groupId})" data-bs-toggle="tooltip"
+                                 data-bs-placement="bottom" title="owner detail" class="btn btn-sm btn-info">
+                    <i class="fas fa-users"></i>
+                  </a>`;
+        },
+      },
+      {
+        data: null,
+        className: "text-center",
+        render: function (data, type, full, meta) {
+          return `<a href="#" onclick="getSubCatagories(${data.id})" data-bs-toggle="tooltip"
+                      data-bs-placement="bottom" title="more sub catagory" class="btn btn-sm btn-dark">
+                      <i class="fas fa-list"></i>
+                  </a>`;
+        },
+      },
+    ],
+  });
+};
+
+const getOwner = (groupId) => {
+  $("#adminDetailModal").modal("show");
+  var tableListOwner = $("#tableListOwner").dataTable({
+    processing: true,
+    stateSave: true,
+    searching: true,
+    responsive: true,
+    bDestroy: true,
+    ajax: {
+      url: `${baseUrl}admin/catagories/owner`,
+      type: "GET",
+      data: {
+        ownerGroupId: groupId,
+      },
+    },
+    columns: [
+      {
+        targets: 0,
+        data: null,
+        className: "text-center",
+        searchable: true,
+        orderable: true,
+        render: function (data, type, full, meta) {
+          return `<div>  
+                      <a href="#" data-toggle="tooltip" title="แก้ไขข้อมูล" onclick="editUser(${data.id})" class="btn btn-primary btn-sm"> 
+                        <i class="fas fa-edit"></i>
+                      </a>
+                      <a href="#" data-toggle="tooltip" title="ลบข้อมูลผู้ใช้" onclick="deleteUser(${data.id})" class="btn btn-danger btn-sm">
+                        <i class="fas fa-trash"></i>
+                      </a>
+                  </div>`;
+        },
+      },
+      {
+        data: null,
+        className: "text-center",
+        render: function (data, type, full, meta) {
+          if (data.status == 0) {
+            return `<span class="badge badge-danger"> ปิดใช้งาน </span>`;
+          }
+          if (data.status == 1) {
+            return `<span class="badge badge-success"> เปิดใช้งาน </span>`;
+          }
+        },
+      },
+      {
+        data: "ownerEmpId",
+        className: "text-center",
+      },
+      {
+        data: "ownerName",
+        className: "text-center",
+      },
+      {
+        data: "ownerEmail",
+        className: "text-center",
+      },
+    ],
+  });
+};
+
+const getSubCatagories = (catId) => {
+  $("#subCatModal").modal("show");
+  var tableSubCat = $("#tableSubCat").dataTable({
+    processing: true,
+    stateSave: true,
+    searching: true,
+    responsive: true,
+    bDestroy: true,
+    ajax: {
+      url: `${baseUrl}admin/catagories/sub`,
+      type: "GET",
+      data: {
+        catId: catId,
+      },
+    },
+    columns: [
+      {
+        targets: 0,
+        data: null,
+        className: "text-center",
+        searchable: true,
+        orderable: true,
+        render: function (data, type, full, meta) {
+          return `<div>  
+                      <a href="#" data-toggle="tooltip" title="แก้ไขข้อมูล" onclick="editUser(${data.id})" class="btn btn-primary btn-sm"> 
+                        <i class="fas fa-edit"></i>
+                      </a>
+                      <a href="#" data-toggle="tooltip" title="ลบข้อมูลผู้ใช้" onclick="deleteUser(${data.id})" class="btn btn-danger btn-sm">
+                        <i class="fas fa-trash"></i>
+                      </a>
+                  </div>`;
+        },
+      },
+      {
+        data: null,
+        className: "text-center",
+        render: function (data, type, full, meta) {
+          if (data.status == 0) {
+            return `<span class="badge badge-danger"> ปิดใช้งาน </span>`;
+          }
+          if (data.status == 1) {
+            return `<span class="badge badge-success"> เปิดใช้งาน </span>`;
+          }
+        },
+      },
+      {
+        data: "nameSubCat",
+      },
+      {
+        data: "detail",
+      },
+      {
+        data: "period",
+        className: "text-center",
+      },
+    ],
+  });
+};
+
+// ======================================================================== //
+
 // ======================================================================== //
 // ========================== Role ADMIN end ============================== //
 // ======================================================================== //
@@ -1102,48 +1244,3 @@ const getOTP = () => {
 // ======================================================================== //
 // ========================== Role USER end =============================== //
 // ======================================================================== //
-
-// const deleteUser = () => {
-//   // show sweet alert dialog
-// };
-
-// const getDetailTicket = (id) => {
-//   $("#getTicketDetailModal").modal("show");
-
-//   $("#aticleDetails").text(id);
-// };
-
-// const getUserDetail = (data) => {
-//   $("#getUserDetaillModal").modal("show");
-
-//   $("#userDetails").text(data);
-// };
-
-// const insertCategory = () => {
-//   $("#catModal").modal("show");
-// };
-
-// const getSubCatagories = () => {
-//   $("#subCatModal").modal("show");
-// };
-
-// const getAdminDetail = (data) => {
-//   $("#adminDetailModal").modal("show");
-// };
-
-// // check catagories is option 0 or not
-// const checkCat = () => {
-//   let option = $("#selectCategory :selected").val();
-
-//   // when select option add show text input
-
-//   if (option == 0) {
-//     $("#inputNewCatagory").show();
-//   } else {
-//     $("#inputNewCatagory").hide();
-//   }
-// };
-
-// const showDetailUserTicker = (id) => {
-//   $("#userTicketDetailModal").modal("show");
-// };

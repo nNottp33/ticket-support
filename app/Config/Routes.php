@@ -43,8 +43,13 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'Home::index', ['filter' => 'role_admin']);
 
     $routes->group('admin', ['filter' => 'role_admin'], function ($routes) {
+        // dashboard
         $routes->get('/', 'Home::index', );
+
+        // ticket page
         $routes->get('ticket/list', 'Ticket::index');
+        
+        // user page
         $routes->get('users', 'User::index');
         $routes->get('users/list', 'User::userList');
         $routes->post('users/byId', 'User::getUserById');
@@ -54,9 +59,14 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->post('users/delete', 'User::deleteUser');
         $routes->post('users/reset/password', 'User::resetPassword');
         $routes->get('users/count', 'User::countUsers');
-        $routes->get('ticket/catagories', 'Ticket::catList');
         $routes->get('department/list', 'User::getDepartmentList');
         $routes->post('position/list', 'User::getPositionList');
+
+        // catagory page
+        $routes->get('catagories', 'Catagory::index');
+        $routes->get('catagories/list', 'Catagory::getCategories');
+        $routes->get('catagories/owner', 'Catagory::getCatagoryOwner');
+        $routes->get('catagories/sub', 'Catagory::getSubCatagory');
     });
 
     $routes->group('user', ['filter' => 'role_user'], function ($routes) {

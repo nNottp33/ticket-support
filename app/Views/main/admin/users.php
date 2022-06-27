@@ -206,7 +206,7 @@
                          <div class="customize-input mx-1 w-100">
                              <small class="form-text text-muted">แผนก</small>
                              <select class="form-control selectpicker" data-live-search="true" name="selectDepartment"
-                                 title="แผนก" required id="selectDepartment">
+                                 title="แผนก" id="selectDepartment">
                                  <option value="1">Information technology</option>
                                  <option value="2">test</option>
                              </select>
@@ -216,7 +216,7 @@
                      <div class="input-group mb-3" id="div-selectPosition">
                          <div class="customize-input mx-1 w-100">
                              <small class="form-text text-muted">ตำแหน่ง</small>
-                             <select class="form-control selectpicker" data-live-search="true" title="ตำแหน่ง" required
+                             <select class="form-control selectpicker" data-live-search="true" title="ตำแหน่ง"
                                  id="selectPosition">
                              </select>
                          </div>

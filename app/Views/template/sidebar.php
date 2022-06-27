@@ -58,7 +58,7 @@
 
                           <li class="sidebar-item">
                               <a class="sidebar-link sidebar-link"
-                                  href="<?= base_url('admin/ticket/catagories') ?>"
+                                  href="<?= base_url('admin/catagories') ?>"
                                   aria-expanded="false">
                                   <i class="far fa-bookmark"></i>
                                   <span class="hide-menu">Catagories
