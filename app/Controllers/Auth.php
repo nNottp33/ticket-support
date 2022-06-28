@@ -144,8 +144,6 @@ class Auth extends BaseController
     public function logout()
     {
         if ($this->request->isAJAX()) {
-            $this->session->destroy();
-
             $data = [
                 'ip' => $this->request->getIPAddress(),
                 'action' => 'logged out',
@@ -155,6 +153,8 @@ class Auth extends BaseController
             ];
         
             if ($this->LogUsageModel->insert($data)) {
+                $this->session->destroy();
+
                 $response = [
                 'status' => 200,
                 'title' => 'Success',

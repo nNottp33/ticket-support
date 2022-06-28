@@ -31,17 +31,18 @@ $routes->setAutoRoute(true);
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.s
-
-
 $routes->group('', ['filter' => 'auth'], function ($routes) {
+    // profile page
     $routes->get('/profile', 'Profile::index');
     $routes->post('/profile/send/otp', 'Profile::sendEmailCode');
     $routes->post('/profile/change/password', 'Profile::changePassword');
     $routes->get('/profile/show', 'Profile::getProfile');
     $routes->post('/profile/update', 'Profile::updateProfile');
-
+    
+    // dashboard
     $routes->get('/', 'Home::index', ['filter' => 'role_admin']);
 
+    // role_admin
     $routes->group('admin', ['filter' => 'role_admin'], function ($routes) {
         // dashboard
         $routes->get('/', 'Home::index', );
@@ -66,24 +67,27 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->get('catagories', 'Catagory::index');
         $routes->get('catagories/list', 'Catagory::getCategories');
         $routes->get('catagories/owner', 'Catagory::getCatagoryOwner');
+        $routes->post('catagories/update/status', 'Catagory::updateStatusCat');
+        $routes->post('catagories/delete', 'Catagory::deleteCatagory');
         $routes->get('catagories/sub', 'Catagory::getSubCatagory');
+        $routes->post('catagories/sub/delete', 'Catagory::deleteSubCatagory');
+        $routes->post('catagories/sub/update/status', 'Catagory::updateStatusSubCat');
+        $routes->post('catagories/sub/insert', 'Catagory::insertSubCat');
+        $routes->post('catagories/sub/get/edit', 'Catagory::getUpdateSubCat');
+        $routes->post('catagories/sub/update', 'Catagory::updateSubCat');
     });
 
+    // role user
     $routes->group('user', ['filter' => 'role_user'], function ($routes) {
         $routes->get('home', 'UserTicket::index');
     });
 });
-
- 
-
 
 // checked loggedin
 $routes->group('', ['filter' => 'loggedin'], function ($routes) {
     $routes->get('/auth', 'Auth::index');
     $routes->post('/auth/login', 'Auth::login');
 });
-
-
 
 /*
  * --------------------------------------------------------------------

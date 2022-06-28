@@ -11,6 +11,7 @@ class Profile extends BaseController
     protected $userModel;
     protected $LogUsageModel;
     protected $otpModel;
+    protected $logEmailModel;
 
     public function __construct()
     {
@@ -20,6 +21,7 @@ class Profile extends BaseController
         $this->userModel = new \App\Models\UserModel();
         $this->LogUsageModel = new \App\Models\LogUsageModel();
         $this->otpModel = new \App\Models\OtpModel();
+        $this->logEmailModel = new \App\Models\LogEmailModel();
         helper('url');
     }
 
@@ -44,29 +46,48 @@ class Profile extends BaseController
                 'createdAt' => $this->time->getTimestamp(),
             ];
     
-           
+            $subjectMail = 'รหัสยืนยันการเปลี่ยนรหัสผ่าน';
             $this->email->setFrom($_ENV['email.SMTPUser'], $_ENV['EMAIL_NAME']);
             $this->email->setTo($this->session->get('email'));
-            $this->email->setSubject('รหัสยืนยันการเปลี่ยนรหัสผ่าน');
+            $this->email->setSubject($subjectMail);
             $this->email->setMessage($messageEmail);
+
+            $logEmail = [
+                'receiverId' => $this->session->get('id'),
+                'title' => 'send otp change password',
+                'subject' => $subjectMail,
+                'detail' => $messageEmail,
+                'createdAt' => $this->time->getTimestamp(),
+            ];
+
+
             if ($this->email->send()) {
-                if ($this->otpModel->insert($otp)) {
-                    $response = [
+                if ($this->logEmailModel->insert($logEmail)) {
+                    if ($this->otpModel->insert($otp)) {
+                        $response = [
                                     'status' => 200,
                                     'title' => 'สำเร็จ',
                                     'message' => 'ส่งอีเมล์ยืนยันสำเร็จ',
                                     'ref' => $ref,
                                 ];
 
-                    return $this->response->setJSON($response);
-                } else {
-                    $response = [
+                        return $this->response->setJSON($response);
+                    } else {
+                        $response = [
                                     'status' => 404,
                                     'title' => 'ไม่สำเร็จ',
                                     'message' => 'ไม่สามารถบันทึกข้อมูล OTP ได้'
                                 ];
 
-                    return $this->response->setJSON($response);
+                        return $this->response->setJSON($response);
+                    }
+                } else {
+                    $response = [
+                                'status' => 404,
+                                'title' => 'Error!',
+                                'message' => 'ไม่สามารถบันทึก log email ได้',
+                            ];
+                    return $this->response->setJson($response);
                 }
             } else {
                 $response = [

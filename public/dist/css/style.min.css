@@ -8088,8 +8088,8 @@ fieldset:disabled a.btn {
 }
 .custom-control-input:checked ~ .custom-control-label::before {
   color: #fff;
-  border-color: #ee4d2d;
-  background-color: #ee4d2d;
+  border-color: #00db80;
+  background-color: #00db80;
 }
 .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
   border-color: rgba(0, 0, 0, 0.25);

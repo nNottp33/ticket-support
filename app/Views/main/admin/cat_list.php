@@ -58,6 +58,8 @@
      </div>
  </div>
 
+
+ <!-- catagory modal -->
  <div class="modal fade clear-modal" id="catModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="catModalLabel" aria-hidden="true">
      <div class="modal-dialog">
@@ -108,8 +110,11 @@
          </div>
      </div>
  </div>
+ <!-- catagory modal end  -->
 
 
+
+ <!-- sub category modal -->
  <div class="modal fade clear-modal" id="subCatModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="subCatModalLabel" aria-hidden="true">
      <div class="modal-dialog modal-lg">
@@ -120,7 +125,7 @@
              </div>
              <div class="modal-body">
                  <div class="float-right my-2">
-                     <a href="#" onclick="" class="btn btn-primary">เพิ่มข้อมูล</a>
+                     <a href="#" onclick="insertSubCat()" class="btn btn-primary">เพิ่มข้อมูล</a>
                  </div>
                  <div class="table-responsive">
                      <table id="tableSubCat" class="table table-striped table-bordered no-wrap">
@@ -152,6 +157,58 @@
          </div>
      </div>
  </div>
+ <!-- sub category modal end -->
+
+
+ <!-- sub category insert modal -->
+ <div class="modal fade clear-modal" id="subCatSaveModal" data-bs-backdrop="static" data-bs-keyboard="false"
+     tabindex="-1" aria-labelledby="subCatSaveModalLabel" aria-hidden="true">
+     <div class="modal-dialog">
+         <div class="modal-content">
+             <div class="modal-header">
+                 <h5 class="modal-title" id="subCatSaveModalLabel">ข้อมูลหมวดหมู่ย่อย</h5>
+                 <a href="#" class="icon-close" data-bs-dismiss="modal" aria-label="Close"></a>
+             </div>
+             <div class="modal-body">
+
+                 <div>
+
+                     <div class="input-group mb-3">
+                         <div class="customize-input mx-1 w-100">
+                             <small class="form-text text-muted">ชื่อหมวดหมู่ย่อย</small>
+                             <input type="text" class="form-control" required id="inputNameSubCat"
+                                 placeholder="ชื่อหมวดหมู่ย่อย">
+                         </div>
+                     </div>
+
+                     <div class="input-group mb-3">
+                         <div class="customize-input mx-1 w-100">
+                             <small class="form-text text-muted">รายละเอียด</small>
+                             <textarea id="inputDetailSubCat" class="form-control" rows="3"
+                                 placeholder="รายละเอียด"></textarea>
+                         </div>
+                     </div>
+
+                     <div class="input-group mb-3">
+                         <div class="customize-input mx-1 w-100">
+                             <small class="form-text text-muted">ระยะเวลาดำเนินการ / ชั่วโมง</small>
+                             <input type="number" class="form-control" required id="inputSla"
+                                 placeholder="ระยะเวลาดำเนินการ / ชั่วโมง">
+                         </div>
+                     </div>
+
+                 </div>
+             </div>
+             <div class="modal-footer">
+                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                 <button type="button" id="btnSaveSubCat" onclick="saveSubCat()"
+                     class="btn btn-primary">บันทึกข้อมูล</button>
+                 <button type="button" id="btnUpdateSubCat" class="btn btn-primary">แก้ไขข้อมูล</button>
+             </div>
+         </div>
+     </div>
+ </div>
+ <!-- sub category insert modal end -->
 
  <!-- modal admin detail -->
  <div class="modal fade clear-modal" id="adminDetailModal" data-bs-backdrop="static" data-bs-keyboard="false"

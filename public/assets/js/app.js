@@ -1060,10 +1060,10 @@ const catList = () => {
         orderable: true,
         render: function (data, type, full, meta) {
           return `<div>  
-                      <a href="#" data-toggle="tooltip" title="แก้ไขข้อมูล" onclick="editUser(${data.id})" class="btn btn-primary btn-sm"> 
+                      <a href="#" data-toggle="tooltip" title="แก้ไขข้อมูล" onclick="editCat(${data.id})" class="btn btn-primary btn-sm"> 
                         <i class="fas fa-edit"></i>
                       </a>
-                      <a href="#" data-toggle="tooltip" title="ลบข้อมูลผู้ใช้" onclick="deleteUser(${data.id})" class="btn btn-danger btn-sm">
+                      <a href="#" data-toggle="tooltip" title="ลบข้อมูล" onclick="deleteCat(${data.id}, '${data.nameCatTh}')" class="btn btn-danger btn-sm">
                         <i class="fas fa-trash"></i>
                       </a>
                   </div>`;
@@ -1074,10 +1074,20 @@ const catList = () => {
         className: "text-center",
         render: function (data, type, full, meta) {
           if (data.status == 0) {
-            return `<span class="badge badge-danger"> ปิดใช้งาน </span>`;
+            return `<div class="form-group">
+            <div class="custom-control custom-switch">
+              <input  onchange="changeStatusCat(this, '${data.id}', '${data.nameSubCat}')" type="checkbox" class="custom-control-input" id="switchCat${data.id}" name='machine_state'>
+              <label class="custom-control-label" id="statusText" for="switchCat${data.id}"></label>
+            </div>
+          </div>`;
           }
           if (data.status == 1) {
-            return `<span class="badge badge-success"> เปิดใช้งาน </span>`;
+            return `<div class="form-group">
+            <div class="custom-control custom-switch">
+              <input onchange="changeStatusCat(this, '${data.id}', '${data.nameSubCat}')" type="checkbox" checked="true" class="custom-control-input" id="switchCat${data.id}" name='machine_state'>
+              <label class="custom-control-label" id="statusText" for="switchCat${data.id}"></label>
+            </div>
+          </div>`;
           }
         },
       },
@@ -1170,8 +1180,172 @@ const getOwner = (groupId) => {
   });
 };
 
+const changeStatusCat = (status, id, nameCat) => {
+  if (status.checked) {
+    Swal.fire({
+      title: "คุณแน่ใจใช่ไหม?",
+      text: "คุณจะไม่สามารถย้อนกลับมาได้แล้วนะ!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่, เปิดใช้งาน!",
+      cancelButtonText: "ยกเลิก",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: `${baseUrl}admin/catagories/update/status`,
+          type: "POST",
+          data: {
+            status: 1,
+            id: id,
+            nameCat: nameCat,
+          },
+          success: function (response) {
+            if (response.status == 200) {
+              Swal.fire({
+                icon: "success",
+                title: response.title,
+                text: response.message,
+                showConfirmButton: false,
+                timer: 1500,
+              }).then(() => {
+                $(`#${status.id}`).prop("checked", true);
+              });
+            }
+
+            if (response.status == 404 || response.status == 400) {
+              Swal.fire({
+                icon: "error",
+                title: response.title,
+                text: response.message,
+                showConfirmButton: false,
+                timer: 1000,
+              });
+            }
+          },
+          error: function (error) {
+            console.log(error);
+          },
+        });
+      }
+      if (result.isDismissed) {
+        $(`#${status.id}`).prop("checked", false);
+      }
+    });
+  } else {
+    Swal.fire({
+      title: "คุณแน่ใจใช่ไหม?",
+      text: "คุณจะไม่สามารถย้อนกลับมาได้แล้วนะ!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่, ปิดใช้งาน!",
+      cancelButtonText: "ยกเลิก",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: `${baseUrl}admin/catagories/update/status`,
+          type: "POST",
+          data: {
+            status: 0,
+            id: id,
+            nameCat: nameCat,
+          },
+          success: function (response) {
+            if (response.status == 200) {
+              Swal.fire({
+                icon: "success",
+                title: response.title,
+                text: response.message,
+                showConfirmButton: false,
+                timer: 1500,
+              }).then(() => {
+                $(`#${status.id}`).prop("checked", false);
+              });
+            }
+
+            if (response.status == 404 || response.status == 400) {
+              Swal.fire({
+                icon: "error",
+                title: response.title,
+                text: response.message,
+                showConfirmButton: false,
+                timer: 1000,
+              });
+            }
+          },
+          error: function (error) {
+            console.log(error);
+          },
+        });
+      }
+      if (result.isDismissed) {
+        $(`#${status.id}`).prop("checked", true);
+      }
+    });
+  }
+};
+
+const deleteCat = (id, nameCat) => {
+  Swal.fire({
+    title: "คุณแน่ใจว่าจะลบใช่ไหม?",
+    text: "คุณจะไม่สามารถย้อนกลับมาได้แล้วนะ!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "ไม่",
+    confirmButtonText: "ใช่, ลบข้อมูลนี้!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: `${baseUrl}admin/catagories/delete`,
+        type: "POST",
+        data: {
+          id: id,
+          nameCat: nameCat,
+          status: 4,
+        },
+        success: function (response) {
+          if (response.status == 200) {
+            Swal.fire({
+              icon: "success",
+              title: response.title,
+              text: response.message,
+              showConfirmButton: false,
+              timer: 1500,
+            }).then(() => {
+              $("#tableCat").DataTable().ajax.reload();
+            });
+          }
+
+          if (response.status == 404 || response.status == 400) {
+            Swal.fire({
+              icon: "error",
+              title: response.title,
+              text: response.message,
+              showConfirmButton: false,
+              timer: 1000,
+            });
+          }
+        },
+
+        error: function (error) {
+          console.log(error);
+        },
+      });
+    }
+  });
+};
+
+var categoryId;
+
 const getSubCatagories = (catId) => {
   $("#subCatModal").modal("show");
+  categoryId = catId;
+
   var tableSubCat = $("#tableSubCat").dataTable({
     processing: true,
     stateSave: true,
@@ -1194,10 +1368,10 @@ const getSubCatagories = (catId) => {
         orderable: true,
         render: function (data, type, full, meta) {
           return `<div>  
-                      <a href="#" data-toggle="tooltip" title="แก้ไขข้อมูล" onclick="editUser(${data.id})" class="btn btn-primary btn-sm"> 
+                      <a href="#" data-toggle="tooltip" title="แก้ไขข้อมูล" onclick="editSubCat(${data.id})" class="btn btn-primary btn-sm"> 
                         <i class="fas fa-edit"></i>
                       </a>
-                      <a href="#" data-toggle="tooltip" title="ลบข้อมูลผู้ใช้" onclick="deleteUser(${data.id})" class="btn btn-danger btn-sm">
+                      <a href="#" data-toggle="tooltip" title="ลบข้อมูล" onclick="deleteSubCat(${data.id}, '${data.nameSubCat}')" class="btn btn-danger btn-sm">
                         <i class="fas fa-trash"></i>
                       </a>
                   </div>`;
@@ -1208,10 +1382,20 @@ const getSubCatagories = (catId) => {
         className: "text-center",
         render: function (data, type, full, meta) {
           if (data.status == 0) {
-            return `<span class="badge badge-danger"> ปิดใช้งาน </span>`;
+            return `<div class="form-group">
+            <div class="custom-control custom-switch">
+              <input  onchange="changeStatusSubCat(this, '${data.id}', '${data.nameSubCat}')" type="checkbox" class="custom-control-input" id="customSwitch${data.id}" name='machine_state'>
+              <label class="custom-control-label" id="statusText" for="customSwitch${data.id}"></label>
+            </div>
+          </div>`;
           }
           if (data.status == 1) {
-            return `<span class="badge badge-success"> เปิดใช้งาน </span>`;
+            return `<div class="form-group">
+            <div class="custom-control custom-switch">
+              <input onchange="changeStatusSubCat(this, '${data.id}', '${data.nameSubCat}')" type="checkbox" checked="true" class="custom-control-input" id="customSwitch${data.id}" name='machine_state'>
+              <label class="custom-control-label" id="statusText" for="customSwitch${data.id}"></label>
+            </div>
+          </div>`;
           }
         },
       },
@@ -1226,6 +1410,313 @@ const getSubCatagories = (catId) => {
         className: "text-center",
       },
     ],
+  });
+};
+
+const deleteSubCat = (subCatId, nameSubCat) => {
+  Swal.fire({
+    title: "คุณแน่ใจว่าจะลบใช่ไหม?",
+    text: "คุณจะไม่สามารถย้อนกลับมาได้แล้วนะ!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "ไม่",
+    confirmButtonText: "ใช่, ลบข้อมูลนี้!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: `${baseUrl}admin/catagories/sub/delete`,
+        type: "POST",
+        data: {
+          id: subCatId,
+          nameSubCat: nameSubCat,
+        },
+        success: function (response) {
+          if (response.status == 200) {
+            Swal.fire({
+              icon: "success",
+              title: "Deleted!",
+              text: response.message,
+              showConfirmButton: false,
+              timer: 1500,
+            }).then(() => {
+              $("#tableSubCat").DataTable().ajax.reload();
+            });
+          }
+
+          if (response.status == 404 || response.status == 400) {
+            Swal.fire({
+              icon: "error",
+              title: response.title,
+              text: response.message,
+              showConfirmButton: false,
+              timer: 1000,
+            });
+          }
+        },
+
+        error: function (error) {
+          console.log(error);
+        },
+      });
+    }
+  });
+};
+
+const changeStatusSubCat = (status, id, nameSubCat) => {
+  if (status.checked) {
+    Swal.fire({
+      title: "คุณแน่ใจใช่ไหม?",
+      text: "คุณจะไม่สามารถย้อนกลับมาได้แล้วนะ!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่, เปิดใช้งาน!",
+      cancelButtonText: "ยกเลิก",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: `${baseUrl}admin/catagories/sub/update/status`,
+          type: "POST",
+          data: {
+            status: 1,
+            id: id,
+            nameSubCat: nameSubCat,
+          },
+          success: function (response) {
+            if (response.status == 200) {
+              Swal.fire({
+                icon: "success",
+                title: response.title,
+                text: response.message,
+                showConfirmButton: false,
+                timer: 1500,
+              }).then(() => {
+                $(`#${status.id}`).prop("checked", true);
+              });
+            }
+
+            if (response.status == 404 || response.status == 400) {
+              Swal.fire({
+                icon: "error",
+                title: response.title,
+                text: response.message,
+                showConfirmButton: false,
+                timer: 1000,
+              });
+            }
+          },
+          error: function (error) {
+            console.log(error);
+          },
+        });
+      }
+      if (result.isDismissed) {
+        $(`#${status.id}`).prop("checked", false);
+      }
+    });
+  } else {
+    Swal.fire({
+      title: "คุณแน่ใจใช่ไหม?",
+      text: "คุณจะไม่สามารถย้อนกลับมาได้แล้วนะ!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่, ปิดใช้งาน!",
+      cancelButtonText: "ยกเลิก",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: `${baseUrl}admin/catagories/sub/update/status`,
+          type: "POST",
+          data: {
+            status: 0,
+            id: id,
+            nameSubCat: nameSubCat,
+          },
+          success: function (response) {
+            if (response.status == 200) {
+              Swal.fire({
+                icon: "success",
+                title: response.title,
+                text: response.message,
+                showConfirmButton: false,
+                timer: 1500,
+              }).then(() => {
+                $(`#${status.id}`).prop("checked", false);
+              });
+            }
+
+            if (response.status == 404 || response.status == 400) {
+              Swal.fire({
+                icon: "error",
+                title: response.title,
+                text: response.message,
+                showConfirmButton: false,
+                timer: 1000,
+              });
+            }
+          },
+          error: function (error) {
+            console.log(error);
+          },
+        });
+      }
+      if (result.isDismissed) {
+        $(`#${status.id}`).prop("checked", true);
+      }
+    });
+  }
+};
+
+const insertSubCat = () => {
+  $("#subCatModal").modal("hide");
+  $("#subCatSaveModal").modal("show");
+  $("#btnUpdateSubCat").hide();
+};
+
+$("#subCatSaveModal").on("hidden.bs.modal", function (e) {
+  $("#subCatModal").modal("show");
+  $("#btnSaveSubCat").show();
+  $("#btnUpdateSubCat").hide();
+});
+
+const saveSubCat = () => {
+  let nameSubCat = $("#inputNameSubCat").val();
+  let detail = $("#inputDetailSubCat").val();
+  let sla = $("#inputSla").val();
+
+  if (!nameSubCat || !detail || !sla) {
+    Swal.fire("กรุณากรอกข้อมูลให้ครบถ้วน!", "", "error");
+    return false;
+  }
+
+  if (nameSubCat || detail || sla) {
+    $(".preloader").show();
+    $.ajax({
+      url: `${baseUrl}admin/catagories/sub/insert`,
+      type: "POST",
+      data: {
+        nameSubCat: nameSubCat,
+        detail: detail,
+        period: sla,
+        catId: categoryId,
+      },
+      success: function (response) {
+        if (response.status == 200) {
+          setTimeout(() => {
+            $(".preloader").hide();
+            Swal.fire({
+              icon: "success",
+              title: response.title,
+              text: response.message,
+              showConfirmButton: false,
+              timer: 1500,
+            }).then(() => {
+              $("#subCatSaveModal").modal("hide");
+              $("#tableSubCat").DataTable().ajax.reload();
+            });
+          }, 1000);
+        }
+        if (response.status == 404 || response.status == 400) {
+          Swal.fire({
+            icon: "error",
+            title: response.title,
+            text: response.message,
+            showConfirmButton: false,
+            timer: 1000,
+          });
+        }
+      },
+
+      error: function (error) {
+        console.log(error);
+      },
+    });
+  }
+};
+
+const editSubCat = (id) => {
+  $.ajax({
+    url: `${baseUrl}admin/catagories/sub/get/edit`,
+    type: "POST",
+    data: {
+      id: id,
+    },
+
+    success: function (response) {
+      if (response.status == 200) {
+        $("#subCatModal").modal("hide");
+        $("#btnSaveSubCat").hide();
+        $("#subCatSaveModal").modal("show");
+        $("#btnUpdateSubCat").show();
+        $("#inputNameSubCat").val(response.data.nameSubCat);
+        $("#inputDetailSubCat").val(response.data.detail);
+        $("#inputSla").val(response.data.period);
+
+        $("#btnUpdateSubCat").click(function () {
+          $(".preloader").show();
+          $.ajax({
+            url: `${baseUrl}admin/catagories/sub/update`,
+            type: "POST",
+            data: {
+              id: id,
+              nameSubCat: $("#inputNameSubCat").val(),
+              detail: $("#inputDetailSubCat").val(),
+              period: $("#inputSla").val(),
+            },
+            success: function (response) {
+              if (response.status == 200) {
+                setTimeout(() => {
+                  $(".preloader").hide();
+                  Swal.fire({
+                    icon: "success",
+                    title: response.title,
+                    text: response.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                  }).then((result) => {
+                    $("#subCatModal").modal("show");
+                    $("#subCatSaveModal").modal("hide");
+                    $("#tableSubCat").DataTable().ajax.reload();
+                  });
+                }, 1500);
+              }
+
+              if (response.status == 404 || response.status == 400) {
+                Swal.fire({
+                  icon: "error",
+                  title: response.title,
+                  text: response.message,
+                  showConfirmButton: false,
+                  timer: 1000,
+                });
+              }
+            },
+            error: function (error) {
+              console.log(error);
+            },
+          });
+        });
+      }
+
+      if (response.status == 404 || response.status == 400) {
+        Swal.fire({
+          icon: "error",
+          title: response.title,
+          text: response.message,
+          showConfirmButton: false,
+          timer: 1000,
+        });
+      }
+    },
+
+    error: function (error) {
+      console.log(error);
+    },
   });
 };
 

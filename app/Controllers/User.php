@@ -13,6 +13,7 @@ class User extends BaseController
     protected $departmentModel;
     protected $positionModel;
     protected $email;
+    protected $logEmailModel;
 
     public function __construct()
     {
@@ -22,6 +23,7 @@ class User extends BaseController
         $this->LogUsageModel = new \App\Models\LogUsageModel();
         $this->departmentModel = new \App\Models\DepartmentModel();
         $this->positionModel = new \App\Models\PositionModel();
+        $this->logEmailModel = new \App\Models\LogEmailModel();
         $this->email = \Config\Services::email();
 
         helper('url');
@@ -486,26 +488,43 @@ class User extends BaseController
                                 color: red;
                             '> **กรุณาเปลี่ยนรหัสผ่านอีกครั้งเพื่อความปลอดภัย </div>";
 
+                $subjectMail = 'รีเซ็ตรหัสผ่านใหม่';
                 $this->email->setFrom($_ENV['email.SMTPUser'], $_ENV['EMAIL_NAME']);
-                $this->email->setTo('Nattapon.Ph@successmore.com');
-                // $this->email->setTo($userData['email']);
-                $this->email->setSubject('รีเซ็ตรหัสผ่านใหม่');
+                $this->email->setTo($userData['email']);
+                $this->email->setSubject($subjectMail);
                 $this->email->setMessage($messageEmail);
-                $sendMail = $this->email->send();
-                if ($sendMail) {
-                    if ($this->userModel->update($id, $updateData)) {
-                        $response = [
-                            'status' => 200,
-                            'title' => 'Success!',
-                            'message' => 'รีเซ็ตรหัสผ่านสำเร็จ',
-                        ];
-                        return $this->response->setJson($response);
+
+                $logEmail = [
+                    'receiverId' => $userData['id'],
+                    'title' => 'send email reset password',
+                    'subject' => $subjectMail,
+                    'detail' => $messageEmail,
+                    'createdAt' => $this->time->getTimestamp(),
+                ];
+
+                if ($this->email->send()) {
+                    if ($this->logEmailModel->insert($logEmail)) {
+                        if ($this->userModel->update($id, $updateData)) {
+                            $response = [
+                                'status' => 200,
+                                'title' => 'Success!',
+                                'message' => 'รีเซ็ตรหัสผ่านสำเร็จ',
+                            ];
+                            return $this->response->setJson($response);
+                        } else {
+                            $response = [
+                                'status' => 404,
+                                'title' => 'Error!',
+                                'message' => 'ไม่สามารถรีเซ็ตรหัสผ่านได้',
+                            ];
+                            return $this->response->setJson($response);
+                        }
                     } else {
                         $response = [
-                            'status' => 404,
-                            'title' => 'Error!',
-                            'message' => 'ไม่สามารถรีเซ็ตรหัสผ่านได้',
-                        ];
+                                'status' => 404,
+                                'title' => 'Error!',
+                                'message' => 'ไม่สามารถบันทึก log email ได้',
+                            ];
                         return $this->response->setJson($response);
                     }
                 } else {
