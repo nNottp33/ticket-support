@@ -68,7 +68,7 @@ class Catagory extends BaseController
         if ($this->request->isAJAX()) {
             $owner_groupId =  $this->request->getGet('ownerGroupId');
 
-            $query = $this->ownerGroupModel->select('users.email as ownerEmail, users.fullname as ownerName, users.empId as ownerEmpId, users.status, users.id')->join('users', 'users.id = group_owner.ownerId')->where('users.status !=4')->where('group_owner.groupId', $owner_groupId)->findAll();
+            $query = $this->ownerGroupModel->select('users.email as ownerEmail, users.fullname as ownerName, users.empId as ownerEmpId, users.status, users.id, position.namePosition as ownerPosition')->join('users', 'users.id = group_owner.ownerId')->join('position', 'users.positionId = position.id')->where('users.status !=4')->where('group_owner.groupId', $owner_groupId)->findAll();
 
             if ($query) {
                 $response = [

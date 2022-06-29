@@ -59,20 +59,20 @@
 
 
                              <div class="col-md-6 col-lg-3 col-xlg-3">
-                                 <div class="card card-hover card-counter" onclick="userListByStatus(3)">
+                                 <div class="card card-hover card-counter" onclick="userListByStatus(0)">
                                      <div class="p-2 bg-warning text-center">
-                                         <h1 id="countLockedUser" class="font-light text-white counter-user"></h1>
-                                         <h6 class="text-white">Locked</h6>
+                                         <h1 id="countSuspendedUser" class="font-light text-white counter-user"></h1>
+                                         <h6 class="text-white">Suspended</h6>
                                      </div>
                                  </div>
                              </div>
 
 
                              <div class="col-md-6 col-lg-3 col-xlg-3">
-                                 <div class="card card-hover card-counter" onclick="userListByStatus(0)">
+                                 <div class="card card-hover card-counter">
                                      <div class="p-2 bg-danger text-center">
-                                         <h1 id="countSuspendUser" class="font-light text-white counter-user"></h1>
-                                         <h6 class="text-white">Denied</h6>
+                                         <h1 id="countDeniedUser" class="font-light text-white counter-user"></h1>
+                                         <h6 class="text-white">Denied / Deleted</h6>
                                      </div>
                                  </div>
                              </div>
@@ -208,7 +208,7 @@
                              <select class="form-control selectpicker" data-live-search="true" name="selectDepartment"
                                  title="แผนก" id="selectDepartment">
                                  <option value="1">Information technology</option>
-                                 <option value="2">test</option>
+
                              </select>
                          </div>
                      </div>
@@ -232,16 +232,7 @@
                          </div>
                      </div>
 
-                     <div class="input-group mb-3" id="select-status">
-                         <div class="customize-input mx-1 w-100" required>
-                             <small class="form-text text-muted">สถานะผู้ใช้งาน</small>
-                             <select class="form-control selectpicker" title="สถานะผู้ใช้งาน" id="selectStatus">
-                                 <option value="0">ปิดใช้งาน</option>
-                                 <option value="1">เปิดใช้งาน</option>
-                                 <option value="2">ล็อค</option>
-                             </select>
-                         </div>
-                     </div>
+
 
                  </div>
                  <div class="modal-footer">

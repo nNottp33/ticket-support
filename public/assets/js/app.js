@@ -42,6 +42,13 @@ $(document).ready(function () {
   let catAll = catList();
 });
 
+// check if user press enter button
+$(document).on("keypress", ".input-login", function (e) {
+  if (e.which == 13) {
+    login();
+  }
+});
+
 const togglePassword = (id, inputParent) => {
   let inputId;
 
@@ -219,6 +226,9 @@ const userList = () => {
     searching: true,
     responsive: true,
     bDestroy: true,
+    colReorder: {
+      realtime: true,
+    },
     ajax: `${baseUrl}admin/users/list`,
     columns: [
       {
@@ -246,13 +256,20 @@ const userList = () => {
         className: "text-center",
         render: function (data, type, full, meta) {
           if (data.status == 0) {
-            return `<span class="badge badge-danger"> ปิดใช้งาน </span>`;
+            return `<div class="form-group">
+            <div class="custom-control custom-switch">
+              <input  onchange="changeStatusUser(this, '${data.id}', '${data.email}', 'on')" type="checkbox" class="custom-control-input" id="switchStatus${data.id}" name='machine_state'>
+              <label class="custom-control-label" id="statusText" for="switchStatus${data.id}"></label>
+            </div>
+          </div>`;
           }
           if (data.status == 1) {
-            return `<span class="badge badge-success"> เปิดใช้งาน </span>`;
-          }
-          if (data.status == 3) {
-            return `<span class="badge badge-warning"> ล็อค </span>`;
+            return `<div class="form-group">
+            <div class="custom-control custom-switch">
+              <input onchange="changeStatusUser(this, '${data.id}', '${data.email}', 'off')" type="checkbox" checked="true" class="custom-control-input" id="switchStatus${data.id}" name='machine_state'>
+              <label class="custom-control-label" id="statusText" for="switchStatus${data.id}"></label>
+            </div>
+          </div>`;
           }
         },
       },
@@ -318,6 +335,116 @@ const userList = () => {
   });
 };
 
+const changeStatusUser = (status, id, email, action) => {
+  if (status.checked) {
+    Swal.fire({
+      title: "คุณแน่ใจใช่ไหม?",
+      text: "คุณจะไม่สามารถย้อนกลับมาได้แล้วนะ!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่, เปิดใช้งาน!",
+      cancelButtonText: "ยกเลิก",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: `${baseUrl}admin/users/update/status`,
+          type: "POST",
+          data: {
+            status: 1,
+            id: id,
+            email: email,
+          },
+          success: function (response) {
+            if (response.status == 200) {
+              Swal.fire({
+                icon: "success",
+                title: response.title,
+                text: response.message,
+                showConfirmButton: false,
+                timer: 1500,
+              }).then(() => {
+                $(`#${status.id}`).prop("checked", true);
+                countUser();
+              });
+            }
+
+            if (response.status == 404 || response.status == 400) {
+              Swal.fire({
+                icon: "error",
+                title: response.title,
+                text: response.message,
+                showConfirmButton: false,
+                timer: 1000,
+              });
+            }
+          },
+          error: function (error) {
+            console.log(error);
+          },
+        });
+      }
+      if (result.isDismissed) {
+        $(`#${status.id}`).prop("checked", false);
+      }
+    });
+  } else {
+    Swal.fire({
+      title: "คุณแน่ใจใช่ไหม?",
+      text: "คุณจะไม่สามารถย้อนกลับมาได้แล้วนะ!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่, ปิดใช้งาน!",
+      cancelButtonText: "ยกเลิก",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: `${baseUrl}admin/users/update/status`,
+          type: "POST",
+          data: {
+            status: 0,
+            id: id,
+            email: email,
+          },
+          success: function (response) {
+            if (response.status == 200) {
+              Swal.fire({
+                icon: "success",
+                title: response.title,
+                text: response.message,
+                showConfirmButton: false,
+                timer: 1500,
+              }).then(() => {
+                $(`#${status.id}`).prop("checked", false);
+                countUser();
+              });
+            }
+
+            if (response.status == 404 || response.status == 400) {
+              Swal.fire({
+                icon: "error",
+                title: response.title,
+                text: response.message,
+                showConfirmButton: false,
+                timer: 1000,
+              });
+            }
+          },
+          error: function (error) {
+            console.log(error);
+          },
+        });
+      }
+      if (result.isDismissed) {
+        $(`#${status.id}`).prop("checked", true);
+      }
+    });
+  }
+};
+
 const userListByStatus = (status) => {
   var tableUsers = $("#tableUser").dataTable({
     processing: true,
@@ -325,6 +452,9 @@ const userListByStatus = (status) => {
     searching: true,
     responsive: true,
     bDestroy: true,
+    colReorder: {
+      realtime: true,
+    },
     ajax: {
       url: `${baseUrl}admin/users/list/byStatus`,
       type: "GET",
@@ -358,13 +488,20 @@ const userListByStatus = (status) => {
         className: "text-center",
         render: function (data, type, full, meta) {
           if (data.status == 0) {
-            return `<span class="badge badge-danger"> ปิดใช้งาน </span>`;
+            return `<div class="form-group">
+            <div class="custom-control custom-switch">
+              <input  onchange="changeStatusUser(this, '${data.id}', '${data.email}', 'on')" type="checkbox" class="custom-control-input" id="switchStatus${data.id}" name='machine_state'>
+              <label class="custom-control-label" id="statusText" for="switchStatus${data.id}"></label>
+            </div>
+          </div>`;
           }
           if (data.status == 1) {
-            return `<span class="badge badge-success"> เปิดใช้งาน </span>`;
-          }
-          if (data.status == 3) {
-            return `<span class="badge badge-warning"> ล็อค </span>`;
+            return `<div class="form-group">
+            <div class="custom-control custom-switch">
+              <input onchange="changeStatusUser(this, '${data.id}', '${data.email}', 'off')" type="checkbox" checked="true" class="custom-control-input" id="switchStatus${data.id}" name='machine_state'>
+              <label class="custom-control-label" id="statusText" for="switchStatus${data.id}"></label>
+            </div>
+          </div>`;
           }
         },
       },
@@ -436,10 +573,20 @@ const countUser = () => {
     type: "GET",
     success: function (response) {
       if (response.status == 200) {
-        $("#countTotalUser").html(response.data.total[0].total);
-        $("#countOnlineUser").html(response.data.on[0].online);
-        $("#countLockedUser").html(response.data.lock[0].locked);
-        $("#countSuspendUser").html(response.data.off[0].suspended);
+        $("#countTotalUser").html(
+          response.data.total[0].total ? response.data.total[0].total : 0,
+        );
+        $("#countOnlineUser").html(
+          response.data.on[0].online ? response.data.on[0].online : 0,
+        );
+        $("#countSuspendedUser").html(
+          response.data.off[0].suspended ? response.data.off[0].suspended : 0,
+        );
+        $("#countDeniedUser").html(
+          response.data.terminate[0].terminate
+            ? response.data.terminate[0].terminate
+            : 0,
+        );
       }
 
       if (response.status == 404) {
@@ -487,8 +634,8 @@ const editUser = (id) => {
         $("#classUser").val(response.data[0].class);
         $("#selectStatus").val(response.data[0].status);
 
-        $("#selectDepartment").val(response.data[0].depId);
-        $("#selectPosition :selected").val(response.data[0].posId);
+        // $("#selectDepartment").val(response.data[0].depId);
+        // $("#selectPosition :selected").val(response.data[0].posId);
 
         $(".selectpicker").selectpicker("refresh");
 
@@ -1050,6 +1197,9 @@ const catList = () => {
     searching: true,
     responsive: true,
     bDestroy: true,
+    colReorder: {
+      realtime: true,
+    },
     ajax: `${baseUrl}admin/catagories/list`,
     columns: [
       {
@@ -1127,6 +1277,9 @@ const getOwner = (groupId) => {
     searching: true,
     responsive: true,
     bDestroy: true,
+    colReorder: {
+      realtime: true,
+    },
     ajax: {
       url: `${baseUrl}admin/catagories/owner`,
       type: "GET",
@@ -1135,35 +1288,6 @@ const getOwner = (groupId) => {
       },
     },
     columns: [
-      {
-        targets: 0,
-        data: null,
-        className: "text-center",
-        searchable: true,
-        orderable: true,
-        render: function (data, type, full, meta) {
-          return `<div>  
-                      <a href="#" data-toggle="tooltip" title="แก้ไขข้อมูล" onclick="editUser(${data.id})" class="btn btn-primary btn-sm"> 
-                        <i class="fas fa-edit"></i>
-                      </a>
-                      <a href="#" data-toggle="tooltip" title="ลบข้อมูลผู้ใช้" onclick="deleteUser(${data.id})" class="btn btn-danger btn-sm">
-                        <i class="fas fa-trash"></i>
-                      </a>
-                  </div>`;
-        },
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          if (data.status == 0) {
-            return `<span class="badge badge-danger"> ปิดใช้งาน </span>`;
-          }
-          if (data.status == 1) {
-            return `<span class="badge badge-success"> เปิดใช้งาน </span>`;
-          }
-        },
-      },
       {
         data: "ownerEmpId",
         className: "text-center",
@@ -1174,6 +1298,10 @@ const getOwner = (groupId) => {
       },
       {
         data: "ownerEmail",
+        className: "text-center",
+      },
+      {
+        data: "ownerPosition",
         className: "text-center",
       },
     ],
@@ -1286,6 +1414,10 @@ const changeStatusCat = (status, id, nameCat) => {
       }
     });
   }
+};
+
+const insertCategory = () => {
+  $("#catModal").modal("show");
 };
 
 const deleteCat = (id, nameCat) => {

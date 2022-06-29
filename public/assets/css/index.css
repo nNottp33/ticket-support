@@ -163,3 +163,8 @@ table,
 table {
   width: 100% !important;
 }
+
+.custom-control-input,
+.custom-control-label {
+  cursor: pointer;
+}

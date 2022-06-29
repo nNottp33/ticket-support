@@ -35,6 +35,8 @@ class Auth extends BaseController
 
             $data = $this->userModel->where('email', $email)->where('status != 4')->first();
 
+            $countLogin = 0;
+
             if ($data['status'] == 0) {
                 $response = [
                             'status' => 404,
@@ -122,6 +124,7 @@ class Auth extends BaseController
                     return $this->response->setJSON($response);
                 }
             } else {
+                ;
                 $response = [
                     'status' => 404,
                     'title' => 'Error',

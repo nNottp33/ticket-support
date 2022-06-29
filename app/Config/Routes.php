@@ -60,6 +60,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->post('users/delete', 'User::deleteUser');
         $routes->post('users/reset/password', 'User::resetPassword');
         $routes->get('users/count', 'User::countUsers');
+        $routes->post('users/update/status', 'User::updateStatusUser');
         $routes->get('department/list', 'User::getDepartmentList');
         $routes->post('position/list', 'User::getPositionList');
 

@@ -69,39 +69,15 @@
                  <a href="#" class="icon-close" data-bs-dismiss="modal" aria-label="Close"></a>
              </div>
              <div class="modal-body">
-                 <div class="form-group mb-4">
-                     <select id="selectCategory" name="category" onchange="checkCat()" title="กรุณาเลือกหมวดหมู่"
-                         class="selectpicker form-control" data-live-search="true" data-width="100%">
-                         <option value="0"
-                             data-content="<span class='btn btn-link text-dark'><i class='fa fa-plus text-dark'></i> เพิ่ม</span>">
-                         </option>
-                         <option value="1">ขอร้อง MIS</option>
-                         <option value="2">ขอร้อง NAV</option>
-                     </select>
+
+                 <div class="input-group mb-3">
+                     <div class="customize-input mx-1 w-100">
+                         <small class="form-text text-muted">ชื่อหมวดหมู่</small>
+                         <input type="text" class="form-control" id="inputCat" aria-describedby="catText"
+                             placeholder="ชื่อหมวดหมู่">
+                     </div>
                  </div>
 
-
-                 <div class="form-group">
-                     <input type="text" class="form-control" id="inputNewCatagory" aria-describedby="subCatText"
-                         placeholder="New catagory">
-                 </div>
-
-
-                 <div class="form-group">
-                     <input type="text" class="form-control" id="inputSubCat" aria-describedby="subCatText"
-                         placeholder="Sub catagory">
-                 </div>
-
-                 <div class="form-group">
-                     <select id="selectCategory" name="category" onchange="checkAdmin()" title="กรุณาเลือกผู้รับผิดชอบ"
-                         class="selectpicker form-control" data-live-search="true" data-width="100%">
-                         <!-- <option value="0"
-                             data-content="<span class='btn btn-link text-dark'><i class='fa fa-plus text-dark'></i> เพิ่ม</span>">
-                         </option> -->
-                         <option value="1">นาย A</option>
-                         <option value="2">นาย B</option>
-                     </select>
-                 </div>
              </div>
              <div class="modal-footer">
                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
@@ -224,21 +200,19 @@
                      <table id="tableListOwner" class="table table-striped table-bordered no-wrap">
                          <thead>
                              <tr>
-                                 <th>จัดการข้อมูล</th>
-                                 <th>สถานะ</th>
                                  <th>รหัสพนักงาน</th>
                                  <th>ชื่อ</th>
                                  <th>Email</th>
+                                 <th>ตำแหน่ง</th>
                              </tr>
                          </thead>
                          <tbody></tbody>
                          <tfoot>
                              <tr>
-                                 <th>จัดการข้อมูล</th>
-                                 <th>สถานะ</th>
                                  <th>รหัสพนักงาน</th>
                                  <th>ชื่อ</th>
                                  <th>Email</th>
+                                 <th>ตำแหน่ง</th>
                              </tr>
                          </tfoot>
                      </table>

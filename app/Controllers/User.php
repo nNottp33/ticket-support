@@ -25,7 +25,6 @@ class User extends BaseController
         $this->positionModel = new \App\Models\PositionModel();
         $this->logEmailModel = new \App\Models\LogEmailModel();
         $this->email = \Config\Services::email();
-
         helper('url');
     }
 
@@ -319,7 +318,57 @@ class User extends BaseController
         }
     }
 
+    public function updateStatusUser()
+    {
+        if ($this->request->isAJAX()) {
+            $status = $this->request->getPost('status');
+            $id = $this->request->getPost('id');
+            $email = $this->request->getPost('email');
 
+            $textStatus = $status == 1 ? 'เปิด' : 'ปิด';
+
+            $logData = [
+                'ip' => $this->request->getIPAddress(),
+                'action' => 'update status user',
+                'detail' => "Admin " . $this->session->get('email') . $textStatus . "ใช้งานผู้ใช้ " . $email,
+                'createdAt' => $this->time->getTimestamp(),
+                'userId' => $this->session->get('id'),
+            ];
+
+            if ($this->LogUsageModel->insert($logData)) {
+                if ($this->userModel->where('status != 4')->update($id, ['status' => $status])) {
+                    $response = [
+                        'status' => 200,
+                        'title' => 'Success!',
+                        'message' => $textStatus . 'ใช้งานสำเร็จ',
+                    ];
+                    return $this->response->setJson($response);
+                } else {
+                    $response = [
+                        'status' => 404,
+                        'title' => 'Error!',
+                        'message' => 'ไม่สามารถ'. $textStatus .'ใช้งานได้',
+                    ];
+                    return $this->response->setJson($response);
+                }
+            } else {
+                $response = [
+                    'status' => 404,
+                    'title' => 'Error!',
+                    'message' => 'ไม่สามารถบันทึก log ได้',
+                ];
+                return $this->response->setJSON($response);
+            }
+        } else {
+            $response = [
+                'status' => 500,
+                'title' => 'Error',
+                'message' => 'Server internal error'
+            ];
+
+            return $this->response->setJSON($response);
+        }
+    }
 
     public function deleteUser()
     {
