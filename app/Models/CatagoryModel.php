@@ -6,5 +6,5 @@ use CodeIgniter\Model;
 class CatagoryModel extends Model
 {
     protected $table = 'catagories';
-    protected $allowedFields = ['id', 'nameCatTh', 'nameCatEn', 'owner_groupId', 'createdAt', 'status'];
+    protected $allowedFields = ['id', 'nameCatTh', 'nameCatEn', 'createdAt', 'status'];
 }

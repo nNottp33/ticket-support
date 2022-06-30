@@ -44,8 +44,11 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
 
     // role_admin
     $routes->group('admin', ['filter' => 'role_admin'], function ($routes) {
+        // other
+        $routes->get('get/list', 'Catagory::getAdminList');
+
         // dashboard
-        $routes->get('/', 'Home::index', );
+        $routes->get('/', 'Home::index');
 
         // ticket page
         $routes->get('ticket/list', 'Ticket::index');
@@ -68,7 +71,11 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->get('catagories', 'Catagory::index');
         $routes->get('catagories/list', 'Catagory::getCategories');
         $routes->get('catagories/owner', 'Catagory::getCatagoryOwner');
+        $routes->post('catagories/owner/save', 'Catagory::saveCatagoryOwner');
+        $routes->post('catagories/owner/delete', 'Catagory::deleteCatagoryOwner');
         $routes->post('catagories/update/status', 'Catagory::updateStatusCat');
+        $routes->post('catagories/get/edit', 'Catagory::getCatEdit');
+        $routes->post('catagories/update', 'Catagory::updateCatagory');
         $routes->post('catagories/delete', 'Catagory::deleteCatagory');
         $routes->get('catagories/sub', 'Catagory::getSubCatagory');
         $routes->post('catagories/sub/delete', 'Catagory::deleteSubCatagory');

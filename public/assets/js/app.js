@@ -147,7 +147,13 @@ const login = () => {
       },
 
       error: function (error) {
-        console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: "เกิดข้อผิดผลาด!",
+          text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+        }).then((result) => {
+          console.log(error);
+        });
       },
     });
   }
@@ -199,7 +205,16 @@ const logout = () => {
         },
 
         error: function (error) {
-          console.log(error);
+          setTimeout(() => {
+            $(".preloader").hide();
+            Swal.fire({
+              icon: "error",
+              title: "เกิดข้อผิดผลาด!",
+              text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+            }).then((result) => {
+              console.log(error);
+            });
+          }, 1000);
         },
       });
     }
@@ -381,7 +396,13 @@ const changeStatusUser = (status, id, email, action) => {
             }
           },
           error: function (error) {
-            console.log(error);
+            Swal.fire({
+              icon: "error",
+              title: "เกิดข้อผิดผลาด!",
+              text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+            }).then((result) => {
+              console.log(error);
+            });
           },
         });
       }
@@ -434,7 +455,13 @@ const changeStatusUser = (status, id, email, action) => {
             }
           },
           error: function (error) {
-            console.log(error);
+            Swal.fire({
+              icon: "error",
+              title: "เกิดข้อผิดผลาด!",
+              text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+            }).then((result) => {
+              console.log(error);
+            });
           },
         });
       }
@@ -595,7 +622,13 @@ const countUser = () => {
     },
 
     error: function (error) {
-      console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(error);
+      });
     },
   });
 };
@@ -692,7 +725,16 @@ const editUser = (id) => {
             },
 
             error: function (error) {
-              console.log(error);
+              setTimeout(() => {
+                $(".preloader").hide();
+                Swal.fire({
+                  icon: "error",
+                  title: "เกิดข้อผิดผลาด!",
+                  text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+                }).then((result) => {
+                  console.log(error);
+                });
+              }, 1000);
             },
           });
         });
@@ -712,7 +754,13 @@ const editUser = (id) => {
       }
     },
     error: function (error) {
-      console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(error);
+      });
     },
   });
 };
@@ -739,6 +787,11 @@ const getDepartments = () => {
         $("#selectDepartment").html(html);
         $("#selectDepartment").selectpicker("refresh");
 
+        if ($("#selectDepartment :selected").val()) {
+          let depId = $("#selectDepartment :selected").val();
+          let resultPositionList = getPositions(depId);
+        }
+
         $("#selectDepartment").change(function () {
           let depId = $("#selectDepartment :selected").val();
           let resultPositionList = getPositions(depId);
@@ -746,7 +799,13 @@ const getDepartments = () => {
       }
     },
     error: function (error) {
-      console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(error);
+      });
     },
   });
 };
@@ -769,7 +828,13 @@ const getPositions = (id) => {
       }
     },
     error: function (error) {
-      console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(error);
+      });
     },
   });
 };
@@ -854,7 +919,16 @@ const saveUser = () => {
       }
     },
     error: function (error) {
-      console.log(error);
+      setTimeout(() => {
+        $(".preloader").hide();
+        Swal.fire({
+          icon: "error",
+          title: "เกิดข้อผิดผลาด!",
+          text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+        }).then((result) => {
+          console.log(error);
+        });
+      }, 1000);
     },
   });
 };
@@ -905,7 +979,13 @@ const deleteUser = (id) => {
           }
         },
         error: function (error) {
-          console.log(error);
+          Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดผลาด!",
+            text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+          }).then((result) => {
+            console.log(error);
+          });
         },
       });
     }
@@ -961,7 +1041,13 @@ const resetPassword = (id) => {
           }
         },
         error: function (error) {
-          console.log(error);
+          Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดผลาด!",
+            text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+          }).then((result) => {
+            console.log(error);
+          });
         },
       });
     }
@@ -1174,7 +1260,13 @@ const getOTP = () => {
         }
       },
       error: function (error) {
-        console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: "เกิดข้อผิดผลาด!",
+          text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+        }).then((result) => {
+          console.log(error);
+        });
       },
     });
   } else {
@@ -1190,6 +1282,8 @@ const getOTP = () => {
 // =========================== profile page end =========================== //
 
 // ============================ Catagory page ============================= //
+var categoryId;
+
 const catList = () => {
   var tableCat = $("#tableCat").dataTable({
     processing: true,
@@ -1249,7 +1343,7 @@ const catList = () => {
         data: null,
         className: "text-center",
         render: function (data, type, full, meta) {
-          return `<a href="#" onclick="getOwner(${data.owner_groupId})" data-bs-toggle="tooltip"
+          return `<a href="#" onclick="getOwner(${data.id})" data-bs-toggle="tooltip"
                                  data-bs-placement="bottom" title="owner detail" class="btn btn-sm btn-info">
                     <i class="fas fa-users"></i>
                   </a>`;
@@ -1270,6 +1364,7 @@ const catList = () => {
 };
 
 const getOwner = (groupId) => {
+  categoryId = groupId;
   $("#adminDetailModal").modal("show");
   var tableListOwner = $("#tableListOwner").dataTable({
     processing: true,
@@ -1304,7 +1399,276 @@ const getOwner = (groupId) => {
         data: "ownerPosition",
         className: "text-center",
       },
+      {
+        data: null,
+        className: "text-center",
+        render: function (data, type, full, meta) {
+          return `<div>
+             <a href="#" data-toggle="tooltip" title="ลบข้อมูล" onclick="deleteOwner(${data.id}, '${data.ownerName}')" class="btn btn-danger btn-sm">
+                        <i class="fas fa-trash"></i>
+                      </a>
+          </div>`;
+        },
+      },
     ],
+  });
+};
+
+const insertOwner = () => {
+  $("#adminDetailModal").modal("hide");
+  $("#insertAdminModal").modal("show");
+
+  $.ajax({
+    url: `${baseUrl}admin/get/list`,
+    type: "GET",
+    success: function (response) {
+      if (response.status == 200) {
+        let html = "";
+        for (let count = 0; count < response.data.length; count++) {
+          html += `<option value="${response.data[count].id}">${response.data[count].fullname}</option>`;
+        }
+        $("#adminListSelect").html(html);
+        $("#adminListSelect").selectpicker("refresh");
+      }
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(error);
+      });
+    },
+  });
+};
+
+const saveOwner = () => {
+  let adminId = $("#adminListSelect").val();
+  if (!adminId) {
+    Swal.fire({
+      icon: "error",
+      title: "กรุราเลือกแอดมิน",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+
+    return false;
+  }
+
+  if (adminId) {
+    $.ajax({
+      url: `${baseUrl}admin/catagories/owner/save`,
+      type: "POST",
+      data: {
+        groupId: categoryId,
+        ownerId: adminId,
+      },
+      success: function (response) {
+        if (response.status === 200) {
+          Swal.fire({
+            icon: "success",
+            title: response.title,
+            text: response.message,
+            showConfirmButton: false,
+            timer: 1000,
+          }).then((result) => {
+            if (result.isDismissed) {
+              $("#insertAdminModal").modal("hide");
+              $("#adminDetailModal").modal("show");
+              $("#tableListOwner").DataTable().ajax.reload();
+            }
+          });
+        }
+
+        if (response.status == 404 || response.status == 400) {
+          Swal.fire({
+            icon: "error",
+            title: response.title,
+            text: response.message,
+            showConfirmButton: false,
+            timer: 1000,
+          });
+        }
+      },
+      error: function (error) {
+        Swal.fire({
+          icon: "error",
+          title: "เกิดข้อผิดผลาด!",
+          text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+        }).then((result) => {
+          console.log(error);
+        });
+      },
+    });
+  }
+};
+
+$("#insertAdminModal").on("hidden.bs.modal", function (e) {
+  $("#adminDetailModal").modal("show");
+});
+
+const editCat = (id) => {
+  $.ajax({
+    url: `${baseUrl}admin/catagories/get/edit`,
+    type: "POST",
+    data: {
+      id: id,
+    },
+    success: function (response) {
+      if (response.status === 200) {
+        $("#catModal").modal("show");
+        $(".insert-category").hide();
+        $("#btnUpdateCat").removeClass("d-none");
+        $("#inputCat").val(response.data[0].nameCatTh);
+
+        $("#btnUpdateCat").click(function () {
+          if (!$("#inputCat").val()) {
+            Swal.fire({
+              icon: "warning",
+              title: "ไม่มีข้อมูล",
+              showConfirmButton: false,
+              timer: 1000,
+            }).then((result) => {
+              return false;
+            });
+          }
+
+          if ($("#inputCat").val()) {
+            $(".preloader").show();
+            $.ajax({
+              url: `${baseUrl}admin/catagories/update`,
+              type: "POST",
+              data: {
+                id: id,
+                nameCatTh: $("#inputCat").val(),
+              },
+              success: function (response) {
+                if (response.status == 200) {
+                  setTimeout(() => {
+                    $(".preloader").hide();
+                    Swal.fire({
+                      icon: "success",
+                      title: response.title,
+                      text: response.message,
+                      showConfirmButton: false,
+                      timer: 1000,
+                    }).then((result) => {
+                      $("#catModal").modal("hide");
+                      $("#tableCat").DataTable().ajax.reload();
+                    });
+                  }, 1000);
+                }
+
+                if (response.status == 404 || response.status == 400) {
+                  setTimeout(() => {
+                    $(".preloader").hide();
+                    Swal.fire({
+                      icon: "error",
+                      title: response.title,
+                      text: response.message,
+                      showConfirmButton: false,
+                      timer: 1000,
+                    });
+                  }, 1000);
+                }
+              },
+
+              error: function (err) {
+                setTimeout(() => {
+                  $(".preloader").hide();
+                  Swal.fire({
+                    icon: "error",
+                    title: "เกิดข้อผิดผลาด!",
+                    text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+                  }).then((result) => {
+                    console.log(err);
+                  });
+                }, 1000);
+              },
+            });
+          }
+        });
+      }
+
+      if (response.status == 404 || response.status == 400) {
+        Swal.fire({
+          icon: "error",
+          title: response.title,
+          text: response.message,
+          showConfirmButton: false,
+          timer: 1000,
+        });
+      }
+    },
+
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(err);
+      });
+    },
+  });
+};
+
+const deleteOwner = (id, nameOwner) => {
+  Swal.fire({
+    title: "คุณแน่ใจว่าจะลบใช่ไหม?",
+    text: "คุณจะไม่สามารถย้อนกลับมาได้แล้วนะ!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "ไม่",
+    confirmButtonText: "ใช่, ลบข้อมูลนี้!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: `${baseUrl}admin/catagories/owner/delete`,
+        type: "POST",
+        data: {
+          ownerId: id,
+          nameOwner: nameOwner,
+          catId: categoryId,
+        },
+        success: function (response) {
+          if (response.status == 200) {
+            Swal.fire({
+              icon: "success",
+              title: response.title,
+              text: response.message,
+              showConfirmButton: false,
+              timer: 1500,
+            }).then(() => {
+              $("#tableListOwner").DataTable().ajax.reload();
+            });
+          }
+
+          if (response.status == 404 || response.status == 400) {
+            Swal.fire({
+              icon: "error",
+              title: response.title,
+              text: response.message,
+              showConfirmButton: false,
+              timer: 1000,
+            });
+          }
+        },
+
+        error: function (error) {
+          Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดผลาด!",
+            text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+          }).then((result) => {
+            console.log(error);
+          });
+        },
+      });
+    }
   });
 };
 
@@ -1353,7 +1717,13 @@ const changeStatusCat = (status, id, nameCat) => {
             }
           },
           error: function (error) {
-            console.log(error);
+            Swal.fire({
+              icon: "error",
+              title: "เกิดข้อผิดผลาด!",
+              text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+            }).then((result) => {
+              console.log(error);
+            });
           },
         });
       }
@@ -1405,7 +1775,13 @@ const changeStatusCat = (status, id, nameCat) => {
             }
           },
           error: function (error) {
-            console.log(error);
+            Swal.fire({
+              icon: "error",
+              title: "เกิดข้อผิดผลาด!",
+              text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+            }).then((result) => {
+              console.log(error);
+            });
           },
         });
       }
@@ -1418,7 +1794,35 @@ const changeStatusCat = (status, id, nameCat) => {
 
 const insertCategory = () => {
   $("#catModal").modal("show");
+  $(".insert-category").show();
+  $("#btnUpdateCat").addClass("d-none");
+
+  $.ajax({
+    url: `${baseUrl}admin/get/list`,
+    type: "GET",
+    success: function (response) {
+      if (response.status == 200) {
+        let html = "";
+        for (let count = 0; count < response.data.length; count++) {
+          html += `<option value="${response.data[count].id}">${response.data[count].fullname}</option>`;
+        }
+        $("#adminListInsert").html(html);
+        $("#adminListInsert").selectpicker("refresh");
+      }
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(error);
+      });
+    },
+  });
 };
+
+const saveCatagory = () => {};
 
 const deleteCat = (id, nameCat) => {
   Swal.fire({
@@ -1465,14 +1869,18 @@ const deleteCat = (id, nameCat) => {
         },
 
         error: function (error) {
-          console.log(error);
+          Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดผลาด!",
+            text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+          }).then((result) => {
+            console.log(error);
+          });
         },
       });
     }
   });
 };
-
-var categoryId;
 
 const getSubCatagories = (catId) => {
   $("#subCatModal").modal("show");
@@ -1589,7 +1997,13 @@ const deleteSubCat = (subCatId, nameSubCat) => {
         },
 
         error: function (error) {
-          console.log(error);
+          Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดผลาด!",
+            text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+          }).then((result) => {
+            console.log(error);
+          });
         },
       });
     }
@@ -1641,7 +2055,13 @@ const changeStatusSubCat = (status, id, nameSubCat) => {
             }
           },
           error: function (error) {
-            console.log(error);
+            Swal.fire({
+              icon: "error",
+              title: "เกิดข้อผิดผลาด!",
+              text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+            }).then((result) => {
+              console.log(error);
+            });
           },
         });
       }
@@ -1693,7 +2113,13 @@ const changeStatusSubCat = (status, id, nameSubCat) => {
             }
           },
           error: function (error) {
-            console.log(error);
+            Swal.fire({
+              icon: "error",
+              title: "เกิดข้อผิดผลาด!",
+              text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+            }).then((result) => {
+              console.log(error);
+            });
           },
         });
       }
@@ -1765,7 +2191,13 @@ const saveSubCat = () => {
       },
 
       error: function (error) {
-        console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: "เกิดข้อผิดผลาด!",
+          text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+        }).then((result) => {
+          console.log(error);
+        });
       },
     });
   }
@@ -1829,7 +2261,13 @@ const editSubCat = (id) => {
               }
             },
             error: function (error) {
-              console.log(error);
+              Swal.fire({
+                icon: "error",
+                title: "เกิดข้อผิดผลาด!",
+                text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+              }).then((result) => {
+                console.log(error);
+              });
             },
           });
         });
@@ -1847,7 +2285,13 @@ const editSubCat = (id) => {
     },
 
     error: function (error) {
-      console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(error);
+      });
     },
   });
 };

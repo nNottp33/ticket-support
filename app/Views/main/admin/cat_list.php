@@ -78,10 +78,22 @@
                      </div>
                  </div>
 
+                 <div class="input-group mb-3 insert-category">
+                     <div class="customize-input mx-1 w-100">
+                         <small class="form-text text-muted">ผู้รับผิดชอบ</small>
+                         <select multiple class="form-control selectpicker list-admin" data-live-search="true"
+                             id="adminListInsert" aria-label="Admin list" title="เลือกผู้รับผิดชอบ">
+                         </select>
+                     </div>
+                 </div>
+
+
              </div>
              <div class="modal-footer">
                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-                 <button type="button" class="btn btn-primary">บันทึกข้อมูล</button>
+                 <button type="button" class="btn btn-primary insert-category"
+                     onclick="saveCatagory()">บันทึกข้อมูล</button>
+                 <button type="button" id="btnUpdateCat" class="btn btn-primary d-none">แก้ไขข้อมูล</button>
              </div>
          </div>
      </div>
@@ -148,7 +160,6 @@
              <div class="modal-body">
 
                  <div>
-
                      <div class="input-group mb-3">
                          <div class="customize-input mx-1 w-100">
                              <small class="form-text text-muted">ชื่อหมวดหมู่ย่อย</small>
@@ -188,14 +199,17 @@
 
  <!-- modal admin detail -->
  <div class="modal fade clear-modal" id="adminDetailModal" data-bs-backdrop="static" data-bs-keyboard="false"
-     tabindex="-1" aria-labelledby="catModalLabel" aria-hidden="true">
+     tabindex="-1" aria-labelledby="adminDetailModalLabel" aria-hidden="true">
      <div class="modal-dialog modal-xl">
          <div class="modal-content">
              <div class="modal-header">
-                 <h5 class="modal-title" id="catModalLabel">ข้อมูลผู้รับผิดชอบ</h5>
+                 <h5 class="modal-title" id="adminDetailModalLabel">ข้อมูลผู้รับผิดชอบ</h5>
                  <a href="#" class="icon-close" data-bs-dismiss="modal" aria-label="Close"></a>
              </div>
              <div class="modal-body">
+                 <div class="float-right my-2">
+                     <a href="#" onclick="insertOwner()" class="btn btn-primary">เพิ่มผู้รับผิดชอบ</a>
+                 </div>
                  <div class="table-responsive">
                      <table id="tableListOwner" class="table table-striped table-bordered no-wrap">
                          <thead>
@@ -204,6 +218,7 @@
                                  <th>ชื่อ</th>
                                  <th>Email</th>
                                  <th>ตำแหน่ง</th>
+                                 <th> <i class="fas fa-trash"></i> </th>
                              </tr>
                          </thead>
                          <tbody></tbody>
@@ -213,6 +228,7 @@
                                  <th>ชื่อ</th>
                                  <th>Email</th>
                                  <th>ตำแหน่ง</th>
+                                 <th> <i class="fas fa-trash"></i> </th>
                              </tr>
                          </tfoot>
                      </table>
@@ -224,6 +240,32 @@
          </div>
      </div>
  </div>
-
  <!-- modal admin detail end -->
+
+
+ <!-- modal admin insert -->
+ <div class="modal fade clear-modal" id="insertAdminModal" data-bs-backdrop="static" data-bs-keyboard="false"
+     tabindex="-1" aria-labelledby="insertAdminModalLabel" aria-hidden="true">
+     <div class="modal-dialog">
+         <div class="modal-content">
+             <div class="modal-header">
+                 <h5 class="modal-title" id="insertAdminModalLabel">ข้อมูลผู้รับผิดชอบ</h5>
+                 <a href="#" class="icon-close" data-bs-dismiss="modal" aria-label="Close"></a>
+             </div>
+             <div class="modal-body">
+                 <div class="customize-input mx-1 w-100">
+                     <small class="form-text text-muted">ผู้รับผิดชอบ</small>
+                     <select class="form-control selectpicker list-admin" data-live-search="true" id="adminListSelect"
+                         aria-label="Admin list" title="เลือกผู้รับผิดชอบ"></select>
+                 </div>
+             </div>
+             <div class="modal-footer">
+                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                 <button type="button" id="btnSaveAdmin" onclick="saveOwner()"
+                     class="btn btn-primary">บันทึกข้อมูล</button>
+             </div>
+         </div>
+     </div>
+ </div>
+ <!-- modal admin insert end -->
  <?= $this->endSection();
