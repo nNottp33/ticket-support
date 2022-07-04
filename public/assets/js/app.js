@@ -8,7 +8,7 @@ const filters =
 $(document).ready(function () {
   // clear input when modal hide
   $(".clear-modal").on("hidden.bs.modal", function (e) {
-    $(this).find("input,textarea,select").val("").end();
+    $(this).find("input,textarea,select").val().end();
   });
 
   $(".selectpicker").selectpicker();
@@ -2402,7 +2402,7 @@ const insertTicket = () => {
 
 const getCategory = () => {
   $.ajax({
-    url: `${baseUrl}user/catagories/get/list`,
+    url: `${baseUrl}user/catagories/list`,
     type: "GET",
     success: function (response) {
       if (response.status == 200) {
@@ -2412,16 +2412,6 @@ const getCategory = () => {
         }
         $("#userSelectCategory").html(html);
         $("#userSelectCategory").selectpicker("refresh");
-
-        // if ($("#userSelectCategory :selected").val()) {
-        //   let depId = $("#userSelectCategory :selected").val();
-        //   let resultPositionList = getPositions(depId);
-        // }
-
-        // $("#userSelectCategory").change(function () {
-        //   let depId = $("#userSelectCategory :selected").val();
-        //   let resultPositionList = getPositions(depId);
-        // });
       }
 
       if (response.status == 404 || response.status == 400) {
@@ -2447,6 +2437,63 @@ const getCategory = () => {
   });
 };
 
+const getSubCatagory = () => {
+  let catId = $("#userSelectCategory").val();
+  $.ajax({
+    url: `${baseUrl}user/catagories/sub`,
+    type: "GET",
+    data: {
+      catId: catId,
+    },
+    success: function (response) {
+      if (response.status == 200) {
+        console.log(response.data);
+
+        let html = "";
+        for (let count = 0; count < response.data.length; count++) {
+          html += `<option value="${response.data[count].id}">${response.data[count].nameSubCat}</option>`;
+        }
+        $("#userSelectSubCategory").html(html);
+        $("#userSelectSubCategory").selectpicker("refresh");
+      }
+
+      if (response.status == 404 || response.status == 400) {
+        Swal.fire({
+          icon: "error",
+          title: response.title,
+          text: response.message,
+          showConfirmButton: false,
+          timer: 1000,
+        });
+      }
+    },
+
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(error);
+      });
+    },
+  });
+};
+
+const previewFile = () => {
+  var file = $("input[type=file]").get(0).files[0];
+
+  if (file) {
+    var reader = new FileReader();
+
+    reader.onload = function () {
+      $("#previewImg").show();
+      $("#previewImg").attr("src", reader.result);
+    };
+
+    reader.readAsDataURL(file);
+  }
+};
 // ========================== end ticket page ============================= //
 
 // ======================================================================== //

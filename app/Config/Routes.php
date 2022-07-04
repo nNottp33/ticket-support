@@ -91,7 +91,8 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->get('home', 'UserTicket::index');
 
         // ticket page
-        $routes->get('catagories/get/list', 'UserTicket::getCategories');
+        $routes->get('catagories/list', 'Catagory::getCategories');
+        $routes->get('catagories/sub', 'Catagory::getSubCatagory');
     });
 });
 
