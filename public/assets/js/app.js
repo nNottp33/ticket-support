@@ -1822,7 +1822,91 @@ const insertCategory = () => {
   });
 };
 
-const saveCatagory = () => {};
+const saveCatagory = () => {
+  let nameCat = $("#inputCat").val();
+  let adminId = $("#adminListInsert").val();
+
+  if (!nameCat) {
+    Swal.fire({
+      icon: "warning",
+      title: "คำเตือน!",
+      text: "กรุณากรอกข้อมูลให้ครบถ้วย!",
+      showConfirmButton: false,
+      timer: 1000,
+    }).then((result) => {
+      return false;
+    });
+  }
+
+  if (adminId.length == 0) {
+    Swal.fire({
+      icon: "warning",
+      title: "คำเตือน!",
+      text: "กรุณากรอกข้อมูลให้ครบถ้วย!",
+      showConfirmButton: false,
+      timer: 1000,
+    }).then((result) => {
+      return false;
+    });
+  }
+
+  if (nameCat && adminId.length > 0) {
+    $(".preloader").show();
+    $.ajax({
+      url: `${baseUrl}admin/catagories/add`,
+      type: "POST",
+      data: {
+        nameCat: nameCat,
+        ownerId: adminId,
+      },
+
+      success: function (response) {
+        if (response.status == 200) {
+          setTimeout(() => {
+            $(".preloader").hide();
+            Swal.fire({
+              icon: "success",
+              title: response.title,
+              text: response.message,
+              showConfirmButton: false,
+              timer: 1000,
+            }).then((result) => {
+              if (result.isDismissed) {
+                $("#catModal").modal("hide");
+                $("#tableCat").DataTable().ajax.reload();
+              }
+            });
+          }, 1000);
+        }
+
+        if (response.status == 404 || response.status == 400) {
+          setTimeout(() => {
+            $(".preloader").hide();
+            Swal.fire({
+              icon: "error",
+              title: response.title,
+              text: response.message,
+              showConfirmButton: false,
+              timer: 1000,
+            });
+          }, 1000);
+        }
+      },
+      error: function (error) {
+        setTimeout(() => {
+          $(".preloader").hide();
+          Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดผลาด!",
+            text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+          }).then((result) => {
+            console.log(error);
+          });
+        }, 1000);
+      },
+    });
+  }
+};
 
 const deleteCat = (id, nameCat) => {
   Swal.fire({

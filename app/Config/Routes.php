@@ -77,6 +77,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->post('catagories/get/edit', 'Catagory::getCatEdit');
         $routes->post('catagories/update', 'Catagory::updateCatagory');
         $routes->post('catagories/delete', 'Catagory::deleteCatagory');
+        $routes->post('catagories/add', 'Catagory::insertCatagory');
         $routes->get('catagories/sub', 'Catagory::getSubCatagory');
         $routes->post('catagories/sub/delete', 'Catagory::deleteSubCatagory');
         $routes->post('catagories/sub/update/status', 'Catagory::updateStatusSubCat');

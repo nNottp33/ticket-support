@@ -732,4 +732,89 @@ class Catagory extends BaseController
             return $this->response->setJSON($response);
         }
     }
+
+    public function insertCatagory()
+    {
+        if ($this->request->isAJAX()) {
+            $nameCat = $this->request->getPost('nameCat');
+            $ownerId = $this->request->getPost('ownerId');
+
+            $logData = [
+                'ip' => $this->request->getIPAddress(),
+                'action' => 'insert catagory',
+                'detail' => "Admin " . $this->session->get('email') . " เพิ่ม cat " .  $nameCat,
+                'createdAt' => $this->time->getTimestamp(),
+                'userId' => $this->session->get('id'),
+            ];
+
+            $insertCat = [
+                'nameCatTh' => $nameCat,
+                'nameCatEn' => $nameCat,
+                'createdAt' => $this->time->getTimestamp(),
+                'status' => 1
+            ];
+
+
+            if ($this->catModel->where('nameCatTh', $nameCat)->first()) {
+                $response = [
+                    'status' => 404,
+                    'title' => 'Error!',
+                    'message' => 'ข้อมูลซ้ำ!',
+                ];
+                return $this->response->setJson($response);
+            } else {
+                if ($this->LogUsageModel->insert($logData)) {
+                    if ($this->catModel->insert($insertCat)) {
+                        $resultGroupId = $this->catModel->where('nameCatTh', $nameCat)->first();
+
+                        for ($i = 0; $i < sizeOf($ownerId); $i++) {
+                            $ownerData[$i] = [
+                            'groupId' => $resultGroupId['id'],
+                            'ownerId' => $ownerId[$i],
+                            'status' => 1,
+                        ];
+                        }
+
+                        if ($this->ownerGroupModel->insertBatch($ownerData)) {
+                            $response = [
+                            'status' => 200,
+                            'title' => 'Success!',
+                            'message' => 'เพิ่มข้อมูลสำเร็จ',
+                        ];
+                            return $this->response->setJson($response);
+                        } else {
+                            $response = [
+                            'status' => 404,
+                            'title' => 'Error!',
+                            'message' => 'ไม่สามารถเพิ่มข้อมูลได้',
+                        ];
+                            return $this->response->setJson($response);
+                        }
+                    } else {
+                        $response = [
+                        'status' => 404,
+                        'title' => 'Error!',
+                        'message' => 'ไม่สามารถเพิ่มข้อมูลได้',
+                    ];
+                        return $this->response->setJson($response);
+                    }
+                } else {
+                    $response = [
+                    'status' => 404,
+                    'title' => 'Error!',
+                    'message' => 'ไม่สามารถบันทึก log ได้',
+                ];
+                    return $this->response->setJSON($response);
+                }
+            }
+        } else {
+            $response = [
+                'status' => 500,
+                'title' => 'Error',
+                'message' => 'Server internal error'
+            ];
+
+            return $this->response->setJSON($response);
+        }
+    }
 }
