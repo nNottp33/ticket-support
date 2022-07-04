@@ -2392,6 +2392,63 @@ const editSubCat = (id) => {
 // ===========================  Role USER ================================= //
 // ======================================================================== //
 
+// ============================= Ticket page ============================== //
+
+// add ticket
+const insertTicket = () => {
+  $("#userTicketModal").modal("show");
+  let resultCategory = getCategory();
+};
+
+const getCategory = () => {
+  $.ajax({
+    url: `${baseUrl}user/catagories/get/list`,
+    type: "GET",
+    success: function (response) {
+      if (response.status == 200) {
+        let html = "";
+        for (let count = 0; count < response.data.length; count++) {
+          html += `<option value="${response.data[count].id}">${response.data[count].nameCatTh}</option>`;
+        }
+        $("#userSelectCategory").html(html);
+        $("#userSelectCategory").selectpicker("refresh");
+
+        // if ($("#userSelectCategory :selected").val()) {
+        //   let depId = $("#userSelectCategory :selected").val();
+        //   let resultPositionList = getPositions(depId);
+        // }
+
+        // $("#userSelectCategory").change(function () {
+        //   let depId = $("#userSelectCategory :selected").val();
+        //   let resultPositionList = getPositions(depId);
+        // });
+      }
+
+      if (response.status == 404 || response.status == 400) {
+        Swal.fire({
+          icon: "error",
+          title: response.title,
+          text: response.message,
+          showConfirmButton: false,
+          timer: 1000,
+        });
+      }
+    },
+
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(error);
+      });
+    },
+  });
+};
+
+// ========================== end ticket page ============================= //
+
 // ======================================================================== //
 // ========================== Role USER end =============================== //
 // ======================================================================== //

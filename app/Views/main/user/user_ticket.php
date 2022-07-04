@@ -25,7 +25,8 @@
 
          <!-- floating button -->
          <div class="floating-container">
-             <div class="floating-button" data-bs-toggle="modal" data-bs-target="#userTicketModal">+</div>
+             <div onclick="insertTicket()" class="floating-button" data-bs-toggle="modal"
+                 data-bs-target="#userTicketModal">+</div>
          </div>
          <!-- end floating button -->
 
@@ -51,7 +52,6 @@
                              <li class="fas fa-clock"> </li> กำลังดำเนินการ
                          </a>
 
-
                      </div>
                  </div>
                  <!-- Card -->
@@ -71,46 +71,55 @@
                  <a href="#" class="icon-close" data-bs-dismiss="modal" aria-label="Close"></a>
              </div>
              <div class="modal-body">
-                 <div class="">
+                 <div class="container">
 
                      <div class="form-group mb-4">
+                         <small class="form-text text-muted">หมวดหมู่</small>
                          <select id="userSelectCategory" name="category" onchange="userCat()" title="กรุณาเลือกหมวดหมู่"
                              class="selectpicker form-control" data-live-search="true" data-width="100%">
-                             <option value="1">ขอร้อง MIS</option>
-                             <option value="2">ขอร้อง NAV</option>
                          </select>
                      </div>
-
 
                      <div class="form-group mb-4">
+                         <small class="form-text text-muted">หมวดหมู่ย่อย</small>
                          <select id="userSelectSubCategory" name="subCategory" title="กรุณาเลือกหมวดหมู่ย่อย"
                              class="selectpicker form-control" data-live-search="true" data-width="100%">
-                             <option value="1">ขอสร้างข้อมูลบน Dashboard</option>
-                             <option value="2">รายงานข้อมูลนักธุรกิจ</option>
                          </select>
                      </div>
 
-                     <div class="input-group mb-3">
-                         <div class="input-group-prepend">
-                             <span class="input-group-text">
-                                 <li class="fas fa-plus mr-2"></li>แนบไฟล์
-                             </span>
-                         </div>
-                         <div class="custom-file">
-                             <input type="file" class="custom-file-input" id="inputGroupFile01">
-                             <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                     <div class="form-group">
+                         <small class="form-text text-muted">รายละเอียด</small>
+                         <textarea class="form-control" rows="3" placeholder="อธิบายรายละเอียดปัญหา"></textarea>
+                     </div>
+
+                     <div class="form-group">
+                         <small class="form-text text-muted">แนบไฟล์ตัวอย่าง</small>
+                         <div class="input-group mb-3">
+
+                             <div class="input-group-prepend">
+                                 <span class="input-group-text">
+                                     <li class="fas fa-plus mr-2"></li>แนบไฟล์
+                                 </span>
+                             </div>
+                             <div class="custom-file">
+                                 <input type="file" class="custom-file-input" id="inputGroupFile01">
+                                 <label class="custom-file-label" for="inputGroupFile01">เลือกไฟล์</label>
+                             </div>
                          </div>
                      </div>
 
 
-                     <div class="display-upload-img">
-                         <svg class="bd-placeholder-img card-img-top" width="100%" height="180"
-                             xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image cap"
-                             preserveAspectRatio="xMidYMid slice" focusable="false">
-                             <title>Placeholder</title>
-                             <rect width="100%" height="100%" fill="#868e96"></rect><text x="50%" y="50%" fill="#dee2e6"
-                                 dy=".3em">Image cap</text>
-                         </svg>
+                     <div class="form-group">
+                         <small class="form-text text-muted">ภาพประกอบ</small>
+                         <div class="display-upload-img">
+                             <svg class="bd-placeholder-img card-img-top" width="100%" height="180"
+                                 xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image cap"
+                                 preserveAspectRatio="xMidYMid slice" focusable="false">
+                                 <title>Placeholder</title>
+                                 <rect width="100%" height="100%" fill="#868e96"></rect><text x="50%" y="50%"
+                                     fill="#dee2e6" dy=".3em">Image cap</text>
+                             </svg>
+                         </div>
                      </div>
 
                  </div>
@@ -172,11 +181,6 @@
              </div>
          </div>
      </div>
+ </div>
 
-
-     <script>
-         $(document).ready(function() {
-
-         });
-     </script>
-     <?= $this->endSection();
+ <?= $this->endSection();

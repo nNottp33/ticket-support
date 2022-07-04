@@ -89,6 +89,9 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     // role user
     $routes->group('user', ['filter' => 'role_user'], function ($routes) {
         $routes->get('home', 'UserTicket::index');
+
+        // ticket page
+        $routes->get('catagories/get/list', 'UserTicket::getCategories');
     });
 });
 

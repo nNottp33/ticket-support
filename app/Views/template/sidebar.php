@@ -16,19 +16,63 @@
                                   </span>
                               </a>
 
-                              <?php endif;?>
 
-                              <?php if (session()->get('class') == 'admin') :?>
-
-                              <a class="sidebar-link sidebar-link"
-                                  href="<?php echo base_url('admin/');?>"
+                          <li class="list-divider"></li>
+                          <li class="sidebar-item">
+                              <a class="sidebar-link"
+                                  href="<?php echo base_url('user/ticket/history');?>"
                                   aria-expanded="false">
-                                  <i data-feather="home" class="feather-icon"></i>
-                                  <span class="hide-menu">Dashboard
-                                      <div class="sub-title">แดชบอร์ด</div>
+                                  <i class="fas fa-history feather-icon"></i>
+                                  <span class="hide-menu">History Ticket
+                                      <div class="sub-title">ประวัติการแจ้งปัญหา</div>
                                   </span>
-
                               </a>
+                          </li>
+
+
+                          <li class="list-divider"></li>
+                          <li class="nav-small-cap">
+                              <span class="hide-menu">Report</span>
+                          </li>
+
+                          <li class="sidebar-item">
+                              <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
+                                  <i class="far fa-file-pdf"></i>
+                                  <span class="hide-menu">Report
+                                      <div class="sub-title">รายงาน</div>
+                                  </span>
+                              </a>
+                              <ul aria-expanded="false" class="collapse  first-level base-level-line">
+                                  <li class="sidebar-item">
+                                      <a href="form-inputs.html" class="sidebar-link">
+                                          <span class="hide-menu"> Report type1
+                                              <div class="sub-title">รายงาน ???</div>
+                                          </span>
+                                      </a>
+                                  </li>
+                                  <li class="sidebar-item">
+                                      <a href="form-input-grid.html" class="sidebar-link">
+                                          <span class="hide-menu"> Report type2
+                                              <div class="sub-title">รายงาน ???</div>
+                                          </span>
+                                      </a>
+                                  </li>
+                              </ul>
+                          </li>
+
+                          <?php endif;?>
+
+                          <?php if (session()->get('class') == 'admin') :?>
+
+                          <a class="sidebar-link sidebar-link"
+                              href="<?php echo base_url('admin/');?>"
+                              aria-expanded="false">
+                              <i data-feather="home" class="feather-icon"></i>
+                              <span class="hide-menu">Dashboard
+                                  <div class="sub-title">แดชบอร์ด</div>
+                              </span>
+
+                          </a>
                           </li>
 
                           <li class="list-divider"></li>
