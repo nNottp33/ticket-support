@@ -72,58 +72,61 @@
              </div>
              <div class="modal-body">
                  <div class="container">
-
-                     <div class="form-group mb-4">
-                         <small class="form-text text-muted">หมวดหมู่</small>
-                         <select id="userSelectCategory" name="category" onchange="getSubCatagory()"
-                             title="กรุณาเลือกหมวดหมู่" class="selectpicker form-control" data-live-search="true"
-                             data-width="100%">
-                         </select>
-                     </div>
-
-                     <div class="form-group mb-4">
-                         <small class="form-text text-muted">หมวดหมู่ย่อย</small>
-                         <select id="userSelectSubCategory" name="subCategory" title="กรุณาเลือกหมวดหมู่ย่อย"
-                             class="selectpicker form-control" data-live-search="true" data-width="100%">
-                         </select>
-                     </div>
-
-                     <div class="form-group">
-                         <small class="form-text text-muted">รายละเอียด</small>
-                         <textarea class="form-control" rows="3" placeholder="อธิบายรายละเอียดปัญหา"></textarea>
-                     </div>
-
-                     <div class="form-group">
-                         <small class="form-text text-muted">แนบไฟล์ตัวอย่าง</small>
-                         <div class="input-group mb-3">
-
-                             <div class="input-group-prepend">
-                                 <span class="input-group-text">
-                                     <li class="fas fa-plus mr-2"></li>แนบไฟล์
-                                 </span>
-                             </div>
-                             <div class="custom-file">
-                                 <input onchange="previewFile(this)" required type="file" class="custom-file-input"
-                                     id="inputGroupFile01">
-                                 <label class="custom-file-label" for="inputGroupFile01">เลือกไฟล์</label>
-                             </div>
-                         </div>
-                     </div>
-
-
-                     <div class="form-group">
-                         <small class="form-text text-muted">ภาพประกอบ</small>
-                         <div class="display-upload-img">
-                             <img accept="image/png, image/jpeg" id="previewImg" src="" alt="Image preview" width="100%"
-                                 height="180">
+                     <form id="ticketForm" enctype="multipart/form-data" method="post">
+                         <div class="form-group mb-4">
+                             <small class="form-text text-muted">หัวข้อ</small>
+                             <input type="text" class="form-control" name="ticketTopic" id="ticketTopic"
+                                 placeholder="หัวข้อ Ticket">
                          </div>
 
-                     </div>
+                         <div class="form-group mb-4">
+                             <small class="form-text text-muted">หมวดหมู่</small>
+                             <select id="userSelectCategory" name="userSelectCategory" onchange="getSubCatagory()"
+                                 title="กรุณาเลือกหมวดหมู่" class="selectpicker form-control" data-live-search="true"
+                                 data-width="100%">
+                             </select>
+                         </div>
+
+                         <div class="form-group mb-4">
+                             <small class="form-text text-muted">หมวดหมู่ย่อย</small>
+                             <select id="userSelectSubCategory" name="userSelectSubCategory"
+                                 title="กรุณาเลือกหมวดหมู่ย่อย" class="selectpicker form-control"
+                                 data-live-search="true" data-width="100%">
+                             </select>
+                         </div>
+
+                         <div class="form-group">
+                             <small class="form-text text-muted">รายละเอียด</small>
+                             <textarea id="ticketDetail" name="ticketDetail" class="form-control" rows="3"
+                                 placeholder="อธิบายรายละเอียดปัญหา"></textarea>
+                         </div>
+
+                         <div class="form-group">
+                             <small class="form-text text-muted">แนบไฟล์ตัวอย่าง</small>
+                             <div class="mb-3">
+                                 <input accept="image/*" multiple="true" onchange="previewFile(this)"
+                                     class="form-control" type="file" name="file" id="file">
+                             </div>
+
+                         </div>
+
+                         <div class="form-group">
+                             <small class="form-text text-muted">ภาพประกอบ</small>
+                             <div class="display-upload-img">
+                                 <img class="previewImg" accept="image/png, image/jpeg" id="previewImg" src=""
+                                     alt="Image preview" width="100%" height="180">
+                             </div>
+
+                         </div>
+
+
+
                  </div>
                  <div class="modal-footer">
                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-                     <button type="button" class="btn btn-primary">บันทึกข้อมูล</button>
+                     <button type="submit" class="btn btn-primary">บันทึกข้อมูล</button>
                  </div>
+                 </form>
              </div>
          </div>
      </div>

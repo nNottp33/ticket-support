@@ -93,6 +93,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         // ticket page
         $routes->get('catagories/list', 'Catagory::getCategories');
         $routes->get('catagories/sub', 'Catagory::getSubCatagory');
+        $routes->post('ticket/save', 'UserTicket::saveTicket');
     });
 });
 

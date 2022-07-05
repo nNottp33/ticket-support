@@ -8,7 +8,9 @@ const filters =
 $(document).ready(function () {
   // clear input when modal hide
   $(".clear-modal").on("hidden.bs.modal", function (e) {
-    $(this).find("input,textarea,select").val().end();
+    $(this).find("input,textarea,select").val("").end();
+    $(".previewImg").hide();
+    $("#ticketForm")[0].reset();
   });
 
   $(".selectpicker").selectpicker();
@@ -2447,8 +2449,6 @@ const getSubCatagory = () => {
     },
     success: function (response) {
       if (response.status == 200) {
-        console.log(response.data);
-
         let html = "";
         for (let count = 0; count < response.data.length; count++) {
           html += `<option value="${response.data[count].id}">${response.data[count].nameSubCat}</option>`;
@@ -2480,20 +2480,102 @@ const getSubCatagory = () => {
   });
 };
 
-const previewFile = () => {
-  var file = $("input[type=file]").get(0).files[0];
+const previewFile = (input, id) => {
+  let file = $("input[type=file]").get(0).files[0];
 
   if (file) {
-    var reader = new FileReader();
+    let reader = new FileReader();
 
     reader.onload = function () {
-      $("#previewImg").show();
-      $("#previewImg").attr("src", reader.result);
+      $(".previewImg").show();
+      $(".previewImg").attr("src", reader.result);
     };
 
     reader.readAsDataURL(file);
   }
 };
+
+$("#ticketForm").on("submit", function (e) {
+  e.preventDefault();
+  if (
+    !$("#ticketTopic").val() ||
+    !$("#userSelectCategory").val() ||
+    !$("#userSelectSubCategory").val() ||
+    !$("#ticketDetail").val()
+  ) {
+    Swal.fire({
+      icon: "warning",
+      title: "คำเตือน!",
+      text: "กรุณากรอกข้อมูลให้ครบถ้วน!",
+    }).then((result) => {
+      return false;
+    });
+  }
+
+  if (
+    $("#ticketTopic").val() &&
+    $("#userSelectCategory").val() &&
+    $("#userSelectSubCategory").val() &&
+    $("#ticketDetail").val()
+  ) {
+    $(".preloader").show();
+    $.ajax({
+      url: `${baseUrl}user/ticket/save`,
+      type: "POST",
+      data: new FormData(this),
+      processData: false,
+      contentType: false,
+      cache: false,
+      dataType: "json",
+      success: function (response) {
+        if (response.status == 200) {
+          setTimeout(() => {
+            $(".preloader").hide();
+            Swal.fire({
+              icon: "success",
+              title: response.title,
+              text: response.message,
+              showConfirmButton: false,
+              timer: 1000,
+            }).then((result) => {
+              $("#userTicketModal").modal("hide");
+              $("tableUserTicket").DataTable().ajax.reload();
+            });
+          }, 1000);
+        }
+
+        if (response.status == 404 || response.status == 400) {
+          setTimeout(() => {
+            $(".preloader").hide();
+            Swal.fire({
+              icon: "error",
+              title: response.title,
+              text: response.message,
+              showConfirmButton: false,
+              timer: 1000,
+            }).then((result) => {
+              return false;
+            });
+          }, 1000);
+        }
+      },
+
+      error: function (error) {
+        setTimeout(() => {
+          $(".preloader").hide();
+          Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดผลาด!",
+            text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+          }).then((result) => {
+            console.log(error);
+          });
+        }, 1000);
+      },
+    });
+  }
+});
+
 // ========================== end ticket page ============================= //
 
 // ======================================================================== //
