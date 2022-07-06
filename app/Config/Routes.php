@@ -52,6 +52,9 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
 
         // ticket page
         $routes->get('ticket/list', 'Ticket::index');
+        $routes->get('ticket/show/list', 'Ticket::getTicketAdmin');
+        $routes->get('ticket/count', 'Ticket::countTicket');
+        $routes->post('ticket/user/detail', 'Ticket::getUserByEmail');
         
         // user page
         $routes->get('users', 'User::index');
@@ -94,6 +97,11 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->get('catagories/list', 'Catagory::getCategories');
         $routes->get('catagories/sub', 'Catagory::getSubCatagory');
         $routes->post('ticket/save', 'UserTicket::saveTicket');
+        $routes->get('ticket/list', 'UserTicket::getTicketByUser');
+        $routes->post('ticket/detail', 'UserTicket::getTicketDetail');
+
+        // history ticket page
+        $routes->get('history/ticket', 'HistoryTicket::index');
     });
 });
 

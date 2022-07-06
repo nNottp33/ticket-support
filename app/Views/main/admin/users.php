@@ -246,4 +246,10 @@
  </div>
  <!-- end add user modal-->
 
+ <script>
+     $(document).ready(function() {
+         let userAll = userList();
+         var countTotal = countUser();
+     });
+ </script>
  <?= $this->endSection();

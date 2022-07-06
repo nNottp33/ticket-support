@@ -10,7 +10,6 @@ $(document).ready(function () {
   $(".clear-modal").on("hidden.bs.modal", function (e) {
     $(this).find("input,textarea,select").val("").end();
     $(".previewImg").hide();
-    $("#ticketForm")[0].reset();
   });
 
   $(".selectpicker").selectpicker();
@@ -34,14 +33,6 @@ $(document).ready(function () {
   });
 
   $(".profile-input").attr("disabled", "disabled");
-
-  // called function
-  // user page
-  let userAll = userList();
-  var countTotal = countUser();
-
-  // catagory page
-  let catAll = catList();
 });
 
 // check if user press enter button
@@ -2384,6 +2375,230 @@ const editSubCat = (id) => {
 
 // ======================================================================== //
 
+// ============================= Ticket page ============================== //
+const getAdminTicket = () => {
+  var tableTicketAdmin = $("#tableTicketAdmin").dataTable({
+    processing: true,
+    stateSave: true,
+    searching: true,
+    responsive: true,
+    bDestroy: true,
+    colReorder: {
+      realtime: true,
+    },
+    ajax: `${baseUrl}admin/ticket/show/list`,
+    columns: [
+      {
+        targets: 0,
+        data: null,
+        className: "text-center",
+        searchable: true,
+        orderable: true,
+        render: function (data, type, full, meta) {
+          if (data.task_status == 0) {
+            return `<div>  
+                       <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Confirm Ticket" onclick="updateTicketStatus('approve', 1)" class="btn btn-success btn-sm">
+                          <i class="fas fa-check"></i>
+                      </a>
+                      <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reject Ticket" onclick="updateTicketStatus('reject', 3)" class="btn btn-danger btn-sm">
+                        <i class="fas fa-times"> </i>
+                      </a> 
+                    </div>`;
+          }
+
+          if (data.task_status == 1) {
+            return `<div data-toggle="tooltip" title="Accepted pending...">  
+                      <a href="#" onclick="updateTicketStatus('completed', 2)" class="btn btn-warning btn-sm">
+                          <li class="fas fa-clock"></li>
+                      </a> 
+                    </div>`;
+          }
+
+          if (data.task_status == 2) {
+            // onclick="updateTicketStatus('closed', 4)"
+            return `<div data-toggle="tooltip" title="Completed">
+                <a href="#" class="btn btn-success btn-sm">
+                    <li class="fas fa-check-circle"></li>
+                 </a>
+             </div>`;
+          }
+
+          if (data.task_status == 4) {
+            return `<div data-toggle="tooltip" title="Closed">
+                <a href="#" class="btn btn-secondary btn-sm">
+                    <li class="fas fa-check-circle"></li>
+                 </a>
+             </div>`;
+          }
+        },
+      },
+      {
+        data: "task_topic",
+        className: "text-center",
+      },
+      {
+        data: null,
+        className: "text-center",
+        render: function (data, type, full, meta) {
+          return `<a href="#" onclick="getMoreDetailTicket(${data.id})" data-bs-toggle="tooltip"
+                      data-bs-placement="bottom" title="more detail" class="btn btn-sm btn-cyan">
+                      <i class="fas fa-list"></i>
+                  </a>`;
+        },
+      },
+      {
+        data: null,
+        className: "text-center",
+        render: function (data, type, full, meta) {
+          return `<a href="#" onclick="getUserDetail('${data.user_email}')" data-bs-toggle="tooltip"
+                      data-bs-placement="bottom" title="more detail" class="btn btn-sm btn-light">
+                    ${data.user_email}
+                  </a>`;
+        },
+      },
+      {
+        data: null,
+        className: "text-center",
+        render: function (data, type, full, meta) {
+          if (data.task_created == 0) {
+            return ` <span> ไม่มีข้อมูล </span>`;
+          }
+
+          if (data.task_created != 0) {
+            return `<span class="text-success"> <b> ${moment
+              .unix(data.task_created)
+              .format("DD/MM/YYYY HH:mm")} </b> </span>`;
+          }
+        },
+      },
+      {
+        data: null,
+        className: "text-center",
+        render: function (data, type, full, meta) {
+          if (data.task_updated == 0) {
+            return ` <span> ไม่มีข้อมูล </span>`;
+          }
+
+          if (data.task_updated != 0) {
+            return `<span class="text-success"> <b> ${moment
+              .unix(data.task_updated)
+              .format("DD/MM/YYYY HH:mm")} </b> </span>`;
+          }
+        },
+      },
+    ],
+  });
+};
+
+const getUserDetail = (email) => {
+  $.ajax({
+    url: `${baseUrl}admin/ticket/user/detail`,
+    type: "POST",
+    data: {
+      email: email,
+    },
+    success: function (response) {
+      if (response.status === 200) {
+        $("#getUserDetaillModal").modal("show");
+
+        if (response.data.prefix == "นางสาว" || response.data.prefix == "นาง") {
+          var imageArr = ["avatar3.png", "avatar8.png"];
+        } else {
+          var imageArr = [
+            "avatar1.png",
+            "avatar2.png",
+            "avatar4.png",
+            "avatar5.png",
+            "avatar6.png",
+            "avatar7.png",
+          ];
+        }
+
+        let randomNum = Math.floor(Math.random() * imageArr.length);
+        $("#ticketAvatar").attr(
+          "src",
+          `${baseUrl}assets/images/avatar/${imageArr[randomNum]}`,
+        );
+        $("#text-ticketEmpId").html(response.data.empId);
+        $("#text-ticketFullname").html(
+          `${response.data.prefix} ${response.data.fullname}`,
+        );
+        $("#text-ticketPosition").html(response.data.namePosition);
+        $("#text-ticketDepartment").html(response.data.nameDepart);
+        $("#text-ticketTel").html(
+          response.data.tel.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3"),
+        );
+        $("#text-ticketMail").html(response.data.email);
+      }
+
+      if (response.status == 404 || response.status == 400) {
+        Swal.fire({
+          icon: "error",
+          title: response.title,
+          text: response.message,
+          showConfirmButton: false,
+          timer: 1000,
+        }).then((result) => {
+          return false;
+        });
+      }
+    },
+
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(error);
+      });
+    },
+  });
+};
+
+const countTicket = () => {
+  $.ajax({
+    url: `${baseUrl}admin/ticket/count`,
+    type: "GET",
+    success: function (response) {
+      if (response.status == 200) {
+        $("#totalTicket").html(response.data.total ? response.data.total : 0);
+        $("#pendingTicket").html(
+          response.data.pending ? response.data.pending : 0,
+        );
+        $("#newTicket").html(response.data.wait ? response.data.wait : 0);
+
+        $("#completeTicket").html(
+          response.data.complete ? response.data.complete : 0,
+        );
+        $("#closeTicket").html(response.data.close ? response.data.close : 0);
+      }
+
+      if (response.status == 404 || response.status == 400) {
+        Swal.fire({
+          icon: "error",
+          title: response.title,
+          text: response.message,
+          showConfirmButton: false,
+          timer: 1000,
+        });
+      }
+    },
+
+    error: function () {
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(error);
+      });
+    },
+  });
+};
+
+// ======================================================================== //
+
 // ======================================================================== //
 // ========================== Role ADMIN end ============================== //
 // ======================================================================== //
@@ -2539,7 +2754,7 @@ $("#ticketForm").on("submit", function (e) {
               timer: 1000,
             }).then((result) => {
               $("#userTicketModal").modal("hide");
-              $("tableUserTicket").DataTable().ajax.reload();
+              $("#tableUserTicket").DataTable().ajax.reload();
             });
           }, 1000);
         }
@@ -2575,6 +2790,187 @@ $("#ticketForm").on("submit", function (e) {
     });
   }
 });
+
+// show user ticket
+const getUserTicket = () => {
+  var tableUserTicket = $("#tableUserTicket").dataTable({
+    processing: true,
+    stateSave: true,
+    searching: true,
+    responsive: true,
+    bDestroy: true,
+    colReorder: {
+      realtime: true,
+    },
+    ajax: `${baseUrl}user/ticket/list`,
+    columns: [
+      {
+        targets: 0,
+        data: null,
+        className: "text-center",
+        searchable: true,
+        orderable: true,
+        render: function (data, type, full, meta) {
+          if (data.status == 0) {
+            return `<div data-toggle="tooltip" title="Pending...">  
+                       <span class="btn btn-warning">  <li class="fas fa-clock"></li> </span> 
+                    </div>`;
+          }
+
+          if (data.status == 1) {
+            return `<div data-toggle="tooltip" title="Accepted">  
+                       <span class="btn btn-secondary">  <li class="fas fa-check-circle"></li> </span> 
+                    </div>`;
+          }
+
+          if (data.status == 2) {
+            return `<div data-toggle="tooltip" title="Success">
+                       <span class="btn btn-success">  <li class="fas fa-check-circle"></li> </span> 
+                    </div>`;
+          }
+
+          if (data.status == 3) {
+            return `<div data-toggle="tooltip" title="Rejected">
+                       <span class="btn btn-danger">  <li class="fas fa-times"></li> </span> 
+                    </div>`;
+          }
+
+          if (data.status == 4) {
+            return `<div data-toggle="tooltip" title="Closes">
+                       <span class="btn btn-success">  <li class="fas fa-check"></li> </span> 
+                    </div>`;
+          }
+        },
+      },
+      {
+        data: "topic",
+        className: "text-center",
+      },
+      {
+        data: "nameCatTh",
+        className: "text-center",
+      },
+      {
+        data: "nameSubCat",
+      },
+      {
+        data: null,
+        className: "text-center",
+        render: function (data, type, full, meta) {
+          return `<a href="#" onclick="getMoreDetailTicket(${data.id})" data-bs-toggle="tooltip"
+                      data-bs-placement="bottom" title="more detail" class="btn btn-sm btn-cyan">
+                      <i class="fas fa-list"></i>
+                  </a>`;
+        },
+      },
+      {
+        data: null,
+        className: "text-center",
+        render: function (data, type, full, meta) {
+          if (data.createdAt == 0) {
+            return ` <span> ไม่มีข้อมูล </span>`;
+          }
+
+          if (data.createdAt != 0) {
+            return `<span class="text-success"> <b> ${moment
+              .unix(data.createdAt)
+              .format("DD/MM/YYYY HH:mm")} </b> </span>`;
+          }
+        },
+      },
+      {
+        data: null,
+        className: "text-center",
+        render: function (data, type, full, meta) {
+          if (data.updatedAt == 0) {
+            return ` <span> ไม่มีข้อมูล </span>`;
+          }
+
+          if (data.updatedAt != 0) {
+            return `<span class="text-success"> <b> ${moment
+              .unix(data.updatedAt)
+              .format("DD/MM/YYYY HH:mm")} </b> </span>`;
+          }
+        },
+      },
+    ],
+  });
+};
+
+// show ticket more detail
+const getMoreDetailTicket = (ticketId) => {
+  $.ajax({
+    url: `${baseUrl}user/ticket/detail`,
+    type: "POST",
+    data: {
+      ticketId: ticketId,
+    },
+    success: function (response) {
+      if (response.status == 200) {
+        $("#userTicketDetailModal").modal("show");
+
+        switch (response.data[0].status) {
+          case 1:
+            var status = "Approved";
+            var textColor = "#6c757d";
+            break;
+
+          case 2:
+            var status = "Success";
+            var textColor = "#22ca80";
+            break;
+
+          case 3:
+            var status = "Rejected";
+            var textColor = "#ff0332";
+            break;
+
+          case 4:
+            var status = "Close";
+            var textColor = "#01caf1";
+            break;
+
+          default:
+            var status = "Pending";
+            var textColor = "#fdc16a";
+            break;
+        }
+
+        $("#textStatus").html(status).css("color", textColor);
+        $("#titleTicketDetail").html(response.data[0].topic);
+        $("#taskDetail").html(response.data[0].remark);
+        $("#textPeriod").html(response.data[0].period);
+        $("#textCat").html(response.data[0].nameCatTh);
+        $("#textSubCat").html(response.data[0].nameSubCat);
+        $("#imgTask").attr(
+          "src",
+          `${baseUrl}store_files_uploaded/${response.data[0].attachment}`,
+        );
+      }
+      if (response.status == 404 || response.status == 400) {
+        Swal.fire({
+          icon: "error",
+          title: response.title,
+          text: response.message,
+          showConfirmButton: false,
+          timer: 1000,
+        }).then((result) => {
+          return false;
+        });
+      }
+    },
+
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(error);
+      });
+    },
+  });
+};
 
 // ========================== end ticket page ============================= //
 

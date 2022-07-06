@@ -167,4 +167,70 @@ class UserTicket extends BaseController
             return false;
         }
     }
+
+    public function getTicketByUser()
+    {
+        if ($this->request->isAJAX()) {
+            $query = $this->ticketTaskModel->select('ticket_task.*, catagories.id as cat_id, catagories.nameCatTh, sub_catagories.id as subCat_id, sub_catagories.nameSubCat, sub_catagories.detail as subCat_detail, sub_catagories.period')->where('ticket_task.userId', $this->session->get('id'))->join('catagories', 'catagories.id = ticket_task.catId')->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')->orderBy('ticket_task.id', 'DESC')->findAll();
+
+            if ($query) {
+                $response = [
+                    'status' => 200,
+                    'title' => 'Success!',
+                    'message' => 'ดึงข้อมูลสำเร็จ',
+                    'data' => $query,
+                ];
+                return $this->response->setJson($response);
+            } else {
+                $response = [
+                    'status' => 404,
+                    'title' => 'Error!',
+                    'message' => 'ไม่สามารถดึงข้อมูลได้',
+                ];
+                return $this->response->setJson($response);
+            }
+        } else {
+            $response = [
+                'status' => 500,
+                'title' => 'Error',
+                'message' => 'Server internal error'
+            ];
+
+            return $this->response->setJSON($response);
+        }
+    }
+
+    public function getTicketDetail()
+    {
+        if ($this->request->isAJAX()) {
+            $ticketId = $this->request->getPost('ticketId');
+            $query = $this->ticketTaskModel->select('ticket_task.*, catagories.nameCatTh, sub_catagories.nameSubCat, sub_catagories.detail as subCat_detail, sub_catagories.period')->where('ticket_task.id', $ticketId)->where('ticket_task.userId', $this->session->get('id'))->join('catagories', 'catagories.id = ticket_task.catId')->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')->findAll();
+
+
+            if ($query) {
+                $response = [
+                    'status' => 200,
+                    'title' => 'Success!',
+                    'message' => 'ดึงข้อมูลสำเร็จ',
+                    'data' => $query,
+                ];
+                return $this->response->setJson($response);
+            } else {
+                $response = [
+                    'status' => 404,
+                    'title' => 'Error!',
+                    'message' => 'ไม่สามารถดึงข้อมูลได้',
+                ];
+                return $this->response->setJson($response);
+            }
+        } else {
+            $response = [
+                'status' => 500,
+                'title' => 'Error',
+                'message' => 'Server internal error'
+            ];
+
+            return $this->response->setJSON($response);
+        }
+    }
 }

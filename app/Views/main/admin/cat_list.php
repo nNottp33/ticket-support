@@ -269,4 +269,10 @@
      </div>
  </div>
  <!-- modal admin insert end -->
+
+ <script>
+     $(document).ready(function() {
+         let catAll = catList();
+     });
+ </script>
  <?= $this->endSection();

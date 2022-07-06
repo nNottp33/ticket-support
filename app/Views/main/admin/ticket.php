@@ -28,47 +28,61 @@
              <div class="col-12">
                  <div class="card">
                      <div class="card-body">
-                         <div class="row">
+                         <div class="row m-auto justify-content-center">
                              <!-- Column -->
-                             <div class="col-md-6 col-lg-3 col-xlg-3">
-                                 <div class="card card-hover">
+                             <div class="col-md-4 col-lg-2 col-xlg-2">
+                                 <div class="card card-hover card-counter">
                                      <div class="p-2 bg-primary text-center">
-                                         <h1 class="font-light text-white">4</h1>
+                                         <h1 id="totalTicket" class="font-light text-white"></h1>
                                          <h6 class="text-white">Total Tickets</h6>
                                      </div>
                                  </div>
                              </div>
+
                              <!-- Column -->
-                             <div class="col-md-6 col-lg-3 col-xlg-3">
-                                 <div class="card card-hover">
-                                     <div class="p-2 bg-success text-center">
-                                         <h1 class="font-light text-white">1</h1>
-                                         <h6 class="text-white">Complete</h6>
+                             <div class="col-md-4 col-lg-2 col-xlg-2">
+                                 <div class="card card-hover card-counter">
+                                     <div class="p-2 bg-cyan text-center">
+                                         <h1 id="newTicket" class="font-light text-white"></h1>
+                                         <h6 class="text-white">New</h6>
                                      </div>
                                  </div>
                              </div>
+
                              <!-- Column -->
-                             <div class="col-md-6 col-lg-3 col-xlg-3">
-                                 <div class="card card-hover">
-                                     <div class="p-2 bg-secondary text-center">
-                                         <h1 class="font-light text-white">1</h1>
-                                         <h6 class="text-white">Closes</h6>
-                                     </div>
-                                 </div>
-                             </div>
-                             <!-- Column -->
-                             <div class="col-md-6 col-lg-3 col-xlg-3">
-                                 <div class="card card-hover">
+                             <div class="col-md-4 col-lg-2 col-xlg-2">
+                                 <div class="card card-hover card-counter">
                                      <div class="p-2 bg-warning text-center">
-                                         <h1 class="font-light text-white">1</h1>
+                                         <h1 id="pendingTicket" class="font-light text-white"></h1>
                                          <h6 class="text-white">Pending</h6>
                                      </div>
                                  </div>
                              </div>
+
                              <!-- Column -->
+                             <div class="col-md-4 col-lg-2 col-xlg-2">
+                                 <div class="card card-hover card-counter">
+                                     <div class="p-2 bg-success text-center">
+                                         <h1 id="completeTicket" class="font-light text-white"></h1>
+                                         <h6 class="text-white">Complete</h6>
+                                     </div>
+                                 </div>
+                             </div>
+
+                             <!-- Column -->
+                             <div class="col-md-4 col-lg-2 col-xlg-2">
+                                 <div class="card card-hover card-counter">
+                                     <div class="p-2 bg-secondary text-center">
+                                         <h1 id="closeTicket" class="font-light text-white"></h1>
+                                         <h6 class="text-white">Closes</h6>
+                                     </div>
+                                 </div>
+                             </div>
                          </div>
+
+
                          <div class="table-responsive">
-                             <table id="tableTicket" class="table table-striped table-bordered no-wrap">
+                             <table id="tableTicketAdmin" class="table table-striped table-bordered no-wrap">
                                  <thead>
                                      <tr>
                                          <th>สถานะ</th>
@@ -80,141 +94,6 @@
                                      </tr>
                                  </thead>
                                  <tbody>
-                                     <tr>
-                                         <td class="text-center">
-                                             <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                 title="Confirm Ticket" onclick="updateTicketStatus('approve')"
-                                                 class="btn btn-success btn-sm">
-                                                 <i class="fas fa-check"></i>
-                                             </a>
-                                             <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                 title="Reject Ticket" onclick="updateTicketStatus('reject')"
-                                                 class="btn btn-danger btn-sm">
-                                                 <i class="fas fa-times"> </i>
-                                             </a>
-                                         </td>
-
-                                         <td>ขอร้อง MIS</td>
-                                         <td class="text-center">
-                                             <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                 title="more" class="btn btn-outline-info btn-sm"
-                                                 onclick="getDetailTicket('id?')"><i class="fas fa-list"></i></a>
-                                         </td>
-
-                                         <td class="text-center">
-                                             <a href="#" onclick="getUserDetail('Test@successmore.com')"
-                                                 data-bs-toggle="tooltip" data-bs-placement="bottom" title="more"
-                                                 class="btn btn-sm btn-light">
-                                                 Test@successmore.com
-                                             </a>
-                                         </td>
-
-                                         <td>
-                                             08/06/2022
-                                         </td>
-
-                                         <td>
-                                             08/06/2022
-                                         </td>
-                                     </tr>
-
-                                     <tr>
-                                         <td class="text-center">
-                                             <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                 title="pending..." onclick="updateTicketStatus('close')"
-                                                 class="btn btn-warning btn-sm">
-                                                 <li class="far fa-clock"></li>
-                                             </a>
-                                         </td>
-
-                                         <td>ขอร้อง NAV</td>
-                                         <td class="text-center">
-                                             <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                 title="more" class="btn btn-outline-info btn-sm"
-                                                 onclick=" getDetailTicket('id?')"><i class="fas fa-list"></i></a>
-                                         </td>
-
-                                         <td class="text-center">
-                                             <a href="#" onclick="getUserDetail('Test2@successmore.com')"
-                                                 data-bs-toggle="tooltip" data-bs-placement="bottom" title="more"
-                                                 class="btn btn-sm btn-light">
-                                                 Test2@successmore.com
-                                             </a>
-                                         </td>
-
-                                         <td>
-                                             08/06/2022
-                                         </td>
-
-                                         <td>
-                                             08/06/2022
-                                         </td>
-                                     </tr>
-
-
-                                     <tr>
-                                         <td class="text-center">
-                                             <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                 title="closes task" class="btn btn-secondary btn-sm">
-                                                 <li class="far fa-check-circle"></li>
-                                             </a>
-                                         </td>
-
-                                         <td>ขอร้อง POS</td>
-                                         <td class="text-center">
-                                             <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                 title="more" class="btn btn-outline-info btn-sm"
-                                                 onclick=" getDetailTicket('id?')"><i class="fas fa-list"></i></a>
-                                         </td>
-
-                                         <td class="text-center">
-                                             <a href="#" onclick="getUserDetail('Test3@successmore.com')"
-                                                 data-bs-toggle="tooltip" data-bs-placement="bottom" title="more"
-                                                 class="btn btn-sm btn-light">
-                                                 Test3@successmore.com
-                                             </a>
-                                         </td>
-
-                                         <td>
-                                             08/06/2022
-                                         </td>
-
-                                         <td>
-                                             08/06/2022
-                                         </td>
-                                     </tr>
-
-                                     <tr>
-                                         <td class="text-center">
-                                             <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                 title="complete!" class="btn btn-outline-success btn-sm">
-                                                 <li class="fas fa-check-circle"></li>
-                                             </a>
-                                         </td>
-
-                                         <td>ขอร้อง อื่น ๆ</td>
-                                         <td class="text-center">
-                                             <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                 title="more" class="btn btn-outline-info btn-sm"
-                                                 onclick=" getDetailTicket('id?')"><i class="fas fa-list"></i></a>
-                                         </td>
-
-                                         <td class="text-center">
-                                             <a href="#" onclick="getUserDetail('Test4@successmore.com')"
-                                                 data-bs-toggle="tooltip" data-bs-placement="bottom" title="more"
-                                                 class="btn btn-sm btn-light">
-                                                 Test4@successmore.com
-                                             </a>
-                                         </td>
-
-                                         <td>
-                                             08/06/2022
-                                         </td>
-
-                                         <td>
-                                             08/06/2022
-                                         </td>
-                                     </tr>
                                  </tbody>
                                  <tfoot>
                                      <tr>
@@ -295,19 +174,25 @@
                  <a href="#" class="icon-close" data-bs-dismiss="modal" aria-label="Close"></a>
              </div>
              <div class="modal-body">
-                 <div>
-                     <div class="m-auto text-center mb-4 justify-content-center">
-                         <img src="<?= base_url(); ?>/assets/images/users/5.jpg"
-                             alt="image" class="rounded-circle" width="150">
-                         <p class="mt-3 mb-0">
-                     </div>
+                 <div class="row">
+                     <div class="col-12 col-sm-12 col-lg-12">
+                         <div class="single_advisor_profile wow fadeInUp" data-wow-delay="0.3s"
+                             style="visibility: visible; animation-delay: 0.3s; animation-name: fadeInUp;">
+                             <div class="advisor_thumb">
+                                 <img id="ticketAvatar" src="" alt="Avatar">
+                                 <div class="social-info">
+                                     <span class="designation" id="text-ticketEmpId"> </span>
+                                 </div>
+                             </div>
 
-                     <div class="px-5">
-                         <div> ชื่อ สกุล </div>
-                         <div> ตำแหน่ง </div>
-                         <div> แผนก </div>
-                         <div id="userDetails"></div>
-                         <div> เบอร์โทร </div>
+                             <div class="single_advisor_details_info">
+                                 <h6 id="text-ticketFullname"></h6>
+                                 <p id="text-ticketPosition" class="designation"></p>
+                                 <p id="text-ticketDepartment" class="designation"></p>
+                                 <p id="text-ticketTel" class="designation"></p>
+                                 <p id="text-ticketMail" class="designation"></p>
+                             </div>
+                         </div>
                      </div>
                  </div>
              </div>
@@ -320,13 +205,8 @@
 
  <script>
      $(document).ready(function() {
-         var tableTicket = $("#tableTicket").dataTable({
-             "processing": true,
-             "stateSave": true,
-             "searching": true,
-             "responsive": true,
-             "bDestroy": true,
-         });
+         getAdminTicket();
+         countTicket();
      });
  </script>
  <?= $this->endSection();

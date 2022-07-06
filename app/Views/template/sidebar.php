@@ -20,7 +20,7 @@
                           <li class="list-divider"></li>
                           <li class="sidebar-item">
                               <a class="sidebar-link"
-                                  href="<?php echo base_url('user/ticket/history');?>"
+                                  href="<?php echo base_url('user/history/ticket');?>"
                                   aria-expanded="false">
                                   <i class="fas fa-history feather-icon"></i>
                                   <span class="hide-menu">History Ticket
