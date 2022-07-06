@@ -56,7 +56,7 @@ class Profile extends BaseController
                 'receiverId' => $this->session->get('id'),
                 'title' => 'send otp change password',
                 'subject' => $subjectMail,
-                'detail' => $messageEmail,
+                'detail' => strip_tags($messageEmail),
                 'createdAt' => $this->time->getTimestamp(),
             ];
 

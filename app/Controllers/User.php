@@ -547,7 +547,7 @@ class User extends BaseController
                     'receiverId' => $userData['id'],
                     'title' => 'send email reset password',
                     'subject' => $subjectMail,
-                    'detail' => $messageEmail,
+                    'detail' => strip_tags($messageEmail),
                     'createdAt' => $this->time->getTimestamp(),
                 ];
 

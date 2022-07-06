@@ -151,7 +151,7 @@ class UserTicket extends BaseController
                 'receiverId' => $id[$i],
                 'title' => $titleMail,
                 'subject' => $subjectMail,
-                'detail' => $messageEmail,
+                'detail' => strip_tags($messageEmail),
                 'createdAt' => $this->time->getTimestamp(),
                 'status' => 1
             ];
