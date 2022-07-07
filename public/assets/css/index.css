@@ -534,3 +534,21 @@ textarea.form-control-lg {
 .single_advisor_profile:focus .advisor_thumb .social-info span {
   color: #ffffff;
 }
+
+.content-card-user,
+.header-card-user {
+  background: transparent;
+  border: none;
+}
+
+.header-card-user {
+  justify-content: center;
+}
+.close-card-user {
+  color: #ffffff;
+  font-size: 2rem;
+}
+
+p {
+  word-wrap: break-word !important;
+}

@@ -49,6 +49,8 @@ class Ticket extends BaseController
             ->where('users.status', 1)
             ->where('ticket_task.status !=', 3)
             ->where('group_owner.ownerId', $this->session->get('id'))
+            ->where('ticket_task.ownerAccepted', $this->session->get('id'))
+            ->orWhere('ticket_task.ownerAccepted', 0)
             ->orderBy('ticket_task.id', 'desc')
             ->limit(100)
             ->findAll();
@@ -200,6 +202,137 @@ class Ticket extends BaseController
             ];
 
             return $this->response->setJSON($response);
+        }
+    }
+
+    public function updateTicket()
+    {
+        if ($this->request->isAJAX()) {
+            $task_id =  $this->request->getPost('id');
+            $status =  $this->request->getPost('status');
+            
+            $resultMail = $this->ticketTaskModel->select('users.id as user_id, users.email as user_email, sub_catagories.period as subCat_period')
+            ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
+            ->join('users', 'users.id = ticket_task.userId')
+            ->where('ticket_task.id', $task_id)
+            ->first();
+
+            $logData = [
+                'ip' => $this->request->getIPAddress(),
+                'action' => 'admin update ticket status',
+                'detail' => 'แอดมิน ' . $this->session->get('email') . 'update status ticket เป็น ' . $status,
+                'createdAt' => $this->time->getTimestamp(),
+                'userId' => $this->session->get('id'),
+            ];
+
+            switch ($status) {
+                case 1 || '1':
+                    $titleMail = 'send email admin approved ticket';
+                    $subjectMail = 'แอดมินตอบรับ Ticket';
+                    $messageEmail = '<p>';
+                    $messageEmail .= '   <h3> Ticket ของคุณได้รับการตอบรับเรียบร้อยแล้ว </h3>' ;
+                    $messageEmail .= '     ขณะนี้กำลังดำเนินการใช้เวลาประมาณ ' . $resultMail['subCat_period'] . ' ชั่วโมง';
+                    $messageEmail .= '</p> ';
+
+                    $updateData = [
+                        'status' => $status,
+                        'ownerAccepted' => $this->session->get('id'),
+                        'updatedAt' => $this->time->getTimestamp(),
+                    ];
+
+                    if ($this->LogUsageModel->insert($logData)) {
+                        if ($this->ticketTaskModel->update($task_id, $updateData)) {
+                            if ($this->sendEmailUser($titleMail, $subjectMail, $messageEmail, $resultMail['user_email'], $resultMail['user_id'])) {
+                                $response = [
+                                'status' => 200,
+                                'title' => 'Success',
+                                'message' => 'ดำเนินสำเร็จ ทำการแจ้งผู้ใช้เรียบร้อย',
+                            ];
+                                return $this->response->setJson($response);
+                            } else {
+                                $response = [
+                                'status' => 404,
+                                'title' => 'Error!',
+                                'message' => 'ไม่สามารถส่งเมล์ได้',
+                            ];
+                                return $this->response->setJson($response);
+                            }
+                        } else {
+                            $response = [
+                            'status' => 404,
+                            'title' => 'Error!',
+                            'message' => 'ไม่สามารถอัพเดทข้อมูลได้',
+                        ];
+                            return $this->response->setJson($response);
+                        }
+                    } else {
+                        $response = [
+                            'status' => 404,
+                            'title' => 'Error!',
+                            'message' => 'ไม่สามารถบันทึก log ได้',
+                        ];
+                        return $this->response->setJson($response);
+                    }
+                    break;
+
+                case 2 || '2':
+
+                break;
+
+                case 3 || '3':
+                    
+                break;
+
+                case 4 || '4':
+                    
+                break;
+
+                default:
+
+                $response = [
+                    'status' => 404,
+                    'title' => 'Error!',
+                    'message' => 'ไม่สามารถอัพเดทข้อมูลได้',
+                ];
+                return $this->response->setJson($response);
+
+                break;
+            }
+        } else {
+            $response = [
+                'status' => 500,
+                'title' => 'Error',
+                'message' => 'Server internal error'
+            ];
+
+            return $this->response->setJSON($response);
+        }
+    }
+
+    public function sendEmailUser($titleMail, $subjectMail, $messageEmail, $email, $id)
+    {
+        $this->email->setFrom($_ENV['email.SMTPUser'], $_ENV['EMAIL_NAME']);
+        $this->email->setTo($email);
+        $this->email->setSubject($subjectMail);
+        $this->email->setMessage($messageEmail);
+
+        $logEmail = [
+            'receiverId' => $id,
+            'title' => $titleMail,
+            'subject' => $subjectMail,
+            'detail' => strip_tags($messageEmail),
+            'createdAt' => $this->time->getTimestamp(),
+            'status' => 1
+        ];
+
+        if ($this->email->send()) {
+            if ($this->logEmailModel->insert($logEmail)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
         }
     }
 }

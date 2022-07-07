@@ -359,7 +359,7 @@ class Catagory extends BaseController
                 'nameSubCat' => $nameSubCat,
                 'detail' => $detail,
                 'createdAt' => $this->time->getTimestamp(),
-                'period' => $period,
+                'period' => $period * 60,
                 'status' => 1,
                 'catId' => $catId
             ];
@@ -443,7 +443,7 @@ class Catagory extends BaseController
             $updateData = [
                 'nameSubCat' => $nameSubCat,
                 'detail' => $detail,
-                'period' => $period
+                'period' => $period * 60,
             ];
 
             $beforeData = $this->subCatModel->where('id', $id)->first();

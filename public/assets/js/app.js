@@ -2023,8 +2023,21 @@ const getSubCatagories = (catId) => {
         data: "detail",
       },
       {
-        data: "period",
+        data: null,
         className: "text-center",
+        render: function (data, type, full, meta) {
+          if (data.period < 60 && data.period > 0) {
+            return `<span> ${data.period} นาที</span> `;
+          }
+
+          if (data.period >= 60) {
+            return `<span> ${data.period / 60} ชั่วโมง</span> `;
+          }
+
+          if (data.period == 0) {
+            return `<span> ไม่มีข้อมูล </span> `;
+          }
+        },
       },
     ],
   });
@@ -2296,7 +2309,14 @@ const editSubCat = (id) => {
         $("#btnUpdateSubCat").show();
         $("#inputNameSubCat").val(response.data.nameSubCat);
         $("#inputDetailSubCat").val(response.data.detail);
-        $("#inputSla").val(response.data.period);
+
+        let calSla = response.data.period / 60;
+
+        console.log(calSla);
+        let sla = calSla > 0 ? calSla : calSla == 0 ? 0 : calSla.toFixed(2);
+        console.log(sla);
+
+        $("#inputSla").val(sla);
 
         $("#btnUpdateSubCat").click(function () {
           $(".preloader").show();
@@ -2397,10 +2417,10 @@ const getAdminTicket = () => {
         render: function (data, type, full, meta) {
           if (data.task_status == 0) {
             return `<div>  
-                       <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Confirm Ticket" onclick="updateTicketStatus('approve', 1)" class="btn btn-success btn-sm">
+                       <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Confirm Ticket" onclick="updateTicketStatus('${data.taskId}', 'approve', 1)" class="btn btn-success btn-sm">
                           <i class="fas fa-check"></i>
                       </a>
-                      <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reject Ticket" onclick="updateTicketStatus('reject', 3)" class="btn btn-danger btn-sm">
+                      <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reject Ticket" onclick="updateTicketStatus('${data.taskId}', 'reject', 3)" class="btn btn-danger btn-sm">
                         <i class="fas fa-times"> </i>
                       </a> 
                     </div>`;
@@ -2408,7 +2428,7 @@ const getAdminTicket = () => {
 
           if (data.task_status == 1) {
             return `<div data-toggle="tooltip" title="Accepted pending...">  
-                      <a href="#" onclick="updateTicketStatus('completed', 2)" class="btn btn-warning btn-sm">
+                      <a href="#" onclick="updateTicketStatus('${data.taskId}', 'completed', 2)" class="btn btn-warning btn-sm">
                           <li class="fas fa-clock"></li>
                       </a> 
                     </div>`;
@@ -2440,7 +2460,7 @@ const getAdminTicket = () => {
         data: null,
         className: "text-center",
         render: function (data, type, full, meta) {
-          return `<a href="#" onclick="getMoreDetailTicket(${data.id})" data-bs-toggle="tooltip"
+          return `<a href="#" onclick="getMoreDetailTicket(${data.taskId})" data-bs-toggle="tooltip"
                       data-bs-placement="bottom" title="more detail" class="btn btn-sm btn-cyan">
                       <i class="fas fa-list"></i>
                   </a>`;
@@ -2597,6 +2617,118 @@ const countTicket = () => {
   });
 };
 
+const updateTicketStatus = (id, action, status) => {
+  switch (action) {
+    case "approve":
+      Swal.fire({
+        icon: "question",
+        title: "ต้องการรับ Ticket?",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "ยืนยัน!",
+        cancelButtonText: "ยังก่อน",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          updateTicket(id, status);
+        }
+      });
+
+      break;
+    case "reject":
+      Swal.fire({
+        icon: "question",
+        title: "คุณต้องการ Reject Ticket นี้?",
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: "ticket ซ้ำ",
+        confirmButtonColor: "#D5A960",
+        denyButtonText: `ticket ผิด`,
+        denyButtonColor: "#F14C4C",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire("Saved!", "", "success");
+        }
+
+        if (result.isDenied) {
+          // reject the ticket ผิด โชว์ Modal ให้เลือก cat subcat owner
+          // ดึง cat มา แล้วแสดง subcat owner ภายใต้ cat นั้น จากนั้น เลือกข้อมูลที่ถูก แล้วก็ อัพเดทข้อมูล
+          // จากนั้นส่งไปฟังก์ชัน เพื่ออัพเดทข้อมูล catId subCatid updatedAt
+          $("#rejectTicketModal").modal("show");
+        }
+      });
+
+      break;
+    case "completed":
+      console.log("completed");
+      break;
+    default:
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(error);
+      });
+      break;
+  }
+};
+
+const updateTicket = (id, status) => {
+  $(".preloader").show();
+
+  $.ajax({
+    url: `${baseUrl}admin/ticket/update/status`,
+    type: "POST",
+    data: {
+      id: id,
+      status: status,
+    },
+    success: function (response) {
+      if (response.status == 200) {
+        setTimeout(() => {
+          $(".preloader").hide();
+          Swal.fire({
+            icon: "success",
+            title: response.title,
+            text: response.message,
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(() => {
+            $("#tableTicketAdmin").DataTable().ajax.reload();
+            countTicket();
+          });
+        }, 1000);
+      }
+
+      if (response.status == 404 || response.status == 400) {
+        setTimeout(() => {
+          $(".preloader").hide();
+          Swal.fire({
+            icon: "error",
+            title: response.title,
+            text: response.message,
+            showConfirmButton: false,
+            timer: 1000,
+          });
+        }, 1000);
+      }
+    },
+
+    error: function (error) {
+      setTimeout(() => {
+        $(".preloader").hide();
+        Swal.fire({
+          icon: "error",
+          title: "เกิดข้อผิดผลาด!",
+          text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+        }).then((result) => {
+          console.log(error);
+        });
+      }, 1000);
+    },
+  });
+};
 // ======================================================================== //
 
 // ======================================================================== //
@@ -2813,31 +2945,31 @@ const getUserTicket = () => {
         render: function (data, type, full, meta) {
           if (data.status == 0) {
             return `<div data-toggle="tooltip" title="Pending...">  
-                       <span class="btn btn-warning">  <li class="fas fa-clock"></li> </span> 
+                       <a href="#" class="btn btn-secondary btn-sm">  <li class="fas fa-clock"></li> </a> 
                     </div>`;
           }
 
           if (data.status == 1) {
             return `<div data-toggle="tooltip" title="Accepted">  
-                       <span class="btn btn-secondary">  <li class="fas fa-check-circle"></li> </span> 
+                       <a  href="#" class="btn btn-warning btn-sm">  <li class="fas fa-clock"></li> </a> 
                     </div>`;
           }
 
           if (data.status == 2) {
             return `<div data-toggle="tooltip" title="Success">
-                       <span class="btn btn-success">  <li class="fas fa-check-circle"></li> </span> 
+                       <a  href="#" class="btn btn-success btn-sm">  <li class="fas fa-check-circle"></li> </a> 
                     </div>`;
           }
 
           if (data.status == 3) {
             return `<div data-toggle="tooltip" title="Rejected">
-                       <span class="btn btn-danger">  <li class="fas fa-times"></li> </span> 
+                       <a  href="#" class="btn btn-danger btn-sm">  <li class="fas fa-times"></li> </a> 
                     </div>`;
           }
 
           if (data.status == 4) {
             return `<div data-toggle="tooltip" title="Closes">
-                       <span class="btn btn-success">  <li class="fas fa-check"></li> </span> 
+                       <a  href="#" class="btn btn-success btn-sm">  <li class="fas fa-check"></li> </a> 
                     </div>`;
           }
         },

@@ -179,7 +179,8 @@
 
                      <div class="input-group mb-3">
                          <div class="customize-input mx-1 w-100">
-                             <small class="form-text text-muted">ระยะเวลาดำเนินการ / ชั่วโมง</small>
+                             <small class="form-text text-muted">ระยะเวลาดำเนินการ / ชั่วโมง (30 นาที = 0.5
+                                 ชั่วโมง)</small>
                              <input type="number" class="form-control" required id="inputSla"
                                  placeholder="ระยะเวลาดำเนินการ / ชั่วโมง">
                          </div>

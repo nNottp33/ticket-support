@@ -168,10 +168,10 @@
 
  <div class="modal fade clear-modal" id="getUserDetaillModal" tabindex="-1" role="dialog">
      <div class="modal-dialog">
-         <div class="modal-content">
-             <div class="modal-header">
-                 <h5 class="modal-title" id="getUserDetaillModalLabel">ข้อมูลผู้แจ้งปัญหา</h5>
-                 <a href="#" class="icon-close" data-bs-dismiss="modal" aria-label="Close"></a>
+         <div class="modal-content content-card-user">
+             <div class="modal-header header-card-user">
+                 <!-- <h5 class="modal-title" id="getUserDetaillModalLabel">ข้อมูลผู้แจ้งปัญหา</h5> -->
+                 <a href="#" class="icon-close close-card-user" data-bs-dismiss="modal" aria-label="Close"></a>
              </div>
              <div class="modal-body">
                  <div class="row">
@@ -196,8 +196,57 @@
                      </div>
                  </div>
              </div>
-             <div class="modal-footer">
+             <!-- <div class="modal-footer">
                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+             </div> -->
+         </div>
+     </div>
+ </div>
+
+
+ <div class="modal fade clear-modal" id="rejectTicketModal" data-bs-backdrop="static" data-bs-keyboard="false"
+     tabindex="-1" aria-labelledby="rejectTicketModalLabel" aria-hidden="true">
+     <div class="modal-dialog">
+         <div class="modal-content">
+             <div class="modal-header">
+                 <h5 class="modal-title" id="rejectTicketModalLabel">แก้ไข Ticket</h5>
+                 <a href="#" class="icon-close" data-bs-dismiss="modal" aria-label="Close"></a>
+             </div>
+             <div class="modal-body">
+                 <div class="container">
+                     <form id="ticketForm" enctype="multipart/form-data" method="post">
+
+
+                         <div class="form-group mb-4">
+                             <small class="form-text text-muted">หมวดหมู่</small>
+                             <select id="changeTicketCategory" name="userSelectCategory" onchange="getSubCatagory()"
+                                 title="กรุณาเลือกหมวดหมู่" class="selectpicker form-control" data-live-search="true"
+                                 data-width="100%">
+                             </select>
+                         </div>
+
+                         <div class="form-group mb-4">
+                             <small class="form-text text-muted">หมวดหมู่ย่อย</small>
+                             <select id="changeTicketSubCategory" name="userSelectSubCategory"
+                                 title="กรุณาเลือกหมวดหมู่ย่อย" class="selectpicker form-control"
+                                 data-live-search="true" data-width="100%">
+                             </select>
+                         </div>
+
+                         <div class="form-group">
+                             <small class="form-text text-muted">ผู้รับผิดชอบ</small>
+                             <select id="changeTicketOwner" name="userSelectSubCategory" title="กรุณาเลือกหมวดหมู่ย่อย"
+                                 class="selectpicker form-control" data-live-search="true" data-width="100%">
+                             </select>
+                         </div>
+
+
+                 </div>
+                 <div class="modal-footer">
+                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                     <button type="submit" class="btn btn-primary">บันทึกข้อมูล</button>
+                 </div>
+                 </form>
              </div>
          </div>
      </div>

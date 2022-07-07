@@ -213,7 +213,7 @@
 
                      <div class="form-group">
                          <h5 for="">รายละเอียด</h5>
-                         <p id="taskDetail" class="pl-5 text-dark"></p>
+                         <p id="taskDetail" class="pl-3 text-dark text-wrap"></p>
                      </div>
                      <div class="form-group">
                          <small class="form-text text-muted">ภาพประกอบ</small>

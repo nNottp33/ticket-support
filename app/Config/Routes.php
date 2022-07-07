@@ -55,6 +55,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->get('ticket/show/list', 'Ticket::getTicketAdmin');
         $routes->get('ticket/count', 'Ticket::countTicket');
         $routes->post('ticket/user/detail', 'Ticket::getUserByEmail');
+        $routes->post('ticket/update/status', 'Ticket::updateTicket');
         
         // user page
         $routes->get('users', 'User::index');
