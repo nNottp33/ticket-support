@@ -100,10 +100,10 @@ class UserTicket extends BaseController
             }
       
             $email = $this->userModel->whereIn('id', $ownerId)->findColumn('email');
-
-
+            $toMail = [$_ENV['EMAIL_IT_GROUP'], ...$email];
+     
             if ($this->LogUsageModel->insert($logData)) {
-                if ($this->ticketTaskModel->insert($insertData) && $imageFile->move('./store_files_uploaded') && $this->sendEmailGroup($titleMail, $topic, $messageEmail, $email, $ownerId, $imageFile->getClientName())) {
+                if ($this->ticketTaskModel->insert($insertData) && $imageFile->move('./store_files_uploaded') && $this->sendEmailGroup($titleMail, $topic, $messageEmail, $toMail, $imageFile->getClientName())) {
                     $response = [
                         'status' => 200,
                         'title' => 'Success!',
@@ -138,17 +138,17 @@ class UserTicket extends BaseController
     }
 
 
-    public function sendEmailGroup($titleMail, $subjectMail, $messageEmail, $email, $id, $image)
+    public function sendEmailGroup($titleMail, $subjectMail, $messageEmail, $email, $image)
     {
         $this->email->setFrom($_ENV['email.SMTPUser'], $_ENV['EMAIL_NAME']);
         $this->email->setTo($email);
         $this->email->setSubject($subjectMail);
         $this->email->setMessage($messageEmail);
         $this->email->attach(FCPATH . "store_files_uploaded/". $image);
-    
+
         for ($i = 0; $i < sizeOf($email); $i++) {
             $logEmail[$i] = [
-                'receiverId' => $id[$i],
+                'receiver' => $email[$i],
                 'title' => $titleMail,
                 'subject' => $subjectMail,
                 'detail' => strip_tags($messageEmail),
@@ -156,10 +156,9 @@ class UserTicket extends BaseController
                 'status' => 1
             ];
         }
-
-        if ($this->email->send()) {
-            if ($this->logEmailModel->insertBatch($logEmail)) {
-                return true;
+        
+        if ($this->logEmailModel->insertBatch($logEmail)) {
+            if ($this->email->send()) {
             } else {
                 return false;
             }

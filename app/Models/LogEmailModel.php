@@ -6,5 +6,5 @@ use CodeIgniter\Model;
 class LogEmailModel extends Model
 {
     protected $table = 'log_mail';
-    protected $allowedFields = ['id', 'receiverId', 'title', 'subject', 'detail', 'createdAt', 'status'];
+    protected $allowedFields = ['id', 'receiver', 'title', 'subject', 'detail', 'createdAt', 'status'];
 }

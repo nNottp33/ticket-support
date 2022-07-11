@@ -2647,7 +2647,8 @@ const updateTicketStatus = (id, action, status) => {
         denyButtonColor: "#F14C4C",
       }).then((result) => {
         if (result.isConfirmed) {
-          Swal.fire("Saved!", "", "success");
+          $(".preloader").show();
+          updateTicket(id, status, "duplicate");
         }
 
         if (result.isDenied) {
@@ -2674,7 +2675,7 @@ const updateTicketStatus = (id, action, status) => {
   }
 };
 
-const updateTicket = (id, status) => {
+const updateTicket = (id, status, reject) => {
   $(".preloader").show();
 
   $.ajax({
@@ -2683,6 +2684,7 @@ const updateTicket = (id, status) => {
     data: {
       id: id,
       status: status,
+      reject: reject,
     },
     success: function (response) {
       if (response.status == 200) {

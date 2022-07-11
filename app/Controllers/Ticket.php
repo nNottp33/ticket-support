@@ -210,7 +210,7 @@ class Ticket extends BaseController
         if ($this->request->isAJAX()) {
             $task_id =  $this->request->getPost('id');
             $status =  $this->request->getPost('status');
-            
+
             $resultMail = $this->ticketTaskModel->select('users.id as user_id, users.email as user_email, sub_catagories.period as subCat_period')
             ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
             ->join('users', 'users.id = ticket_task.userId')
@@ -226,7 +226,8 @@ class Ticket extends BaseController
             ];
 
             switch ($status) {
-                case 1 || '1':
+                // accepted
+                case 1:
                     $titleMail = 'send email admin approved ticket';
                     $subjectMail = 'แอดมินตอบรับ Ticket';
                     $messageEmail = '<p>';
@@ -241,12 +242,12 @@ class Ticket extends BaseController
                     ];
 
                     if ($this->LogUsageModel->insert($logData)) {
-                        if ($this->ticketTaskModel->update($task_id, $updateData)) {
-                            if ($this->sendEmailUser($titleMail, $subjectMail, $messageEmail, $resultMail['user_email'], $resultMail['user_id'])) {
+                        if ($this->sendEmailUser($titleMail, $subjectMail, $messageEmail, $resultMail['user_email'])) {
+                            if ($this->ticketTaskModel->update($task_id, $updateData)) {
                                 $response = [
                                 'status' => 200,
                                 'title' => 'Success',
-                                'message' => 'ดำเนินสำเร็จ ทำการแจ้งผู้ใช้เรียบร้อย',
+                                'message' => 'ดำเนินการสำเร็จ แจ้งผู้ใช้เรียบร้อย',
                             ];
                                 return $this->response->setJson($response);
                             } else {
@@ -273,17 +274,121 @@ class Ticket extends BaseController
                         ];
                         return $this->response->setJson($response);
                     }
+
+
                     break;
 
-                case 2 || '2':
+                // success
+                case 2:
+
+                break;
+                
+                // reject
+                case 3:
+
+                    $reject = $this->request->getPost('reject');
+                    $titleMail = 'send email ' .  $reject . ' ticket';
+                    $subjectMail = 'Ticket ไม่ถูกต้อง';
+
+                    if ($reject  == 'duplicate') {
+                        $messageEmail = '<p>';
+                        $messageEmail .= '   <h3> Ticket นี้มีการดำเนินการเรียบร้อยแล้ว </h3>' ;
+                        $messageEmail .= '     กรุณาตรวจสอบความถูกต้องใหม่อีกครั้ง ';
+                        $messageEmail .= '</p> ';
+
+                        $updateData = [
+                            'status' => $status,
+                            'ownerAccepted' => $this->session->get('id'),
+                            'updatedAt' => $this->time->getTimestamp(),
+                        ];
+
+                        if ($this->LogUsageModel->insert($logData)) {
+                            if ($this->sendEmailUser($titleMail, $subjectMail, $messageEmail, $resultMail['user_email'])) {
+                                if ($this->ticketTaskModel->update($task_id, $updateData)) {
+                                    $response = [
+                                'status' => 200,
+                                'title' => 'Success',
+                               'message' => 'ดำเนินการสำเร็จ แจ้งผู้ใช้เรียบร้อย',
+                            ];
+                                    return $this->response->setJson($response);
+                                } else {
+                                    $response = [
+                                'status' => 404,
+                                'title' => 'Error!',
+                                'message' => 'ไม่สามารถส่งเมล์ได้',
+                            ];
+                                    return $this->response->setJson($response);
+                                }
+                            } else {
+                                $response = [
+                            'status' => 404,
+                            'title' => 'Error!',
+                            'message' => 'ไม่สามารถอัพเดทข้อมูลได้',
+                        ];
+                                return $this->response->setJson($response);
+                            }
+                        } else {
+                            $response = [
+                            'status' => 404,
+                            'title' => 'Error!',
+                            'message' => 'ไม่สามารถบันทึก log ได้',
+                        ];
+                            return $this->response->setJson($response);
+                        }
+                    }
+
+
+                     if ($reject  == 'wrong') {
+                         $messageEmail = '<p>';
+                         $messageEmail .= '   <h3> Ticket นี้มีการดำเนินการเรียบร้อยแล้ว </h3>' ;
+                         $messageEmail .= '     กรุณาตรวจสอบความถูกต้องใหม่อีกครั้ง ';
+                         $messageEmail .= '</p> ';
+
+                         $updateData = [
+                            'status' => 1,
+                            'ownerAccepted' => $this->session->get('id'),
+                            'updatedAt' => $this->time->getTimestamp(),
+                        ];
+
+
+                         if ($this->LogUsageModel->insert($logData)) {
+                             if ($this->sendEmailUser($titleMail, $subjectMail, $messageEmail, $resultMail['user_email'])) {
+                                 if ($this->ticketTaskModel->update($task_id, $updateData)) {
+                                     $response = [
+                                'status' => 200,
+                                'title' => 'Success',
+                               'message' => 'ดำเนินการสำเร็จ แจ้งผู้ใช้เรียบร้อย',
+                            ];
+                                     return $this->response->setJson($response);
+                                 } else {
+                                     $response = [
+                                'status' => 404,
+                                'title' => 'Error!',
+                                'message' => 'ไม่สามารถส่งเมล์ได้',
+                            ];
+                                     return $this->response->setJson($response);
+                                 }
+                             } else {
+                                 $response = [
+                            'status' => 404,
+                            'title' => 'Error!',
+                            'message' => 'ไม่สามารถอัพเดทข้อมูลได้',
+                        ];
+                                 return $this->response->setJson($response);
+                             }
+                         } else {
+                             $response = [
+                            'status' => 404,
+                            'title' => 'Error!',
+                            'message' => 'ไม่สามารถบันทึก log ได้',
+                        ];
+                             return $this->response->setJson($response);
+                         }
+                     }
 
                 break;
 
-                case 3 || '3':
-                    
-                break;
-
-                case 4 || '4':
+                case 4:
                     
                 break;
 
@@ -309,15 +414,16 @@ class Ticket extends BaseController
         }
     }
 
-    public function sendEmailUser($titleMail, $subjectMail, $messageEmail, $email, $id)
+    public function sendEmailUser($titleMail, $subjectMail, $messageEmail, $email)
     {
         $this->email->setFrom($_ENV['email.SMTPUser'], $_ENV['EMAIL_NAME']);
-        $this->email->setTo($email);
+        $this->email->setTo('Nattapon.Ph@successmore.com');
+        // $this->email->setTo($email);
         $this->email->setSubject($subjectMail);
         $this->email->setMessage($messageEmail);
 
         $logEmail = [
-            'receiverId' => $id,
+            'receiver' => $email,
             'title' => $titleMail,
             'subject' => $subjectMail,
             'detail' => strip_tags($messageEmail),
@@ -325,8 +431,8 @@ class Ticket extends BaseController
             'status' => 1
         ];
 
-        if ($this->email->send()) {
-            if ($this->logEmailModel->insert($logEmail)) {
+        if ($this->logEmailModel->insert($logEmail)) {
+            if ($this->email->send()) {
                 return true;
             } else {
                 return false;

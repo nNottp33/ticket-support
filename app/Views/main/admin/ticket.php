@@ -166,7 +166,8 @@
  </div>
 
 
- <div class="modal fade clear-modal" id="getUserDetaillModal" tabindex="-1" role="dialog">
+ <div class="modal fade clear-modal" id="getUserDetaillModal" data-bs-backdrop="static" data-bs-keyboard="false"
+     tabindex="-1" role="dialog">
      <div class="modal-dialog">
          <div class="modal-content content-card-user">
              <div class="modal-header header-card-user">
