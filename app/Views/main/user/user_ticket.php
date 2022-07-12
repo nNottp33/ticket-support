@@ -155,6 +155,55 @@
  </div>
  <!-- create ticket modal end -->
 
+ <!-- return ticket modal -->
+
+ <div class="modal fade clear-modal" id="userTicketReturnModal" data-bs-backdrop="static" data-bs-keyboard="false"
+     tabindex="-1" aria-labelledby="userTicketReturnModalLabel" aria-hidden="true">
+     <div class="modal-dialog">
+         <div class="modal-content">
+             <div class="modal-header">
+                 <h5 class="modal-title" id="userTicketReturnModalLabel">Return Ticket</h5>
+                 <a href="#" class="icon-close" data-bs-dismiss="modal" aria-label="Close"></a>
+             </div>
+             <div class="modal-body">
+                 <div class="container">
+
+                     <div class="form-group">
+                         <small class="form-text text-muted">รายละเอียด</small>
+                         <textarea id="ticketDetailReturn" name="ticketDetailReturn" class="form-control" rows="3"
+                             placeholder="อธิบายรายละเอียดปัญหา"></textarea>
+                     </div>
+
+                     <div class="form-group">
+                         <small class="form-text text-muted">แนบไฟล์ตัวอย่าง</small>
+                         <div class="mb-3">
+                             <input accept="image/*" multiple="true" onchange="previewFile(this)" class="form-control"
+                                 type="file" name="file" id="file">
+                         </div>
+
+                     </div>
+
+                     <div class="form-group">
+                         <small class="form-text text-muted">ภาพประกอบ</small>
+                         <div class="display-upload-img">
+                             <img class="previewImg" accept="image/png, image/jpeg" id="previewImgReturn" src=""
+                                 alt="Image preview" width="100%" height="180">
+                         </div>
+                     </div>
+
+
+                 </div>
+                 <div class="modal-footer">
+                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                     <button type="submit" class="btn btn-primary">บันทึกข้อมูล</button>
+                 </div>
+
+             </div>
+         </div>
+     </div>
+ </div>
+
+ <!-- return ticket modal end -->
 
  <!-- ticket detail modal -->
  <div class="modal fade clear-modal" id="userTicketDetailModal" data-bs-backdrop="static" data-bs-keyboard="false"

@@ -2348,13 +2348,16 @@ const editSubCat = (id) => {
               }
 
               if (response.status == 404 || response.status == 400) {
-                Swal.fire({
-                  icon: "error",
-                  title: response.title,
-                  text: response.message,
-                  showConfirmButton: false,
-                  timer: 1000,
-                });
+                setTimeout(() => {
+                  $(".preloader").hide();
+                  Swal.fire({
+                    icon: "error",
+                    title: response.title,
+                    text: response.message,
+                    showConfirmButton: false,
+                    timer: 1000,
+                  });
+                }, 1500);
               }
             },
             error: function (error) {
@@ -2449,6 +2452,14 @@ const getAdminTicket = () => {
                     <li class="fas fa-check-circle"></li>
                  </a>
              </div>`;
+          }
+
+          if (data.task_status == 5) {
+            return `<div>  
+                       <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Confirm Ticket" onclick="updateTicketStatus('${data.taskId}', 'approve', 1)" class="btn btn-success btn-sm">
+                          <i class="fas fa-check"></i>
+                      </a>
+                    </div>`;
           }
         },
       },
@@ -2652,16 +2663,169 @@ const updateTicketStatus = (id, action, status) => {
         }
 
         if (result.isDenied) {
-          // reject the ticket ผิด โชว์ Modal ให้เลือก cat subcat owner
-          // ดึง cat มา แล้วแสดง subcat owner ภายใต้ cat นั้น จากนั้น เลือกข้อมูลที่ถูก แล้วก็ อัพเดทข้อมูล
-          // จากนั้นส่งไปฟังก์ชัน เพื่ออัพเดทข้อมูล catId subCatid updatedAt
           $("#rejectTicketModal").modal("show");
+          getCategoryTicket();
+          getOwnerTicket(id);
+
+          if (
+            !$("#changeTicketCategory").val() ||
+            !$("#changeTicketSubCategory").val() ||
+            !$("#changeTicketOwner").val()
+          ) {
+            Swal.fire("คำเตือน!", "กรุณาเลือกข้อมูลให้ครบถ้วน", "warning");
+          }
+
+          if (
+            $("#changeTicketCategory").val() &&
+            $("#changeTicketSubCategory").val() &&
+            $("#changeTicketOwner").val()
+          ) {
+            $("#btnChangeTicket").click(function (e) {
+              $(".preloader").show();
+              $.ajax({
+                url: `${baseUrl}admin/ticket/reject/change`,
+                type: "POST",
+                data: {
+                  taskId: id,
+                  catId: $("#changeTicketCategory").val(),
+                  subCatId: $("#changeTicketSubCategory").val(),
+                  ownerId: $("#changeTicketOwner").val(),
+                },
+                success: function (response) {
+                  if (response.status == 200) {
+                    setTimeout(() => {
+                      $(".preloader").hide();
+                      Swal.fire({
+                        icon: "success",
+                        title: response.title,
+                        text: response.message,
+                        showConfirmButton: false,
+                        timer: 1500,
+                      }).then((result) => {
+                        $("#rejectTicketModal").modal("hide");
+                        $("#tableTicketAdmin").DataTable().ajax.reload();
+                        countTicket();
+                      });
+                    }, 1500);
+                  }
+
+                  if (response.status == 404 || response.status == 400) {
+                    setTimeout(() => {
+                      $(".preloader").hide();
+                      Swal.fire({
+                        icon: "error",
+                        title: response.title,
+                        text: response.message,
+                        showConfirmButton: false,
+                        timer: 1000,
+                      });
+                    }, 1500);
+                  }
+                },
+
+                error: function (error) {
+                  setTimeout(() => {
+                    $(".preloader").hide();
+                    Swal.fire({
+                      icon: "error",
+                      title: "เกิดข้อผิดผลาด!",
+                      text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+                    }).then((result) => {
+                      console.log(error);
+                    });
+                  }, 1500);
+                },
+              });
+            });
+          }
         }
       });
 
       break;
     case "completed":
-      console.log("completed");
+      Swal.fire({
+        icon: "question",
+        title: "ปรับสถานะเป็นสำเร็จ?",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "ยืนยัน!",
+        cancelButtonText: "ยังก่อน",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $("#ticketTaskDialog").modal("show");
+
+          $("#btnSendTicket").click(function () {
+            if (!$("#cause").val()) {
+              Swal.fire("คำเตือน?", "กรุณาระบุสาเหตุของ Ticket?", "warning");
+            }
+
+            if (!$("#solution").val()) {
+              Swal.fire("คำเตือน?", "กรุณาระบุสาเหตุของ Ticket?", "warning");
+            }
+
+            if ($("#cause").val() && $("#solution").val()) {
+              $(".preloader").show();
+              $.ajax({
+                url: `${baseUrl}admin/ticket/update/status`,
+                type: "POST",
+                data: {
+                  id: id,
+                  status: status,
+                  cause: $("#cause").val(),
+                  solution: $("#solution").val(),
+                  remark: $("#remark").val(),
+                  attachment: $("#previewImgTask").val(),
+                },
+                success: function (response) {
+                  if (response.status == 200) {
+                    setTimeout(() => {
+                      $(".preloader").hide();
+                      Swal.fire({
+                        icon: "success",
+                        title: response.title,
+                        text: response.message,
+                        showConfirmButton: false,
+                        timer: 1500,
+                      }).then(() => {
+                        $("#ticketTaskDialog").modal("hide");
+                        $("#tableTicketAdmin").DataTable().ajax.reload();
+                        countTicket();
+                      });
+                    }, 1000);
+                  }
+
+                  if (response.status == 404 || response.status == 400) {
+                    setTimeout(() => {
+                      $(".preloader").hide();
+                      Swal.fire({
+                        icon: "error",
+                        title: response.title,
+                        text: response.message,
+                        showConfirmButton: false,
+                        timer: 1000,
+                      });
+                    }, 1000);
+                  }
+                },
+
+                error: function (error) {
+                  setTimeout(() => {
+                    $(".preloader").hide();
+                    Swal.fire({
+                      icon: "error",
+                      title: "เกิดข้อผิดผลาด!",
+                      text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+                    }).then((result) => {
+                      console.log(error);
+                    });
+                  }, 1000);
+                },
+              });
+            }
+          });
+        }
+      });
       break;
     default:
       Swal.fire({
@@ -2677,7 +2841,6 @@ const updateTicketStatus = (id, action, status) => {
 
 const updateTicket = (id, status, reject) => {
   $(".preloader").show();
-
   $.ajax({
     url: `${baseUrl}admin/ticket/update/status`,
     type: "POST",
@@ -2728,6 +2891,121 @@ const updateTicket = (id, status, reject) => {
           console.log(error);
         });
       }, 1000);
+    },
+  });
+};
+
+const getCategoryTicket = () => {
+  $.ajax({
+    url: `${baseUrl}admin/catagories/list`,
+    type: "GET",
+    success: function (response) {
+      if (response.status == 200) {
+        let html = "";
+        for (let count = 0; count < response.data.length; count++) {
+          html += `<option value="${response.data[count].id}">${response.data[count].nameCatTh}</option>`;
+        }
+        $("#changeTicketCategory").html(html);
+        $("#changeTicketCategory").selectpicker("refresh");
+      }
+
+      if (response.status == 404 || response.status == 400) {
+        Swal.fire({
+          icon: "error",
+          title: response.title,
+          text: response.message,
+          showConfirmButton: false,
+          timer: 1000,
+        });
+      }
+    },
+
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(error);
+      });
+    },
+  });
+};
+
+const getSubCategoryTicket = () => {
+  let catId = $("#changeTicketCategory").val();
+  $.ajax({
+    url: `${baseUrl}admin/catagories/sub`,
+    type: "GET",
+    data: {
+      catId: catId,
+    },
+    success: function (response) {
+      if (response.status == 200) {
+        let html = "";
+        for (let count = 0; count < response.data.length; count++) {
+          html += `<option value="${response.data[count].id}">${response.data[count].nameSubCat}</option>`;
+        }
+        $("#changeTicketSubCategory").html(html);
+        $("#changeTicketSubCategory").selectpicker("refresh");
+      }
+
+      if (response.status == 404 || response.status == 400) {
+        Swal.fire({
+          icon: "error",
+          title: response.title,
+          text: response.message,
+          showConfirmButton: false,
+          timer: 1000,
+        });
+      }
+    },
+
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(error);
+      });
+    },
+  });
+};
+
+const getOwnerTicket = (taskId) => {
+  $.ajax({
+    url: `${baseUrl}admin/ticket/owner/change/get`,
+    type: "GET",
+    success: function (response) {
+      if (response.status == 200) {
+        let html = "";
+        for (let count = 0; count < response.data.length; count++) {
+          html += `<option value="${response.data[count].id}">${response.data[count].fullname}</option>`;
+        }
+        $("#changeTicketOwner").html(html);
+        $("#changeTicketOwner").selectpicker("refresh");
+      }
+
+      if (response.status == 404 || response.status == 400) {
+        Swal.fire({
+          icon: "error",
+          title: response.title,
+          text: response.message,
+          showConfirmButton: false,
+          timer: 1000,
+        });
+      }
+    },
+
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(error);
+      });
     },
   });
 };
@@ -2832,6 +3110,8 @@ const getSubCatagory = () => {
 const previewFile = (input, id) => {
   let file = $("input[type=file]").get(0).files[0];
 
+  let file_two = $("input[type=file]").get(1).files[0];
+
   if (file) {
     let reader = new FileReader();
 
@@ -2841,6 +3121,15 @@ const previewFile = (input, id) => {
     };
 
     reader.readAsDataURL(file);
+  } else if (file_two) {
+    let reader = new FileReader();
+
+    reader.onload = function () {
+      $(".previewImg").show();
+      $(".previewImg").attr("src", reader.result);
+    };
+
+    reader.readAsDataURL(file_two);
   }
 };
 
@@ -2958,8 +3247,9 @@ const getUserTicket = () => {
           }
 
           if (data.status == 2) {
-            return `<div data-toggle="tooltip" title="Success">
-                       <a  href="#" class="btn btn-success btn-sm">  <li class="fas fa-check-circle"></li> </a> 
+            return `<div>
+                      <a data-toggle="tooltip" title="Success" onclick="updateStatusUserTicket('close', ${data.id})" href="#" class="btn btn-success btn-sm">  <li class="fas fa-check-circle"></li> </a> 
+                      <a data-toggle="tooltip" title="Return" onclick="updateStatusUserTicket('return', ${data.id})" href="#" class="btn btn-danger btn-sm">  <li class="fas fa-redo"></li> </a> 
                     </div>`;
           }
 
@@ -2971,7 +3261,7 @@ const getUserTicket = () => {
 
           if (data.status == 4) {
             return `<div data-toggle="tooltip" title="Closes">
-                       <a  href="#" class="btn btn-success btn-sm">  <li class="fas fa-check"></li> </a> 
+                       <a  href="#" class="btn btn-secondary btn-sm">  <li class="fas fa-check-circle"></li> </a> 
                     </div>`;
           }
         },
@@ -3043,34 +3333,30 @@ const getMoreDetailTicket = (ticketId) => {
       if (response.status == 200) {
         $("#userTicketDetailModal").modal("show");
 
-        switch (response.data[0].status) {
+        switch (parseInt(response.data[0].status)) {
           case 1:
-            var status = "Approved";
-            var textColor = "#6c757d";
+            $("#textStatus").html("รับคำร้อง").css("color", "#6c757d");
             break;
 
           case 2:
-            var status = "Success";
-            var textColor = "#22ca80";
+            $("#textStatus")
+              .html("เสร็จสิ้น รอการยืนยันจากผู้ใช้")
+              .css("color", "#22ca80");
             break;
 
           case 3:
-            var status = "Rejected";
-            var textColor = "#ff0332";
+            $("#textStatus").html("ปฎิเสธ").css("color", "#ff0332");
             break;
 
           case 4:
-            var status = "Close";
-            var textColor = "#01caf1";
+            $("#textStatus").html("ปิดงาน").css("color", "#01caf1");
             break;
 
           default:
-            var status = "Pending";
-            var textColor = "#fdc16a";
+            $("#textStatus").html("รอดำเนินการ").css("color", "#fdc16a");
             break;
         }
 
-        $("#textStatus").html(status).css("color", textColor);
         $("#titleTicketDetail").html(response.data[0].topic);
         $("#taskDetail").html(response.data[0].remark);
         $("#textPeriod").html(response.data[0].period);
@@ -3081,6 +3367,7 @@ const getMoreDetailTicket = (ticketId) => {
           `${baseUrl}store_files_uploaded/${response.data[0].attachment}`,
         );
       }
+
       if (response.status == 404 || response.status == 400) {
         Swal.fire({
           icon: "error",
@@ -3104,6 +3391,81 @@ const getMoreDetailTicket = (ticketId) => {
       });
     },
   });
+};
+
+const updateStatusUserTicket = (action, taskId) => {
+  if (action == "close") {
+    Swal.fire({
+      title: "ยืนยันการตรวจสอบ Ticket?",
+      text: "Ticket ได้รับการแก้ไขและสามารถใช้งานได้ปกติ",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ตกลง!",
+      cancelButtonText: "ยกเลิก",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $(".preloader").show();
+        $.ajax({
+          url: `${baseUrl}user/ticket/update/status`,
+          type: "POST",
+          data: {
+            taskId: taskId,
+            status: 4,
+          },
+
+          success: function (response) {
+            if (response.status == 200) {
+              setTimeout(() => {
+                $(".preloader").hide();
+                Swal.fire({
+                  icon: "success",
+                  title: response.title,
+                  text: response.message,
+                  showConfirmButton: false,
+                  timer: 1000,
+                }).then((result) => {
+                  $("#tableUserTicket").DataTable().ajax.reload();
+                });
+              }, 1000);
+            }
+
+            if (response.status == 404 || response.status == 400) {
+              setTimeout(() => {
+                $(".preloader").hide();
+                Swal.fire({
+                  icon: "error",
+                  title: response.title,
+                  text: response.message,
+                  showConfirmButton: false,
+                  timer: 1000,
+                }).then((result) => {
+                  return false;
+                });
+              }, 1000);
+            }
+          },
+          error: function (error) {
+            setTimeout(() => {
+              $(".preloader").hide();
+              Swal.fire({
+                icon: "error",
+                title: "เกิดข้อผิดผลาด!",
+                text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+              }).then((result) => {
+                console.log(error);
+              });
+            }, 1000);
+          },
+        });
+      }
+    });
+  }
+
+  if (action == "return") {
+    $("#userTicketReturnModal").modal("show");
+  }
 };
 
 // ========================== end ticket page ============================= //

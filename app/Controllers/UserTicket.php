@@ -138,39 +138,15 @@ class UserTicket extends BaseController
     }
 
 
-    public function sendEmailGroup($titleMail, $subjectMail, $messageEmail, $email, $image)
-    {
-        $this->email->setFrom($_ENV['email.SMTPUser'], $_ENV['EMAIL_NAME']);
-        $this->email->setTo($email);
-        $this->email->setSubject($subjectMail);
-        $this->email->setMessage($messageEmail);
-        $this->email->attach(FCPATH . "store_files_uploaded/". $image);
-
-        for ($i = 0; $i < sizeOf($email); $i++) {
-            $logEmail[$i] = [
-                'receiver' => $email[$i],
-                'title' => $titleMail,
-                'subject' => $subjectMail,
-                'detail' => strip_tags($messageEmail),
-                'createdAt' => $this->time->getTimestamp(),
-                'status' => 1
-            ];
-        }
-        
-        if ($this->logEmailModel->insertBatch($logEmail)) {
-            if ($this->email->send()) {
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
     public function getTicketByUser()
     {
         if ($this->request->isAJAX()) {
-            $query = $this->ticketTaskModel->select('ticket_task.*, catagories.id as cat_id, catagories.nameCatTh, sub_catagories.id as subCat_id, sub_catagories.nameSubCat, sub_catagories.detail as subCat_detail, sub_catagories.period')->where('ticket_task.userId', $this->session->get('id'))->join('catagories', 'catagories.id = ticket_task.catId')->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')->orderBy('ticket_task.id', 'DESC')->findAll();
+            $query = $this->ticketTaskModel
+            ->select('ticket_task.*, catagories.id as cat_id, catagories.nameCatTh, sub_catagories.id as subCat_id, sub_catagories.nameSubCat, sub_catagories.detail as subCat_detail, sub_catagories.period')
+            ->where('ticket_task.userId', $this->session->get('id'))
+            ->join('catagories', 'catagories.id = ticket_task.catId')
+            ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
+            ->orderBy('ticket_task.id', 'DESC')->findAll();
 
             if ($query) {
                 $response = [
@@ -230,6 +206,122 @@ class UserTicket extends BaseController
             ];
 
             return $this->response->setJSON($response);
+        }
+    }
+
+
+    public function updateTicket()
+    {
+        if ($this->request->isAJAX()) {
+            $taskId = $this->request->getPost('taskId');
+            $status = $this->request->getPost('status');
+          
+            $resultTask = $this->ticketTaskModel->select('ticket_task.topic, ticket_task.createdAt, users.id admin_id, users.email as admin_email')
+            ->join('users', 'users.id = ticket_task.ownerAccepted')
+            ->where('ticket_task.id', $taskId)
+            ->first();
+
+
+            // mail data
+            $titleMail = 'send email close ticket to admin';
+            $subjectMail = 'Close Ticket';
+            $messageEmail = '<p>';
+            $messageEmail .= '   <h3> คำร้องขอ Ticket ' . $resultTask['topic'] . ' เมื่อวันที่ ' . date('d/m/Y H:i', $resultTask['createdAt']) . '  </h3>' ;
+            $messageEmail .= '  ได้รับการรับการตรวจสอบและสามารถใช้งานได้ตามปกติแล้ว';
+            $messageEmail .= '</p> ';
+           
+            $time = $this->time->getTimestamp();
+
+            $updateData = [
+                'status' => $status,
+                'updatedAt' => $time,
+            ];
+
+            $logData = [
+                'ip' => $this->request->getIPAddress(),
+                'action' => 'user update ticket status',
+                'detail' => 'user ' . $this->session->get('email') . 'update status ticket เป็น ' . $status,
+                'createdAt' =>   $time ,
+                'userId' => $this->session->get('id'),
+            ];
+
+            $admin_email = [$_ENV['EMAIL_IT_GROUP'] , $resultTask['admin_email']];
+
+            if ($this->LogUsageModel->insert($logData)) {
+                if ($this->sendEmailGroup($titleMail, $subjectMail, $messageEmail, $admin_email, 'NoPicture')) {
+                    if ($this->ticketTaskModel->update($taskId, $updateData)) {
+                        $response = [
+                                'status' => 200,
+                                'title' => 'Success',
+                                'message' => 'ดำเนินการสำเร็จ แจ้งผู้ใช้เรียบร้อย',
+                            ];
+                        return $this->response->setJson($response);
+                    } else {
+                        $response = [
+                                'status' => 404,
+                                'title' => 'Error!',
+                               'message' => 'ไม่สามารถอัพเดทข้อมูลได้',
+                            ];
+                        return $this->response->setJson($response);
+                    }
+                } else {
+                    $response = [
+                            'status' => 404,
+                            'title' => 'Error!',
+                            'message' => 'ไม่สามารถส่งเมล์ได้',
+                        ];
+                    return $this->response->setJson($response);
+                }
+            } else {
+                $response = [
+                            'status' => 404,
+                            'title' => 'Error!',
+                            'message' => 'ไม่สามารถบันทึก log ได้',
+                        ];
+                return $this->response->setJson($response);
+            }
+        } else {
+            $response = [
+                'status' => 500,
+                'title' => 'Error',
+                'message' => 'Server internal error'
+            ];
+
+            return $this->response->setJSON($response);
+        }
+    }
+
+    public function sendEmailGroup($titleMail, $subjectMail, $messageEmail, $email, $image)
+    {
+        $this->email->setFrom($_ENV['email.SMTPUser'], $_ENV['EMAIL_NAME']);
+        // $this->email->setTo($email);
+        $this->email->setTo($_ENV['CI_ENVIRONMENT'] == 'development' ? $_ENV['EMAIL_TEST'] : $email);
+        $this->email->setSubject($subjectMail);
+        $this->email->setMessage($messageEmail);
+       
+        if ($image != 'NoPicture') {
+            $this->email->attach(FCPATH . "store_files_uploaded/". $image);
+        }
+
+        for ($i = 0; $i < sizeOf($email); $i++) {
+            $logEmail[$i] = [
+                'receiver' => $email[$i],
+                'title' => $titleMail,
+                'subject' => $subjectMail,
+                'detail' => strip_tags($messageEmail),
+                'createdAt' => $this->time->getTimestamp(),
+                'status' => 1
+            ];
+        }
+
+        if ($this->logEmailModel->insertBatch($logEmail)) {
+            if ($this->email->send()) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
         }
     }
 }

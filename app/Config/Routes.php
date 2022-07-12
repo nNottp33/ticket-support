@@ -56,6 +56,8 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->get('ticket/count', 'Ticket::countTicket');
         $routes->post('ticket/user/detail', 'Ticket::getUserByEmail');
         $routes->post('ticket/update/status', 'Ticket::updateTicket');
+        $routes->get('ticket/owner/change/get', 'Ticket::getTicketOwner');
+        $routes->post('ticket/reject/change', 'Ticket::changeTicket');
         
         // user page
         $routes->get('users', 'User::index');
@@ -100,6 +102,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->post('ticket/save', 'UserTicket::saveTicket');
         $routes->get('ticket/list', 'UserTicket::getTicketByUser');
         $routes->post('ticket/detail', 'UserTicket::getTicketDetail');
+        $routes->post('ticket/update/status', 'UserTicket::updateTicket');
 
         // history ticket page
         $routes->get('history/ticket', 'HistoryTicket::index');

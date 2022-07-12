@@ -204,7 +204,7 @@
      </div>
  </div>
 
-
+ <!-- modal reject ticket -->
  <div class="modal fade clear-modal" id="rejectTicketModal" data-bs-backdrop="static" data-bs-keyboard="false"
      tabindex="-1" aria-labelledby="rejectTicketModalLabel" aria-hidden="true">
      <div class="modal-dialog">
@@ -215,20 +215,20 @@
              </div>
              <div class="modal-body">
                  <div class="container">
-                     <form id="ticketForm" enctype="multipart/form-data" method="post">
+                     <form id="ticketFormChange" enctype="multipart/form-data" method="post">
 
 
                          <div class="form-group mb-4">
                              <small class="form-text text-muted">หมวดหมู่</small>
-                             <select id="changeTicketCategory" name="userSelectCategory" onchange="getSubCatagory()"
-                                 title="กรุณาเลือกหมวดหมู่" class="selectpicker form-control" data-live-search="true"
-                                 data-width="100%">
+                             <select id="changeTicketCategory" name="changeTicketCategory"
+                                 onchange="getSubCategoryTicket()" title="กรุณาเลือกหมวดหมู่"
+                                 class="selectpicker form-control" data-live-search="true" data-width="100%">
                              </select>
                          </div>
 
                          <div class="form-group mb-4">
                              <small class="form-text text-muted">หมวดหมู่ย่อย</small>
-                             <select id="changeTicketSubCategory" name="userSelectSubCategory"
+                             <select id="changeTicketSubCategory" name="changeTicketSubCategory"
                                  title="กรุณาเลือกหมวดหมู่ย่อย" class="selectpicker form-control"
                                  data-live-search="true" data-width="100%">
                              </select>
@@ -236,27 +236,97 @@
 
                          <div class="form-group">
                              <small class="form-text text-muted">ผู้รับผิดชอบ</small>
-                             <select id="changeTicketOwner" name="userSelectSubCategory" title="กรุณาเลือกหมวดหมู่ย่อย"
+                             <select id="changeTicketOwner" name="changeTicketOwner" title="กรุณาเลือกผู้รับผิดชอบ"
                                  class="selectpicker form-control" data-live-search="true" data-width="100%">
                              </select>
                          </div>
 
-
+                     </form>
                  </div>
                  <div class="modal-footer">
                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-                     <button type="submit" class="btn btn-primary">บันทึกข้อมูล</button>
+                     <button type="submit" id="btnChangeTicket" class="btn btn-primary">บันทึกข้อมูล</button>
                  </div>
-                 </form>
+
              </div>
          </div>
      </div>
  </div>
+ <!-- modal reject ticket end -->
+
+
+ <!-- modal ticket detail dialog -->
+ <div class="modal fade clear-modal" id="ticketTaskDialog" data-bs-backdrop="static" data-bs-keyboard="false"
+     tabindex="-1" aria-labelledby="ticketTaskDialogLabel" aria-hidden="true">
+     <div class="modal-dialog">
+         <div class="modal-content">
+             <div class="modal-header">
+                 <h5 class="modal-title" id="ticketTaskDialogLabel">Ticket reply</h5>
+                 <a href="#" class="icon-close" data-bs-dismiss="modal" aria-label="Close"></a>
+             </div>
+             <div class="modal-body">
+                 <div class="container">
+
+                     <div class="input-group mb-3">
+                         <div class="customize-input mx-1 w-100">
+                             <small class="form-text text-muted">สาเหตุ</small>
+                             <input type="text" class="form-control" required id="cause" name="cause"
+                                 placeholder="สาเหตุ">
+                         </div>
+                     </div>
+
+
+                     <div class="input-group mb-3">
+                         <div class="customize-input mx-1 w-100">
+                             <small class="form-text text-muted">วิธีแก้ปัญหา</small>
+                             <textarea id="solution" name="solution" class="form-control" rows="3"
+                                 placeholder="วิธีแก้ปัญหา"></textarea>
+                         </div>
+                     </div>
+
+
+                     <div class="input-group mb-3">
+                         <div class="customize-input mx-1 w-100">
+                             <small class="form-text text-muted">** หมายเหตุ</small>
+                             <textarea id="remark" name="remark" class="form-control" rows="3"
+                                 placeholder="หมายเหตุ"></textarea>
+                         </div>
+                     </div>
+
+
+                     <div class="form-group">
+                         <small class="form-text text-muted">แนบไฟล์ตัวอย่าง</small>
+                         <div class="mb-3">
+                             <input accept="image/*" multiple="true" onchange="previewFile(this)" class="form-control"
+                                 type="file" name="previewImgTask" id="previewImgTask">
+                         </div>
+                     </div>
+
+                     <div class="form-group">
+                         <small class="form-text text-muted">ภาพประกอบ</small>
+                         <div class="display-upload-img">
+                             <img class="previewImg" accept="image/png, image/jpeg" id="previewImg" src=""
+                                 alt="Image preview" width="100%" height="180">
+                         </div>
+                     </div>
+
+                 </div>
+                 <div class="modal-footer">
+                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                     <button type="submit" id="btnSendTicket" class="btn btn-primary">ส่งข้อมูล</button>
+                 </div>
+
+             </div>
+         </div>
+     </div>
+ </div>
+ <!-- modal ticket detail dialog end -->
 
  <script>
      $(document).ready(function() {
          getAdminTicket();
          countTicket();
+
      });
  </script>
  <?= $this->endSection();
