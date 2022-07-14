@@ -31,7 +31,7 @@
                          <div class="row m-auto justify-content-center">
                              <!-- Column -->
                              <div class="col-md-4 col-lg-2 col-xlg-2">
-                                 <div class="card card-hover card-counter">
+                                 <div onclick="getAdminTicket()" class="card card-hover card-counter">
                                      <div class="p-2 bg-primary text-center">
                                          <h1 id="totalTicket" class="font-light text-white"></h1>
                                          <h6 class="text-white">Total Tickets</h6>
@@ -41,7 +41,7 @@
 
                              <!-- Column -->
                              <div class="col-md-4 col-lg-2 col-xlg-2">
-                                 <div class="card card-hover card-counter">
+                                 <div onclick="getAdminTicketByStatus([0])" class="card card-hover card-counter">
                                      <div class="p-2 bg-cyan text-center">
                                          <h1 id="newTicket" class="font-light text-white"></h1>
                                          <h6 class="text-white">New</h6>
@@ -51,7 +51,7 @@
 
                              <!-- Column -->
                              <div class="col-md-4 col-lg-2 col-xlg-2">
-                                 <div class="card card-hover card-counter">
+                                 <div onclick="getAdminTicketByStatus([1,5,6])" class="card card-hover card-counter">
                                      <div class="p-2 bg-warning text-center">
                                          <h1 id="pendingTicket" class="font-light text-white"></h1>
                                          <h6 class="text-white">Pending</h6>
@@ -61,7 +61,7 @@
 
                              <!-- Column -->
                              <div class="col-md-4 col-lg-2 col-xlg-2">
-                                 <div class="card card-hover card-counter">
+                                 <div onclick="getAdminTicketByStatus([2])" class="card card-hover card-counter">
                                      <div class="p-2 bg-success text-center">
                                          <h1 id="completeTicket" class="font-light text-white"></h1>
                                          <h6 class="text-white">Complete</h6>
@@ -71,7 +71,7 @@
 
                              <!-- Column -->
                              <div class="col-md-4 col-lg-2 col-xlg-2">
-                                 <div class="card card-hover card-counter">
+                                 <div onclick="getAdminTicketByStatus([4])" class="card card-hover card-counter">
                                      <div class="p-2 bg-secondary text-center">
                                          <h1 id="closeTicket" class="font-light text-white"></h1>
                                          <h6 class="text-white">Closes</h6>
@@ -266,56 +266,56 @@
              </div>
              <div class="modal-body">
                  <div class="container">
-
-                     <div class="input-group mb-3">
-                         <div class="customize-input mx-1 w-100">
-                             <small class="form-text text-muted">สาเหตุ</small>
-                             <input type="text" class="form-control" required id="cause" name="cause"
-                                 placeholder="สาเหตุ">
+                     <form id="ticketFormSuccess" enctype="multipart/form-data" method="post">
+                         <div class="input-group mb-3">
+                             <div class="customize-input mx-1 w-100">
+                                 <small class="form-text text-muted">สาเหตุ (หากไม่มีให้ใส่ - )</small>
+                                 <input type="text" class="form-control" required id="cause" name="cause"
+                                     placeholder="สาเหตุ">
+                             </div>
                          </div>
-                     </div>
 
 
-                     <div class="input-group mb-3">
-                         <div class="customize-input mx-1 w-100">
-                             <small class="form-text text-muted">วิธีแก้ปัญหา</small>
-                             <textarea id="solution" name="solution" class="form-control" rows="3"
-                                 placeholder="วิธีแก้ปัญหา"></textarea>
+                         <div class="input-group mb-3">
+                             <div class="customize-input mx-1 w-100">
+                                 <small class="form-text text-muted">วิธีแก้ปัญหา (หากไม่มีให้ใส่ - )</small>
+                                 <textarea id="solution" name="solution" class="form-control" rows="3"
+                                     placeholder="วิธีแก้ปัญหา"></textarea>
+                             </div>
                          </div>
-                     </div>
 
 
-                     <div class="input-group mb-3">
-                         <div class="customize-input mx-1 w-100">
-                             <small class="form-text text-muted">** หมายเหตุ</small>
-                             <textarea id="remark" name="remark" class="form-control" rows="3"
-                                 placeholder="หมายเหตุ"></textarea>
+                         <div class="input-group mb-3">
+                             <div class="customize-input mx-1 w-100">
+                                 <small class="form-text text-muted">** หมายเหตุ (หากไม่มีให้ใส่ - )</small>
+                                 <textarea id="remark" name="remark" class="form-control" rows="3"
+                                     placeholder="หมายเหตุ"></textarea>
+                             </div>
                          </div>
-                     </div>
 
 
-                     <div class="form-group">
-                         <small class="form-text text-muted">แนบไฟล์ตัวอย่าง</small>
-                         <div class="mb-3">
-                             <input accept="image/*" multiple="true" onchange="previewFile(this)" class="form-control"
-                                 type="file" name="previewImgTask" id="previewImgTask">
+                         <div class="form-group">
+                             <small class="form-text text-muted">แนบไฟล์ตัวอย่าง</small>
+                             <div class="mb-3">
+                                 <input accept="*/*" multiple="true" onchange="previewFile(this)" class="form-control"
+                                     type="file" name="previewImgTask" id="previewImgTask">
+                             </div>
                          </div>
-                     </div>
 
-                     <div class="form-group">
-                         <small class="form-text text-muted">ภาพประกอบ</small>
-                         <div class="display-upload-img">
-                             <img class="previewImg" accept="image/png, image/jpeg" id="previewImg" src=""
-                                 alt="Image preview" width="100%" height="180">
+                         <div class="form-group">
+                             <small class="form-text text-muted">ภาพประกอบ</small>
+                             <div class="display-upload-img">
+                                 <img class="previewImg" accept="image/png, image/jpeg" id="previewImg" src=""
+                                     alt="Image preview" width="100%" height="180">
+                             </div>
                          </div>
-                     </div>
 
                  </div>
                  <div class="modal-footer">
                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
                      <button type="submit" id="btnSendTicket" class="btn btn-primary">ส่งข้อมูล</button>
                  </div>
-
+                 </form>
              </div>
          </div>
      </div>
@@ -326,7 +326,6 @@
      $(document).ready(function() {
          getAdminTicket();
          countTicket();
-
      });
  </script>
  <?= $this->endSection();

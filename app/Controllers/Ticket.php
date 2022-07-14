@@ -49,11 +49,11 @@ class Ticket extends BaseController
             ->join('group_owner', 'group_owner.groupId = ticket_task.catId')
             ->join('users', 'users.id = ticket_task.userId')
             ->where('users.status', 1)
-            ->where('ticket_task.status !=', 3)
+            ->where('ticket_task.status != 3')
             ->where('group_owner.ownerId', $this->session->get('id'))
             ->where('ticket_task.ownerAccepted', $this->session->get('id'))
             ->orWhere('ticket_task.ownerAccepted', 0)
-            ->orderBy('ticket_task.id', 'desc')
+            ->orderBy('ticket_task.createdAt', 'DESC')
             ->limit(100)
             ->findAll();
 
@@ -88,6 +88,51 @@ class Ticket extends BaseController
         }
     }
 
+    public function getTicketAdminByStatus()
+    {
+        if ($this->request->isAJAX()) {
+            $query = $this->ticketTaskModel
+            ->select('ticket_task.id as taskId, ticket_task.topic as task_topic, ticket_task.createdAt as task_created, ticket_task.updatedAt as task_updated, ticket_task.status as task_status, catagories.nameCatTh, sub_catagories.nameSubCat, users.email as user_email')
+            ->join('catagories', 'catagories.id = ticket_task.catId')
+            ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
+            ->join('group_owner', 'group_owner.groupId = ticket_task.catId')
+            ->join('users', 'users.id = ticket_task.userId')
+            ->where('users.status', 1)
+            ->whereIn('ticket_task.status', $this->request->getGet('status'))
+            ->where('group_owner.ownerId', $this->session->get('id'))
+            ->where('ticket_task.ownerAccepted', $this->session->get('id'))
+            ->orWhere('ticket_task.ownerAccepted', 0)
+            ->orderBy('ticket_task.createdAt', 'DESC')
+            ->limit(100)
+            ->findAll();
+
+            if ($query) {
+                $response = [
+                    'status' => 200,
+                    'title' => 'Success!',
+                    'message' => 'ดึงข้อมูลสำเร็จ',
+                    'data' => $query,
+                ];
+                return $this->response->setJson($response);
+            } else {
+                $response = [
+                    'status' => 404,
+                    'title' => 'Error!',
+                    'message' => 'ไม่สามารถดึงข้อมูลได้',
+                ];
+                return $this->response->setJson($response);
+            }
+        } else {
+            $response = [
+                'status' => 500,
+                'title' => 'Error',
+                'message' => 'Server internal error'
+            ];
+
+            return $this->response->setJSON($response);
+        }
+    }
+    
     public function getUserByEmail()
     {
         if ($this->request->isAJAX()) {
@@ -131,7 +176,7 @@ class Ticket extends BaseController
             ->select('count(ticket_task.id) as total')
             ->join('catagories', 'catagories.id = ticket_task.catId')
             ->join('group_owner', 'group_owner.groupId = catagories.id')
-            ->where('ticket_task.status != 4')
+            ->where('ticket_task.status != 3')
             ->where('group_owner.ownerId', $this->session->get('id'))
             ->get()
             ->getRow()->total;
@@ -141,6 +186,8 @@ class Ticket extends BaseController
             ->join('catagories', 'catagories.id = ticket_task.catId')
             ->join('group_owner', 'group_owner.groupId = catagories.id')
             ->where('ticket_task.status = 0')
+            ->orWhere('ticket_task.status = 5')
+            ->orWhere('ticket_task.status = 6')
             ->where('group_owner.ownerId', $this->session->get('id'))
             ->get()
             ->getRow()->total;
@@ -213,7 +260,7 @@ class Ticket extends BaseController
             $task_id =  $this->request->getPost('id');
             $status =  $this->request->getPost('status');
 
-            $resultMail = $this->ticketTaskModel->select('users.id as user_id, users.email as user_email, sub_catagories.period as subCat_period')
+            $resultMail = $this->ticketTaskModel->select('ticket_task.topic, users.id as user_id, users.email as user_email, sub_catagories.period as subCat_period')
             ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
             ->join('users', 'users.id = ticket_task.userId')
             ->where('ticket_task.id', $task_id)
@@ -230,12 +277,22 @@ class Ticket extends BaseController
             switch ($status) {
                 // accepted
                 case 1:
-                    $titleMail = 'send email admin approved ticket';
-                    $subjectMail = 'แอดมินตอบรับ Ticket';
-                    $messageEmail = '<p>';
-                    $messageEmail .= '   <h3> Ticket ของคุณได้รับการตอบรับเรียบร้อยแล้ว </h3>' ;
-                    $messageEmail .= '     ขณะนี้กำลังดำเนินการใช้เวลาประมาณ ' . $resultMail['subCat_period'] . ' ชั่วโมง';
-                    $messageEmail .= '</p> ';
+              
+                    if ($this->request->getPost('action') == 'replyReturn') {
+                        $titleMail = 'send email admin approved return ticket';
+                        $subjectMail = 'แอดมินตอบรับการตีกลับ Ticket';
+                        $messageEmail = '<p>';
+                        $messageEmail .= '   <h3> Ticket ของคุณได้รับการตอบรับเรียบร้อยแล้ว </h3>' ;
+                        $messageEmail .= '     Ticket ' . $resultMail['topic']. ' ขณะนี้แอดมินกำลังตรวจสอบปัญหาอีกครั้ง ใช้เวลาดำเนินการประมาณ ' . $resultMail['subCat_period'] . ' ชั่วโมง';
+                        $messageEmail .= '</p> ';
+                    } else {
+                        $titleMail = 'send email admin approved ticket';
+                        $subjectMail = 'แอดมินตอบรับ Ticket';
+                        $messageEmail = '<p>';
+                        $messageEmail .= '   <h3> Ticket ของคุณได้รับการตอบรับเรียบร้อยแล้ว </h3>' ;
+                        $messageEmail .= '     Ticket ' . $resultMail['topic']. ' ขณะนี้กำลังดำเนินการใช้เวลาประมาณ ' . $resultMail['subCat_period'] . ' ชั่วโมง';
+                        $messageEmail .= '</p> ';
+                    }
 
                     $updateData = [
                         'status' => $status,
@@ -244,7 +301,7 @@ class Ticket extends BaseController
                     ];
 
                     if ($this->LogUsageModel->insert($logData)) {
-                        if ($this->sendEmailUser($titleMail, $subjectMail, $messageEmail, $resultMail['user_email'], 'NoPicture')) {
+                        if ($this->sendEmailUser($titleMail, $subjectMail, $messageEmail, $resultMail['user_email'], '')) {
                             if ($this->ticketTaskModel->update($task_id, $updateData)) {
                                 $response = [
                                 'status' => 200,
@@ -278,7 +335,6 @@ class Ticket extends BaseController
                         return $this->response->setJson($response);
                     }
 
-
                     break;
 
                 // success
@@ -287,8 +343,8 @@ class Ticket extends BaseController
                     $cause = $this->request->getPost('cause');
                     $solution = $this->request->getPost('solution');
                     $remark = $this->request->getPost('remark') ? $this->request->getPost('remark') : '-';
-                    $attachment = $this->request->getFile('attachment') ? $this->request->getFile('attachment') : '-';
-                 
+                    $attachment = $this->request->getFile('previewImgTask');
+
                     // get present task
                     $getTask = $this->ticketTaskModel->where('id', $task_id)->first();
 
@@ -323,7 +379,7 @@ class Ticket extends BaseController
                         'cause' => $cause,
                         'solution' => $solution,
                         'remark' => $remark,
-                        'attachment' => $attachment,
+                        'attachment' => $attachment->getClientName() ?  $attachment->getClientName() : '-',
                         'updatedBy' => $this->session->get('id'),
                         'createdAt' => $time,
                         'updatedAt' => $time,
@@ -331,12 +387,16 @@ class Ticket extends BaseController
                     ];
 
                     if ($this->LogUsageModel->insert($logData)) {
-                        if ($this->sendEmailUser($titleMail, $subjectMail, $messageEmail, $resultMail['user_email'], $attachment == '-' ? 'NoPicture' : $attachment->getClientName())) {
+                        if ($this->sendEmailUser($titleMail, $subjectMail, $messageEmail, $resultMail['user_email'], $attachment->getClientName())) {
                             if ($this->ticketTaskModel->update($task_id, $updateData) && $this->taskDetailModel->insert($saveData)) {
+                                if (is_file($attachment)) {
+                                    $attachment->move('./store_files_uploaded');
+                                }
+
                                 $response = [
-                                'status' => 200,
-                                'title' => 'Success',
-                                'message' => 'ดำเนินการสำเร็จ แจ้งผู้ใช้เรียบร้อย',
+                                    'status' => 200,
+                                    'title' => 'Success',
+                                    'message' => 'ดำเนินการสำเร็จ แจ้งผู้ใช้เรียบร้อย',
                             ];
                                 return $this->response->setJson($response);
                             } else {
@@ -370,7 +430,7 @@ class Ticket extends BaseController
                 // reject
                 case 3:
 
-                    $reject = $this->request->getPost('reject');
+                    $reject = $this->request->getPost('action');
                     $titleMail = 'send email ' .  $reject . ' ticket';
                     $subjectMail = 'Ticket ไม่ถูกต้อง';
 
@@ -387,7 +447,7 @@ class Ticket extends BaseController
                         ];
 
                         if ($this->LogUsageModel->insert($logData)) {
-                            if ($this->sendEmailUser($titleMail, $subjectMail, $messageEmail, $resultMail['user_email'], 'NoPicture')) {
+                            if ($this->sendEmailUser($titleMail, $subjectMail, $messageEmail, $resultMail['user_email'], '')) {
                                 if ($this->ticketTaskModel->update($task_id, $updateData)) {
                                     $response = [
                                         'status' => 200,
@@ -428,6 +488,7 @@ class Ticket extends BaseController
 
                 // case 5:
                 // break;
+
                 default:
 
                 $response = [
@@ -551,7 +612,7 @@ class Ticket extends BaseController
             ];
 
             if ($this->LogUsageModel->insert($logData)) {
-                if ($this->sendEmailUser($titleMail, $subjectMail_user, $messageEmail_user, $result_ticket['email'], 'NoPicture')) {
+                if ($this->sendEmailUser($titleMail, $subjectMail_user, $messageEmail_user, $result_ticket['email'], '')) {
                     if ($this->sendEmailUser($titleMail, $subjectMail_owner, $messageEmail_owner, $owner_email['email'], $result_ticket['attachment'])) {
                         if ($this->ticketTaskModel->update($task_id, $updateData)) {
                             $response = [
@@ -610,10 +671,8 @@ class Ticket extends BaseController
         // $this->email->setTo($email);
         $this->email->setSubject($subjectMail);
         $this->email->setMessage($messageEmail);
-
-        if ($image != 'NoPicture') {
-            $this->email->attach(FCPATH . "store_files_uploaded/". $image);
-        }
+        $this->email->attach(FCPATH . "store_files_uploaded/". $image);
+        
 
         $logEmail = [
             'receiver' => $email,

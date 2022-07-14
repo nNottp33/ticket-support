@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use Attribute;
 use CodeIgniter\I18n\Time;
 
 class UserTicket extends BaseController
@@ -15,6 +16,7 @@ class UserTicket extends BaseController
     protected $userModel;
     protected $ownerGroupModel;
     protected $logEmailModel;
+    protected $taskDetailModel;
     protected $email;
 
     public function __construct()
@@ -29,6 +31,7 @@ class UserTicket extends BaseController
         $this->userModel = new \App\Models\UserModel();
         $this->ownerGroupModel = new \App\Models\GroupOwnerModel();
         $this->logEmailModel = new \App\Models\LogEmailModel();
+        $this->taskDetailModel = new \App\Models\TicketDetailModel();
         helper(['form', 'url']);
     }
 
@@ -62,7 +65,7 @@ class UserTicket extends BaseController
             $insertData = [
                 'topic' => $topic,
                 'remark' => $detail,
-                'attachment' => $imageFile->getClientName(),
+                'attachment' => $imageFile->getClientName() ? $imageFile->getClientName() : '-',
                 'createdAt' => $this->time->getTimestamp(),
                 'status' => 0,
                 'userId' => $this->session->get('id'),
@@ -74,6 +77,7 @@ class UserTicket extends BaseController
             $resultSubCatName = $this->subCatModel->where('id', $subCatId)->findColumn('nameSubCat');
 
             $titleMail = 'send Email create ticket';
+            $subjectMail = 'Ticket ใหม่';
             $messageEmail = '<div id="app">';
             $messageEmail .= ' <div>';
             $messageEmail .= '  <h3><b> หัวข้อ </b></h3>';
@@ -103,7 +107,11 @@ class UserTicket extends BaseController
             $toMail = [$_ENV['EMAIL_IT_GROUP'], ...$email];
      
             if ($this->LogUsageModel->insert($logData)) {
-                if ($this->ticketTaskModel->insert($insertData) && $imageFile->move('./store_files_uploaded') && $this->sendEmailGroup($titleMail, $topic, $messageEmail, $toMail, $imageFile->getClientName())) {
+                if ($this->ticketTaskModel->insert($insertData) && $this->sendEmailGroup($titleMail, $subjectMail, $messageEmail, $toMail, $imageFile->getClientName())) {
+                    if (is_file($imageFile)) {
+                        $imageFile->move('./store_files_uploaded');
+                    }
+
                     $response = [
                         'status' => 200,
                         'title' => 'Success!',
@@ -144,6 +152,7 @@ class UserTicket extends BaseController
             $query = $this->ticketTaskModel
             ->select('ticket_task.*, catagories.id as cat_id, catagories.nameCatTh, sub_catagories.id as subCat_id, sub_catagories.nameSubCat, sub_catagories.detail as subCat_detail, sub_catagories.period')
             ->where('ticket_task.userId', $this->session->get('id'))
+            ->where('ticket_task.status != 4')
             ->join('catagories', 'catagories.id = ticket_task.catId')
             ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
             ->orderBy('ticket_task.id', 'DESC')->findAll();
@@ -248,7 +257,7 @@ class UserTicket extends BaseController
             $admin_email = [$_ENV['EMAIL_IT_GROUP'] , $resultTask['admin_email']];
 
             if ($this->LogUsageModel->insert($logData)) {
-                if ($this->sendEmailGroup($titleMail, $subjectMail, $messageEmail, $admin_email, 'NoPicture')) {
+                if ($this->sendEmailGroup($titleMail, $subjectMail, $messageEmail, $admin_email, '')) {
                     if ($this->ticketTaskModel->update($taskId, $updateData)) {
                         $response = [
                                 'status' => 200,
@@ -291,6 +300,109 @@ class UserTicket extends BaseController
         }
     }
 
+
+    public function returnTicket()
+    {
+        if ($this->request->isAJAX()) {
+            $taskId = $this->request->getPost('taskId');
+            $remark = $this->request->getPost('ticketDetailReturn');
+            $attatchment = $this->request->getFile('fileReturn');
+
+            $time = $this->time->getTimestamp();
+
+            $logData = [
+                'ip' => $this->request->getIPAddress(),
+                'action' => 'user return ticket',
+                'detail' => 'user ' . $this->session->get('email') . 'ตีกลับ ticket',
+                'createdAt' =>   $time ,
+                'userId' => $this->session->get('id'),
+            ];
+
+            $newTaskDetail = [
+                'cause' => '-',
+                'solution' => '-',
+                'remark' =>  $remark,
+                'attachment '=> $attatchment->getClientName(),
+                'createdAt' => $time,
+                'taskId' => $taskId,
+            ];
+
+
+            $resultTask = $this->ticketTaskModel->select('ticket_task.topic, ticket_task.createdAt, users.id admin_id, users.email as admin_email')
+            ->join('users', 'users.id = ticket_task.ownerAccepted')
+            ->where('ticket_task.id', $taskId)
+            ->first();
+
+            $admin_email = [$_ENV['EMAIL_IT_GROUP'] , $resultTask['admin_email']];
+
+            $titleMail = 'send email return ticket to admin';
+            $subjectMail = 'Return Ticket';
+            $messageEmail = '<p>';
+            $messageEmail .= '   <h3> คำร้องขอ Ticket ' . $resultTask['topic'] . ' เมื่อวันที่ ' . date('d/m/Y H:i', $resultTask['createdAt']) . '  </h3>' ;
+            $messageEmail .= '  ยังไม่เป็นปกติ ';
+            $messageEmail .= '</p> ';
+            $messageEmail .= ' <div>';
+            $messageEmail .= '  <h3><b> หัวข้อ </b></h3>';
+            $messageEmail .= '     <p style="padding-left: 20px;"> ' . $resultTask['topic'] . ' </p> ';
+            $messageEmail .= ' </div>';
+            $messageEmail .= ' <div>';
+            $messageEmail .= '  <h3><b> รายละเอียดเพิ่มเติม </b></h3>';
+            $messageEmail .= '    <p style="padding-left: 20px;"> ' . $remark . ' </p> ';
+            $messageEmail .= ' </div>';
+
+            $updateData = [
+                'status' => 6,
+                'updatedAt' => $time
+            ];
+
+            if ($this->LogUsageModel->insert($logData)) {
+                if ($this->sendEmailGroup($titleMail, $subjectMail, $messageEmail, $admin_email, $attatchment->getClientName())) {
+                    if ($this->ticketTaskModel->update($taskId, $updateData) && $this->taskDetailModel->insert($newTaskDetail)) {
+                        if (is_file($attatchment)) {
+                            $attatchment->move('./store_files_uploaded');
+                        }
+
+                        $response = [
+                            'status' => 200,
+                            'title' => 'Success!',
+                            'message' => 'ดำเนินการสำเร็จ',
+                        ];
+                        return $this->response->setJson($response);
+                    } else {
+                        $response = [
+                            'status' => 404,
+                            'title' => 'Error!',
+                            'message' => 'ไม่สามารถบันทึกข้อมูลได้',
+                        ];
+                        return $this->response->setJson($response);
+                    }
+                } else {
+                    $response = [
+                            'status' => 404,
+                            'title' => 'Error!',
+                            'message' => 'ไม่สามารถส่งเมล์ได้',
+                        ];
+                    return $this->response->setJson($response);
+                }
+            } else {
+                $response = [
+                            'status' => 404,
+                            'title' => 'Error!',
+                            'message' => 'ไม่สามารถบันทึก log ได้',
+                        ];
+                return $this->response->setJson($response);
+            }
+        } else {
+            $response = [
+                'status' => 500,
+                'title' => 'Error',
+                'message' => 'Server internal error'
+            ];
+
+            return $this->response->setJSON($response);
+        }
+    }
+
     public function sendEmailGroup($titleMail, $subjectMail, $messageEmail, $email, $image)
     {
         $this->email->setFrom($_ENV['email.SMTPUser'], $_ENV['EMAIL_NAME']);
@@ -298,10 +410,8 @@ class UserTicket extends BaseController
         $this->email->setTo($_ENV['CI_ENVIRONMENT'] == 'development' ? $_ENV['EMAIL_TEST'] : $email);
         $this->email->setSubject($subjectMail);
         $this->email->setMessage($messageEmail);
-       
-        if ($image != 'NoPicture') {
-            $this->email->attach(FCPATH . "store_files_uploaded/". $image);
-        }
+        $this->email->attach(FCPATH . "store_files_uploaded/". $image);
+        
 
         for ($i = 0; $i < sizeOf($email); $i++) {
             $logEmail[$i] = [

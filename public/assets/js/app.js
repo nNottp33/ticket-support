@@ -2461,6 +2461,14 @@ const getAdminTicket = () => {
                       </a>
                     </div>`;
           }
+
+          if (data.task_status == 6) {
+            return `<div>  
+                       <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Confirm Ticket" onclick="updateTicketStatus('${data.taskId}', 'acceptedReturn', 1)" class="btn btn-success btn-sm">
+                         <i class="fas fa-reply"></i>
+                      </a>
+                    </div>`;
+          }
         },
       },
       {
@@ -2755,13 +2763,19 @@ const updateTicketStatus = (id, action, status) => {
         if (result.isConfirmed) {
           $("#ticketTaskDialog").modal("show");
 
-          $("#btnSendTicket").click(function () {
+          $("#ticketFormSuccess").on("submit", function (e) {
+            e.preventDefault();
+            let formData = new FormData(this);
+
+            formData.append("id", id);
+            formData.append("status", status);
+
             if (!$("#cause").val()) {
-              Swal.fire("คำเตือน?", "กรุณาระบุสาเหตุของ Ticket?", "warning");
+              Swal.fire("คำเตือน?", "กรุณาระบุสาเหตุของ Ticket", "warning");
             }
 
             if (!$("#solution").val()) {
-              Swal.fire("คำเตือน?", "กรุณาระบุสาเหตุของ Ticket?", "warning");
+              Swal.fire("คำเตือน?", "กรุณาระบุวิธีแก้ไข", "warning");
             }
 
             if ($("#cause").val() && $("#solution").val()) {
@@ -2769,14 +2783,11 @@ const updateTicketStatus = (id, action, status) => {
               $.ajax({
                 url: `${baseUrl}admin/ticket/update/status`,
                 type: "POST",
-                data: {
-                  id: id,
-                  status: status,
-                  cause: $("#cause").val(),
-                  solution: $("#solution").val(),
-                  remark: $("#remark").val(),
-                  attachment: $("#previewImgTask").val(),
-                },
+                data: formData,
+                processData: false,
+                contentType: false,
+                cache: false,
+                dataType: "json",
                 success: function (response) {
                   if (response.status == 200) {
                     setTimeout(() => {
@@ -2827,6 +2838,22 @@ const updateTicketStatus = (id, action, status) => {
         }
       });
       break;
+    case "acceptedReturn":
+      Swal.fire({
+        icon: "question",
+        title: "ตอบรับการตีกลับ Ticket?",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "ยืนยัน!",
+        cancelButtonText: "ยังก่อน",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          updateTicket(id, status, "replyReturn");
+        }
+      });
+
+      break;
     default:
       Swal.fire({
         icon: "error",
@@ -2839,7 +2866,7 @@ const updateTicketStatus = (id, action, status) => {
   }
 };
 
-const updateTicket = (id, status, reject) => {
+const updateTicket = (id, status, action) => {
   $(".preloader").show();
   $.ajax({
     url: `${baseUrl}admin/ticket/update/status`,
@@ -2847,7 +2874,7 @@ const updateTicket = (id, status, reject) => {
     data: {
       id: id,
       status: status,
-      reject: reject,
+      action: action,
     },
     success: function (response) {
       if (response.status == 200) {
@@ -3009,6 +3036,149 @@ const getOwnerTicket = (taskId) => {
     },
   });
 };
+
+const getAdminTicketByStatus = (status) => {
+  var tableTicketAdmin = $("#tableTicketAdmin").dataTable({
+    processing: true,
+    stateSave: true,
+    searching: true,
+    responsive: true,
+    bDestroy: true,
+    colReorder: {
+      realtime: true,
+    },
+    ajax: {
+      url: `${baseUrl}admin/ticket/show/list/by/status`,
+      type: "GET",
+      data: {
+        status: status,
+      },
+      error: function () {
+        $(".customer-grid-error").html("");
+        $("#tableTicketAdmin").append(
+          '<tbody class="customer-grid-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>',
+        );
+        $("#tableTicketAdmin_processing").css("display", "none");
+      },
+    },
+    columns: [
+      {
+        targets: 0,
+        data: null,
+        className: "text-center",
+        searchable: true,
+        orderable: true,
+        render: function (data, type, full, meta) {
+          if (data.task_status == 0) {
+            return `<div>  
+                       <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Confirm Ticket" onclick="updateTicketStatus('${data.taskId}', 'approve', 1)" class="btn btn-success btn-sm">
+                          <i class="fas fa-check"></i>
+                      </a>
+                      <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reject Ticket" onclick="updateTicketStatus('${data.taskId}', 'reject', 3)" class="btn btn-danger btn-sm">
+                        <i class="fas fa-times"> </i>
+                      </a> 
+                    </div>`;
+          }
+
+          if (data.task_status == 1) {
+            return `<div data-toggle="tooltip" title="Accepted pending...">  
+                      <a href="#" onclick="updateTicketStatus('${data.taskId}', 'completed', 2)" class="btn btn-warning btn-sm">
+                          <li class="fas fa-clock"></li>
+                      </a> 
+                    </div>`;
+          }
+
+          if (data.task_status == 2) {
+            // onclick="updateTicketStatus('closed', 4)"
+            return `<div data-toggle="tooltip" title="Completed">
+                <a href="#" class="btn btn-success btn-sm">
+                    <li class="fas fa-check-circle"></li>
+                 </a>
+             </div>`;
+          }
+
+          if (data.task_status == 4) {
+            return `<div data-toggle="tooltip" title="Closed">
+                <a href="#" class="btn btn-secondary btn-sm">
+                    <li class="fas fa-check-circle"></li>
+                 </a>
+             </div>`;
+          }
+
+          if (data.task_status == 5) {
+            return `<div>  
+                       <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Confirm Ticket" onclick="updateTicketStatus('${data.taskId}', 'approve', 1)" class="btn btn-success btn-sm">
+                          <i class="fas fa-check"></i>
+                      </a>
+                    </div>`;
+          }
+
+          if (data.task_status == 6) {
+            return `<div>  
+                       <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Confirm Ticket" onclick="updateTicketStatus('${data.taskId}', 'acceptedReturn', 1)" class="btn btn-success btn-sm">
+                         <i class="fas fa-reply"></i>
+                      </a>
+                    </div>`;
+          }
+        },
+      },
+      {
+        data: "task_topic",
+        className: "text-center",
+      },
+      {
+        data: null,
+        className: "text-center",
+        render: function (data, type, full, meta) {
+          return `<a href="#" onclick="getMoreDetailTicket(${data.taskId})" data-bs-toggle="tooltip"
+                      data-bs-placement="bottom" title="more detail" class="btn btn-sm btn-cyan">
+                      <i class="fas fa-list"></i>
+                  </a>`;
+        },
+      },
+      {
+        data: null,
+        className: "text-center",
+        render: function (data, type, full, meta) {
+          return `<a href="#" onclick="getUserDetail('${data.user_email}')" data-bs-toggle="tooltip"
+                      data-bs-placement="bottom" title="more detail" class="btn btn-sm btn-light">
+                    ${data.user_email}
+                  </a>`;
+        },
+      },
+      {
+        data: null,
+        className: "text-center",
+        render: function (data, type, full, meta) {
+          if (data.task_created == 0) {
+            return ` <span> ไม่มีข้อมูล </span>`;
+          }
+
+          if (data.task_created != 0) {
+            return `<span class="text-success"> <b> ${moment
+              .unix(data.task_created)
+              .format("DD/MM/YYYY HH:mm")} </b> </span>`;
+          }
+        },
+      },
+      {
+        data: null,
+        className: "text-center",
+        render: function (data, type, full, meta) {
+          if (data.task_updated == 0) {
+            return ` <span> ไม่มีข้อมูล </span>`;
+          }
+
+          if (data.task_updated != 0) {
+            return `<span class="text-success"> <b> ${moment
+              .unix(data.task_updated)
+              .format("DD/MM/YYYY HH:mm")} </b> </span>`;
+          }
+        },
+      },
+    ],
+  });
+};
 // ======================================================================== //
 
 // ======================================================================== //
@@ -3108,9 +3278,7 @@ const getSubCatagory = () => {
 };
 
 const previewFile = (input, id) => {
-  let file = $("input[type=file]").get(0).files[0];
-
-  let file_two = $("input[type=file]").get(1).files[0];
+  let file = $(`#${input.id}`).get(0).files[0];
 
   if (file) {
     let reader = new FileReader();
@@ -3121,15 +3289,6 @@ const previewFile = (input, id) => {
     };
 
     reader.readAsDataURL(file);
-  } else if (file_two) {
-    let reader = new FileReader();
-
-    reader.onload = function () {
-      $(".previewImg").show();
-      $(".previewImg").attr("src", reader.result);
-    };
-
-    reader.readAsDataURL(file_two);
   }
 };
 
@@ -3234,7 +3393,7 @@ const getUserTicket = () => {
         searchable: true,
         orderable: true,
         render: function (data, type, full, meta) {
-          if (data.status == 0) {
+          if (data.status == 0 || data.status == 5 || data.status == 6) {
             return `<div data-toggle="tooltip" title="Pending...">  
                        <a href="#" class="btn btn-secondary btn-sm">  <li class="fas fa-clock"></li> </a> 
                     </div>`;
@@ -3465,6 +3624,81 @@ const updateStatusUserTicket = (action, taskId) => {
 
   if (action == "return") {
     $("#userTicketReturnModal").modal("show");
+
+    $("#ticketFormReturn").on("submit", function (e) {
+      e.preventDefault();
+
+      if (!$("#ticketDetailReturn").val()) {
+        Swal.fire({
+          icon: "warning",
+          title: "คำเตือน!",
+          text: "กรุณากรอกข้อมูลให้ครบถ้วน!",
+        }).then((result) => {
+          return false;
+        });
+      }
+
+      let formData = new FormData(this);
+
+      formData.append("taskId", taskId);
+
+      if ($("#ticketDetailReturn").val()) {
+        $.ajax({
+          url: `${baseUrl}user/ticket/return`,
+          type: "POST",
+          data: formData,
+          processData: false,
+          contentType: false,
+          cache: false,
+          dataType: "json",
+          success: function (response) {
+            if (response.status == 200) {
+              setTimeout(() => {
+                $(".preloader").hide();
+                Swal.fire({
+                  icon: "success",
+                  title: response.title,
+                  text: response.message,
+                  showConfirmButton: false,
+                  timer: 1000,
+                }).then((result) => {
+                  $("#userTicketReturnModal").modal("hide");
+                  $("#tableUserTicket").DataTable().ajax.reload();
+                });
+              }, 1000);
+            }
+
+            if (response.status == 404 || response.status == 400) {
+              setTimeout(() => {
+                $(".preloader").hide();
+                Swal.fire({
+                  icon: "error",
+                  title: response.title,
+                  text: response.message,
+                  showConfirmButton: false,
+                  timer: 1000,
+                }).then((result) => {
+                  return false;
+                });
+              }, 1000);
+            }
+          },
+
+          error: function (error) {
+            setTimeout(() => {
+              $(".preloader").hide();
+              Swal.fire({
+                icon: "error",
+                title: "เกิดข้อผิดผลาด!",
+                text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+              }).then((result) => {
+                console.log(error);
+              });
+            }, 1000);
+          },
+        });
+      }
+    });
   }
 };
 

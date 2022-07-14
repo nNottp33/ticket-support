@@ -56,34 +56,6 @@
                  </tfoot>
              </table>
          </div>
-
-         <!-- grid tickets -->
-         <!-- <div class="row"> -->
-         <!-- column -->
-         <!-- <div class="col-lg-3 col-md-6"> -->
-         <!-- Card -->
-         <!-- <div class="card card-ticket card-ticketDetail" onclick="showDetailUserTicker()">
-                     <div class="card-body">
-                         <h4 class="card-title">Ticket no. 3455234</h4>
-                         <h5 class="card-subtitle mb-2 text-muted"> ขอร้อง MIS </h5>
-                         <p class="card-text">
-                             ขอสร้างข้อมูลบน Dashboard
-                             <span class="card-sub-detail">
-                                 ระยะเวลาดำเนินการ 60 นาที
-                             </span>
-                         </p>
-
-
-                         <a href="#" class="btn btn-warning active" aria-current="page">
-                             <li class="fas fa-clock"> </li> กำลังดำเนินการ
-                         </a>
-
-                     </div>
-                 </div> -->
-         <!-- Card -->
-         <!-- </div>
-         </div> -->
-         <!-- grid tickets end -->
      </div>
  </div>
 
@@ -156,7 +128,6 @@
  <!-- create ticket modal end -->
 
  <!-- return ticket modal -->
-
  <div class="modal fade clear-modal" id="userTicketReturnModal" data-bs-backdrop="static" data-bs-keyboard="false"
      tabindex="-1" aria-labelledby="userTicketReturnModalLabel" aria-hidden="true">
      <div class="modal-dialog">
@@ -167,37 +138,37 @@
              </div>
              <div class="modal-body">
                  <div class="container">
-
-                     <div class="form-group">
-                         <small class="form-text text-muted">รายละเอียด</small>
-                         <textarea id="ticketDetailReturn" name="ticketDetailReturn" class="form-control" rows="3"
-                             placeholder="อธิบายรายละเอียดปัญหา"></textarea>
-                     </div>
-
-                     <div class="form-group">
-                         <small class="form-text text-muted">แนบไฟล์ตัวอย่าง</small>
-                         <div class="mb-3">
-                             <input accept="image/*" multiple="true" onchange="previewFile(this)" class="form-control"
-                                 type="file" name="file" id="file">
+                     <form id="ticketFormReturn" enctype="multipart/form-data" method="post">
+                         <div class="form-group">
+                             <small class="form-text text-muted">รายละเอียด</small>
+                             <textarea id="ticketDetailReturn" name="ticketDetailReturn" class="form-control" rows="3"
+                                 placeholder="อธิบายปัญหาที่ยังไม่สำเร็จ"></textarea>
                          </div>
 
-                     </div>
+                         <div class="form-group">
+                             <small class="form-text text-muted">แนบไฟล์ตัวอย่าง</small>
+                             <div class="mb-3">
+                                 <input accept="image/*" multiple="true" onchange="previewFile(this)"
+                                     class="form-control" type="file" name="fileReturn" id="fileReturn">
+                             </div>
 
-                     <div class="form-group">
-                         <small class="form-text text-muted">ภาพประกอบ</small>
-                         <div class="display-upload-img">
-                             <img class="previewImg" accept="image/png, image/jpeg" id="previewImgReturn" src=""
-                                 alt="Image preview" width="100%" height="180">
                          </div>
-                     </div>
+
+                         <div class="form-group">
+                             <small class="form-text text-muted">ภาพประกอบ</small>
+                             <div class="display-upload-img">
+                                 <img class="previewImg" accept="image/png, image/jpeg" id="previewImgReturn" src=""
+                                     alt="Image preview" width="100%" height="180">
+                             </div>
+                         </div>
 
 
                  </div>
                  <div class="modal-footer">
                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-                     <button type="submit" class="btn btn-primary">บันทึกข้อมูล</button>
+                     <button type="submit" id="btnReturnTicket" class="btn btn-primary">บันทึกข้อมูล</button>
                  </div>
-
+                 </form>
              </div>
          </div>
      </div>
@@ -285,6 +256,7 @@
  <script>
      $(document).ready(function() {
          getUserTicket();
+
      });
  </script>
 
