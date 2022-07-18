@@ -3195,7 +3195,7 @@ const getMoreTicketDetail = (taskId) => {
         console.log(response.data);
 
         // and set data in modal with js
-        $("#text-topicTask").html(response.data.topic);
+        $("#text-topicTask").html(`Task: ${response.data.task[0].task_topic}`);
       }
 
       if (response.status == 404 || response.status == 400) {

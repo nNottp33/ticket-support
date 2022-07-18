@@ -334,14 +334,10 @@
              <div class="modal-body">
                  <div class="container">
 
-
-
                  </div>
                  <div class="modal-footer">
                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-                     <button type="submit" id="btnSendTicket" class="btn btn-primary">ส่งข้อมูล</button>
                  </div>
-
              </div>
          </div>
      </div>
