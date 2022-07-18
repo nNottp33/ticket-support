@@ -224,6 +224,9 @@ class UserTicket extends BaseController
         if ($this->request->isAJAX()) {
             $taskId = $this->request->getPost('taskId');
             $status = $this->request->getPost('status');
+
+
+       
           
             $resultTask = $this->ticketTaskModel->select('ticket_task.topic, ticket_task.createdAt, users.id admin_id, users.email as admin_email')
             ->join('users', 'users.id = ticket_task.ownerAccepted')
@@ -259,6 +262,16 @@ class UserTicket extends BaseController
             if ($this->LogUsageModel->insert($logData)) {
                 if ($this->sendEmailGroup($titleMail, $subjectMail, $messageEmail, $admin_email, '')) {
                     if ($this->ticketTaskModel->update($taskId, $updateData)) {
+
+                        // remove file when status close (4)
+                        // if ($status == 4) {
+                        //     $this->ticketTaskModel
+                        //     ->select('ticket_task.attachment, ticket_detail.attachment')
+                        //     ->join('ticket_detail', 'ticket_task.id = ticket_detail.taskId')
+                        //     ->where('ticket_task.id', $taskId)
+                        //     ->findAll();
+                        // }
+
                         $response = [
                                 'status' => 200,
                                 'title' => 'Success',

@@ -322,6 +322,32 @@
  </div>
  <!-- modal ticket detail dialog end -->
 
+ <!-- ticket detail modal -->
+ <div class="modal fade clear-modal" id="ticketTaskDetailModal" data-bs-backdrop="static" data-bs-keyboard="false"
+     tabindex="-1" aria-labelledby="ticketTaskDetailModalLabel" aria-hidden="true">
+     <div class="modal-dialog">
+         <div class="modal-content">
+             <div class="modal-header">
+                 <h5 class="modal-title" id="text-topicTask"></h5>
+                 <a href="#" class="icon-close" data-bs-dismiss="modal" aria-label="Close"></a>
+             </div>
+             <div class="modal-body">
+                 <div class="container">
+
+
+
+                 </div>
+                 <div class="modal-footer">
+                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                     <button type="submit" id="btnSendTicket" class="btn btn-primary">ส่งข้อมูล</button>
+                 </div>
+
+             </div>
+         </div>
+     </div>
+ </div>
+ <!-- ticket detail modal end -->
+
  <script>
      $(document).ready(function() {
          getAdminTicket();

@@ -277,20 +277,31 @@ class Ticket extends BaseController
             switch ($status) {
                 // accepted
                 case 1:
+                    if ($resultMail['subCat_period'] >= 60 && $resultMail['subCat_period'] <= 1440) {
+                        $timeUnit = 'ชั่วโมง';
+                        $dayTime = $resultMail['subCat_period'] / 60;
+                    } elseif ($resultMail['subCat_period'] < 60) {
+                        $timeUnit = 'นาที';
+                        $dayTime = $resultMail['subCat_period'];
+                    } else {
+                        $timeUnit = 'วัน';
+                        $dayTime = 24 / ($resultMail['subCat_period'] / 60) ;
+                    }
+
               
                     if ($this->request->getPost('action') == 'replyReturn') {
                         $titleMail = 'send email admin approved return ticket';
                         $subjectMail = 'แอดมินตอบรับการตีกลับ Ticket';
                         $messageEmail = '<p>';
                         $messageEmail .= '   <h3> Ticket ของคุณได้รับการตอบรับเรียบร้อยแล้ว </h3>' ;
-                        $messageEmail .= '     Ticket ' . $resultMail['topic']. ' ขณะนี้แอดมินกำลังตรวจสอบปัญหาอีกครั้ง ใช้เวลาดำเนินการประมาณ ' . $resultMail['subCat_period'] . ' ชั่วโมง';
+                        $messageEmail .= '     Ticket ' . $resultMail['topic']. ' ขณะนี้แอดมินกำลังตรวจสอบปัญหาอีกครั้ง ใช้เวลาดำเนินการประมาณ ' . $dayTime . ' ' .$timeUnit;
                         $messageEmail .= '</p> ';
                     } else {
                         $titleMail = 'send email admin approved ticket';
                         $subjectMail = 'แอดมินตอบรับ Ticket';
                         $messageEmail = '<p>';
                         $messageEmail .= '   <h3> Ticket ของคุณได้รับการตอบรับเรียบร้อยแล้ว </h3>' ;
-                        $messageEmail .= '     Ticket ' . $resultMail['topic']. ' ขณะนี้กำลังดำเนินการใช้เวลาประมาณ ' . $resultMail['subCat_period'] . ' ชั่วโมง';
+                        $messageEmail .= '     Ticket ' . $resultMail['topic']. ' ขณะนี้กำลังดำเนินการใช้เวลาประมาณ ' . $dayTime . ' ' .$timeUnit;
                         $messageEmail .= '</p> ';
                     }
 
@@ -337,7 +348,7 @@ class Ticket extends BaseController
 
                     break;
 
-                // success
+                    // success
                 case 2:
 
                     $cause = $this->request->getPost('cause');
@@ -425,9 +436,9 @@ class Ticket extends BaseController
                         return $this->response->setJson($response);
                     }
 
-                break;
+                    break;
                 
-                // reject
+                    // reject
                 case 3:
 
                     $reject = $this->request->getPost('action');
@@ -481,24 +492,24 @@ class Ticket extends BaseController
                         }
                     }
 
-                break;
+                    break;
 
-                // case 4:
-                // break;
+                    // case 4:
+                    // break;
 
-                // case 5:
-                // break;
+                    // case 5:
+                    // break;
 
                 default:
 
-                $response = [
-                    'status' => 404,
-                    'title' => 'Error!',
-                    'message' => 'ไม่สามารถอัพเดทข้อมูลได้',
-                ];
-                return $this->response->setJson($response);
+                    $response = [
+                        'status' => 404,
+                        'title' => 'Error!',
+                        'message' => 'ไม่สามารถอัพเดทข้อมูลได้',
+                    ];
+                    return $this->response->setJson($response);
 
-                break;
+                    break;
             }
         } else {
             $response = [
@@ -651,6 +662,69 @@ class Ticket extends BaseController
                             'title' => 'Error!',
                             'message' => 'ไม่สามารถบันทึก log ได้',
                         ];
+                return $this->response->setJson($response);
+            }
+        } else {
+            $response = [
+                'status' => 500,
+                'title' => 'Error',
+                'message' => 'Server internal error'
+            ];
+
+            return $this->response->setJSON($response);
+        }
+    }
+
+    public function getMoreTicketDetail()
+    {
+        if ($this->request->isAJAX()) {
+            $task_id = $this->request->getPost('taskId');
+            $task_id = 1;
+
+            $query['task'] = $this->ticketTaskModel
+            ->select(
+                'ticket_task.id as task_id,
+                ticket_task.topic as task_topic,
+                ticket_task.remark as task_remark,
+                ticket_task.createdAt as task_create,
+                ticket_task.updatedAt as task_update,
+                ticket_task.status as task_status,
+                ticket_task.userId as task_user,
+                ticket_task.attachment as task_attach,
+                catagories.nameCatTh as catName,
+                sub_catagories.nameSubCat as subCatName,
+                sub_catagories.period as periodTime,'
+            )
+            ->join('catagories', 'catagories.id = ticket_task.catId')
+            ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
+            ->findAll();
+        
+            $query['detail'] = $this->taskDetailModel
+            ->select(
+                'ticket_detail.cause as ticket_cause,
+                ticket_detail.solution as ticket_solution,
+                ticket_detail.remark as ticket_detail_remark,
+                ticket_detail.attachment as ticket_detail_attachment,
+                ticket_detail.remark as ticket_detail_remark'
+            )
+            ->where('ticket_detail.taskId', $task_id)
+            ->findAll();
+
+
+            if ($query) {
+                $response = [
+                    'status' => 200,
+                    'title' => 'Success!',
+                    'message' => 'ดึงข้อมูลสำเร็จ',
+                    'data' => $query,
+                ];
+                return $this->response->setJson($response);
+            } else {
+                $response = [
+                    'status' => 404,
+                    'title' => 'Error!',
+                    'message' => 'ไม่สามารถดึงข้อมูลได้',
+                ];
                 return $this->response->setJson($response);
             }
         } else {

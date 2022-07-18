@@ -2270,24 +2270,30 @@ const saveSubCat = () => {
           }, 1000);
         }
         if (response.status == 404 || response.status == 400) {
-          Swal.fire({
-            icon: "error",
-            title: response.title,
-            text: response.message,
-            showConfirmButton: false,
-            timer: 1000,
-          });
+          setTimeout(() => {
+            $(".preloader").hide();
+            Swal.fire({
+              icon: "error",
+              title: response.title,
+              text: response.message,
+              showConfirmButton: false,
+              timer: 1000,
+            });
+          }, 1000);
         }
       },
 
       error: function (error) {
-        Swal.fire({
-          icon: "error",
-          title: "เกิดข้อผิดผลาด!",
-          text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
-        }).then((result) => {
-          console.log(error);
-        });
+        setTimeout(() => {
+          $(".preloader").hide();
+          Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดผลาด!",
+            text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+          }).then((result) => {
+            console.log(error);
+          });
+        }, 1000);
       },
     });
   }
@@ -2479,7 +2485,7 @@ const getAdminTicket = () => {
         data: null,
         className: "text-center",
         render: function (data, type, full, meta) {
-          return `<a href="#" onclick="getMoreDetailTicket(${data.taskId})" data-bs-toggle="tooltip"
+          return `<a href="#" onclick="getMoreTicketDetail(${data.taskId})" data-bs-toggle="tooltip"
                       data-bs-placement="bottom" title="more detail" class="btn btn-sm btn-cyan">
                       <i class="fas fa-list"></i>
                   </a>`;
@@ -2675,20 +2681,20 @@ const updateTicketStatus = (id, action, status) => {
           getCategoryTicket();
           getOwnerTicket(id);
 
-          if (
-            !$("#changeTicketCategory").val() ||
-            !$("#changeTicketSubCategory").val() ||
-            !$("#changeTicketOwner").val()
-          ) {
-            Swal.fire("คำเตือน!", "กรุณาเลือกข้อมูลให้ครบถ้วน", "warning");
-          }
+          $("#btnChangeTicket").click(function (e) {
+            if (
+              !$("#changeTicketCategory").val() ||
+              !$("#changeTicketSubCategory").val() ||
+              !$("#changeTicketOwner").val()
+            ) {
+              Swal.fire("คำเตือน!", "กรุณาเลือกข้อมูลให้ครบถ้วน", "warning");
+            }
 
-          if (
-            $("#changeTicketCategory").val() &&
-            $("#changeTicketSubCategory").val() &&
-            $("#changeTicketOwner").val()
-          ) {
-            $("#btnChangeTicket").click(function (e) {
+            if (
+              $("#changeTicketCategory").val() &&
+              $("#changeTicketSubCategory").val() &&
+              $("#changeTicketOwner").val()
+            ) {
               $(".preloader").show();
               $.ajax({
                 url: `${baseUrl}admin/ticket/reject/change`,
@@ -2744,8 +2750,8 @@ const updateTicketStatus = (id, action, status) => {
                   }, 1500);
                 },
               });
-            });
-          }
+            }
+          });
         }
       });
 
@@ -3053,13 +3059,6 @@ const getAdminTicketByStatus = (status) => {
       data: {
         status: status,
       },
-      error: function () {
-        $(".customer-grid-error").html("");
-        $("#tableTicketAdmin").append(
-          '<tbody class="customer-grid-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>',
-        );
-        $("#tableTicketAdmin_processing").css("display", "none");
-      },
     },
     columns: [
       {
@@ -3177,6 +3176,48 @@ const getAdminTicketByStatus = (status) => {
         },
       },
     ],
+  });
+};
+
+const getMoreTicketDetail = (taskId) => {
+  $.ajax({
+    url: `${baseUrl}admin/ticket/more/detail`,
+    type: "POST",
+    data: {
+      taskId: taskId,
+    },
+
+    success: function (response) {
+      if (response.status == 200) {
+        // show modal when load data success
+        $("#ticketTaskDetailModal").modal("show");
+
+        console.log(response.data);
+
+        // and set data in modal with js
+        $("#text-topicTask").html(response.data.topic);
+      }
+
+      if (response.status == 404 || response.status == 400) {
+        Swal.fire({
+          icon: "error",
+          title: response.title,
+          text: response.message,
+          showConfirmButton: false,
+          timer: 1000,
+        });
+      }
+    },
+
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(error);
+      });
+    },
   });
 };
 // ======================================================================== //
