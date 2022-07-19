@@ -3220,6 +3220,59 @@ const getMoreTicketDetail = (taskId) => {
     },
   });
 };
+
+// dashboard
+const oftenTicketDashboard = () => {
+  $("#oftenTicketTable").dataTable({
+    processing: true,
+    stateSave: true,
+    searching: false,
+    responsive: true,
+    paging: false,
+    order: false,
+    bDestroy: true,
+    bInfo: false,
+    colReorder: {
+      realtime: true,
+    },
+    ajax: {
+      url: `${baseUrl}admin/dashboard/ticket/often/list`,
+      type: "GET",
+    },
+    columns: [
+      {
+        targets: 0,
+        data: null,
+        searchable: true,
+        orderable: true,
+        render: function (data, type, full, meta) {
+          return `<div class="d-flex no-block">
+                         <div class="text-left px-5">
+                            <h5 class="text-dark mb-0 font-16 font-weight-medium">${data.catName}</h5>
+                         <span class="text-muted font-14">${data.subCatName}</span>
+                    </div>
+                 </div>`;
+        },
+      },
+      {
+        data: "ownerTicket",
+        className: "text-center",
+      },
+      {
+        data: null,
+        className: "text-center",
+        render: function (data, type, full, meta) {
+          return `<div class="popover-icon">
+                     <a class="btn btn-warning rounded-circle btn-sm" href="javascript:void(0)">
+                        ${data.countTicket}
+                     </a>
+                  </div>`;
+        },
+      },
+    ],
+  });
+};
+
 // ======================================================================== //
 
 // ======================================================================== //

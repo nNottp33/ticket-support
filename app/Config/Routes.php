@@ -49,6 +49,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
 
         // dashboard
         $routes->get('/', 'Home::index');
+        $routes->get('dashboard/ticket/often/list', 'Home::getTicketOften');
 
         // ticket page
         $routes->get('ticket/list', 'Ticket::index');
