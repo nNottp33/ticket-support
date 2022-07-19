@@ -179,7 +179,7 @@
  <!-- ticket detail modal -->
  <div class="modal fade clear-modal" id="userTicketDetailModal" data-bs-backdrop="static" data-bs-keyboard="false"
      tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
-     <div class="modal-dialog">
+     <div class="modal-dialog modal-lg">
          <div class="modal-content">
              <div class="modal-header">
                  <h5 class="modal-title" id="titleTicketDetail"></h5>
@@ -235,13 +235,44 @@
                          <h5 for="">รายละเอียด</h5>
                          <p id="taskDetail" class="pl-3 text-dark text-wrap"></p>
                      </div>
-                     <div class="form-group">
+                     <div class="form-group mb-4">
                          <small class="form-text text-muted">ภาพประกอบ</small>
                          <div class="display-upload-img">
-                             <img class="image-task" id="imgTask" src="" alt="Image preview" width="100%" height="180">
+                             <img class="image-task" id="imgTask" src="" alt="Image preview">
                          </div>
                      </div>
 
+                     <div class="mb-4">
+                         <div id="accordion" class="custom-accordion mb-4">
+                             <div class="card mb-0">
+                                 <div class="card-header" id="headingOne">
+                                     <h5 class="m-0">
+                                         <a class="custom-accordion-title d-block pt-2 pb-2" data-toggle="collapse"
+                                             href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                             Timeline <span class="float-right"><i
+                                                     class="mdi mdi-chevron-down accordion-arrow"></i></span>
+                                         </a>
+                                     </h5>
+                                 </div>
+                                 <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+                                     data-parent="#accordion">
+                                     <div class="card-body">
+                                         Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry
+                                         richardson ad squid. 3 wolf moon officia aute,
+                                         non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum
+                                         eiusmod. Brunch 3 wolf moon
+                                         tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda
+                                         shoreditch et. Nihil
+                                         anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente
+                                         ea proident. Ad vegan
+                                         excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw
+                                         denim aesthetic synth nesciunt
+                                         you probably haven't heard of them accusamus labore sustainable VHS.
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
                  </div>
                  <div class="modal-footer">
                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
@@ -256,7 +287,6 @@
  <script>
      $(document).ready(function() {
          getUserTicket();
-
      });
  </script>
 

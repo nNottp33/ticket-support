@@ -75,6 +75,28 @@ const togglePassword = (id, inputParent) => {
   }
 };
 
+const count = ($this) => {
+  var current = parseInt($this.html(), 10);
+  $this.html(++current);
+  if (current <= 10) {
+    setTimeout(function () {
+      count($this);
+    }, 50);
+  } else {
+    reduce($this, current);
+  }
+};
+
+const reduce = ($this, current) => {
+  $this.html(--current);
+  if (current != 0) {
+    setTimeout(function () {
+      reduce($this, current);
+    }, 80);
+  } else {
+    count($this);
+  }
+};
 // ======================================================================== //
 
 // ------------------------------------------------------------------------ //
@@ -3586,7 +3608,7 @@ const getMoreDetailTicket = (ticketId) => {
       if (response.status == 200) {
         $("#userTicketDetailModal").modal("show");
 
-        switch (parseInt(response.data[0].status)) {
+        switch (parseInt(response.data[0].task_status)) {
           case 1:
             $("#textStatus").html("รับคำร้อง").css("color", "#6c757d");
             break;
@@ -3610,14 +3632,14 @@ const getMoreDetailTicket = (ticketId) => {
             break;
         }
 
-        $("#titleTicketDetail").html(response.data[0].topic);
-        $("#taskDetail").html(response.data[0].remark);
-        $("#textPeriod").html(response.data[0].period);
-        $("#textCat").html(response.data[0].nameCatTh);
-        $("#textSubCat").html(response.data[0].nameSubCat);
+        $("#titleTicketDetail").html(response.data[0].task_topic);
+        $("#taskDetail").html(response.data[0].task_remark);
+        $("#textPeriod").html(response.data[0].periodTime);
+        $("#textCat").html(response.data[0].catName);
+        $("#textSubCat").html(response.data[0].subCatName);
         $("#imgTask").attr(
           "src",
-          `${baseUrl}store_files_uploaded/${response.data[0].attachment}`,
+          `${baseUrl}store_files_uploaded/${response.data[0].task_attach}`,
         );
       }
 
@@ -3629,6 +3651,7 @@ const getMoreDetailTicket = (ticketId) => {
           showConfirmButton: false,
           timer: 1000,
         }).then((result) => {
+          console.log(response);
           return false;
         });
       }
@@ -3645,6 +3668,14 @@ const getMoreDetailTicket = (ticketId) => {
     },
   });
 };
+
+$("#imgTask").toggle(function () {
+  // this.requestFullscreen();
+  $("#imgTask").css({
+    transform: "scale(3)",
+    transition: "transform 0.25s ease",
+  });
+});
 
 const updateStatusUserTicket = (action, taskId) => {
   if (action == "close") {

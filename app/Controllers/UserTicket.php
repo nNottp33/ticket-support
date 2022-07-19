@@ -145,7 +145,6 @@ class UserTicket extends BaseController
         }
     }
 
-
     public function getTicketByUser()
     {
         if ($this->request->isAJAX()) {
@@ -156,6 +155,10 @@ class UserTicket extends BaseController
             ->join('catagories', 'catagories.id = ticket_task.catId')
             ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
             ->orderBy('ticket_task.id', 'DESC')->findAll();
+
+            // echo "<pre>";
+            // print_r($query);
+            // die();
 
             if ($query) {
                 $response = [
@@ -188,7 +191,38 @@ class UserTicket extends BaseController
     {
         if ($this->request->isAJAX()) {
             $ticketId = $this->request->getPost('ticketId');
-            $query = $this->ticketTaskModel->select('ticket_task.*, catagories.nameCatTh, sub_catagories.nameSubCat, sub_catagories.detail as subCat_detail, sub_catagories.period')->where('ticket_task.id', $ticketId)->where('ticket_task.userId', $this->session->get('id'))->join('catagories', 'catagories.id = ticket_task.catId')->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')->findAll();
+
+            $query = $this->ticketTaskModel
+            ->select(
+                'ticket_task.id as task_id,
+                ticket_task.topic as task_topic,
+                ticket_task.remark as task_remark,
+                ticket_task.createdAt as task_create,
+                ticket_task.updatedAt as task_update,
+                ticket_task.status as task_status,
+                ticket_task.userId as task_user,
+                ticket_task.attachment as task_attach,
+                catagories.nameCatTh as catName,
+                sub_catagories.nameSubCat as subCatName,
+                sub_catagories.period as periodTime,'
+            )
+            ->join('catagories', 'catagories.id = ticket_task.catId')
+            ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
+            ->where('ticket_task.id', $ticketId)
+            ->where('ticket_task.userId', $this->session->get('id'))
+            ->findAll();
+            
+        
+            $query[0]['timeline'] = $this->taskDetailModel
+            ->select(
+                'ticket_detail.cause as ticket_cause,
+                ticket_detail.solution as ticket_solution,
+                ticket_detail.remark as ticket_detail_remark,
+                ticket_detail.attachment as ticket_detail_attachment,
+                ticket_detail.remark as ticket_detail_remark'
+            )
+            ->where('ticket_detail.taskId', $ticketId)
+            ->findAll();
 
 
             if ($query) {

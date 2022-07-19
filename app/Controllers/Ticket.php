@@ -679,7 +679,6 @@ class Ticket extends BaseController
     {
         if ($this->request->isAJAX()) {
             $task_id = $this->request->getPost('taskId');
-            $task_id = 1;
 
             $query['task'] = $this->ticketTaskModel
             ->select(
@@ -697,6 +696,7 @@ class Ticket extends BaseController
             )
             ->join('catagories', 'catagories.id = ticket_task.catId')
             ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
+            ->where('ticket_task.taskId', $task_id)
             ->findAll();
         
             $query['detail'] = $this->taskDetailModel

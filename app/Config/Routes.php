@@ -104,6 +104,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->get('catagories/sub', 'Catagory::getSubCatagory');
         $routes->post('ticket/save', 'UserTicket::saveTicket');
         $routes->get('ticket/list', 'UserTicket::getTicketByUser');
+        // $routes->match(['get', 'post'], 'ticket/detail', 'UserTicket::getTicketDetail');
         $routes->post('ticket/detail', 'UserTicket::getTicketDetail');
         $routes->post('ticket/update/status', 'UserTicket::updateTicket');
         $routes->get('ticket/update/status', 'UserTicket::updateTicket');
