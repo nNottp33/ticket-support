@@ -250,25 +250,40 @@ const logout = () => {
 // user list page
 const userList = () => {
   // table user in admin user page
-  var tableUsers = $("#tableUser").dataTable({
-    processing: true,
-    stateSave: true,
-    searching: true,
-    responsive: true,
-    bDestroy: true,
-    colReorder: {
-      realtime: true,
-    },
-    ajax: `${baseUrl}admin/users/list`,
-    columns: [
-      {
-        targets: 0,
-        data: null,
-        className: "text-center",
-        searchable: true,
-        orderable: true,
-        render: function (data, type, full, meta) {
-          return `<div>  
+  var tableUsers = $("#tableUser")
+    .on("xhr.dt", function (e, settings, json, xhr) {
+      if (json.status === 404) {
+        $(this).DataTable({
+          processing: true,
+          stateSave: true,
+          searching: true,
+          responsive: true,
+          bDestroy: true,
+          colReorder: {
+            realtime: true,
+          },
+        });
+      }
+    })
+    .dataTable({
+      processing: true,
+      stateSave: true,
+      searching: true,
+      responsive: true,
+      bDestroy: true,
+      colReorder: {
+        realtime: true,
+      },
+      ajax: `${baseUrl}admin/users/list`,
+      columns: [
+        {
+          targets: 0,
+          data: null,
+          className: "text-center",
+          searchable: true,
+          orderable: true,
+          render: function (data, type, full, meta) {
+            return `<div>  
                       <a href="#" data-toggle="tooltip" title="แก้ไขข้อมูล" onclick="editUser(${data.id})" class="btn btn-primary btn-sm"> 
                         <i class="fas fa-edit"></i>
                       </a>
@@ -279,90 +294,90 @@ const userList = () => {
                         <i class="fas fa-key"></i>
                       </a>
                   </div>`;
+          },
         },
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          if (data.status == 0) {
-            return `<div class="form-group">
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            if (data.status == 0) {
+              return `<div class="form-group">
             <div class="custom-control custom-switch">
               <input  onchange="changeStatusUser(this, '${data.id}', '${data.email}', 'on')" type="checkbox" class="custom-control-input" id="switchStatus${data.id}" name='machine_state'>
               <label class="custom-control-label" id="statusText" for="switchStatus${data.id}"></label>
             </div>
           </div>`;
-          }
-          if (data.status == 1) {
-            return `<div class="form-group">
+            }
+            if (data.status == 1) {
+              return `<div class="form-group">
             <div class="custom-control custom-switch">
               <input onchange="changeStatusUser(this, '${data.id}', '${data.email}', 'off')" type="checkbox" checked="true" class="custom-control-input" id="switchStatus${data.id}" name='machine_state'>
               <label class="custom-control-label" id="statusText" for="switchStatus${data.id}"></label>
             </div>
           </div>`;
-          }
+            }
+          },
         },
-      },
-      {
-        data: "empId",
-      },
-      {
-        data: "email",
-      },
+        {
+          data: "empId",
+        },
+        {
+          data: "email",
+        },
 
-      {
-        data: null,
-        render: function (data, type, full, meta) {
-          return `<span> ${data.prefix} ${data.fullname} </span>`;
+        {
+          data: null,
+          render: function (data, type, full, meta) {
+            return `<span> ${data.prefix} ${data.fullname} </span>`;
+          },
         },
-      },
-      {
-        data: "nickname",
-      },
-      {
-        data: null,
-        render: function (data, type, full, meta) {
-          return `<span> ${data.tel.replace(
-            /(\d{3})(\d{3})(\d{4})/,
-            "$1-$2-$3",
-          )} </span>`;
+        {
+          data: "nickname",
         },
-      },
-      {
-        data: "department",
-      },
-      {
-        data: "position",
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          if (data.class == "admin") {
-            return `<span class="badge badge-purple"> ${data.class} </span>`;
-          }
+        {
+          data: null,
+          render: function (data, type, full, meta) {
+            return `<span> ${data.tel.replace(
+              /(\d{3})(\d{3})(\d{4})/,
+              "$1-$2-$3",
+            )} </span>`;
+          },
+        },
+        {
+          data: "department",
+        },
+        {
+          data: "position",
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            if (data.class == "admin") {
+              return `<span class="badge badge-purple"> ${data.class} </span>`;
+            }
 
-          if (data.class == "user") {
-            return `<span class="badge badge-cyan"> ${data.class} </span>`;
-          }
+            if (data.class == "user") {
+              return `<span class="badge badge-cyan"> ${data.class} </span>`;
+            }
+          },
         },
-      },
-      {
-        data: null,
-        render: function (data, type, full, meta) {
-          if (data.lastLogin == 0) {
-            return `<span class="text-danger"> <b> ไม่พบการเข้าสู่ระบบ </b> </span>`;
-          }
+        {
+          data: null,
+          render: function (data, type, full, meta) {
+            if (data.lastLogin == 0) {
+              return `<span class="text-danger"> <b> ไม่พบการเข้าสู่ระบบ </b> </span>`;
+            }
 
-          if (data.lastLogin != 0) {
-            return `<span class="text-success"> <b> ${moment
-              .unix(data.lastLogin)
-              .format("DD/MM/YYYY HH:mm")} </b> </span>`;
-          }
+            if (data.lastLogin != 0) {
+              return `<span class="text-success"> <b> ${moment
+                .unix(data.lastLogin)
+                .format("DD/MM/YYYY HH:mm")} </b> </span>`;
+            }
+          },
         },
-      },
-    ],
-  });
+      ],
+    });
 };
 
 const changeStatusUser = (status, id, email, action) => {
@@ -488,31 +503,52 @@ const changeStatusUser = (status, id, email, action) => {
 };
 
 const userListByStatus = (status) => {
-  var tableUsers = $("#tableUser").dataTable({
-    processing: true,
-    stateSave: true,
-    searching: true,
-    responsive: true,
-    bDestroy: true,
-    colReorder: {
-      realtime: true,
-    },
-    ajax: {
-      url: `${baseUrl}admin/users/list/byStatus`,
-      type: "GET",
-      data: {
-        status: status,
+  var tableUsers = $("#tableUser")
+    .on("xhr.dt", function (e, settings, json, xhr) {
+      if (json.status === 404) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops!",
+          text: "ไม่พบข้อมูลที่คุณร้องขอ!",
+        }).then((result) => {
+          $(this).DataTable({
+            processing: true,
+            stateSave: true,
+            searching: true,
+            responsive: true,
+            bDestroy: true,
+            colReorder: {
+              realtime: true,
+            },
+          });
+        });
+      }
+    })
+    .dataTable({
+      processing: true,
+      stateSave: true,
+      searching: true,
+      responsive: true,
+      bDestroy: true,
+      colReorder: {
+        realtime: true,
       },
-    },
-    columns: [
-      {
-        targets: 0,
-        data: null,
-        className: "text-center",
-        searchable: true,
-        orderable: true,
-        render: function (data, type, full, meta) {
-          return `<div>  
+      ajax: {
+        url: `${baseUrl}admin/users/list/byStatus`,
+        type: "GET",
+        data: {
+          status: status,
+        },
+      },
+      columns: [
+        {
+          targets: 0,
+          data: null,
+          className: "text-center",
+          searchable: true,
+          orderable: true,
+          render: function (data, type, full, meta) {
+            return `<div>  
                       <a href="#" data-toggle="tooltip" title="แก้ไขข้อมูล" onclick="editUser(${data.id})" class="btn btn-primary btn-sm"> 
                         <i class="fas fa-edit"></i>
                       </a>
@@ -523,90 +559,90 @@ const userListByStatus = (status) => {
                         <i class="fas fa-key"></i>
                       </a>
                   </div>`;
+          },
         },
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          if (data.status == 0) {
-            return `<div class="form-group">
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            if (data.status == 0) {
+              return `<div class="form-group">
             <div class="custom-control custom-switch">
               <input  onchange="changeStatusUser(this, '${data.id}', '${data.email}', 'on')" type="checkbox" class="custom-control-input" id="switchStatus${data.id}" name='machine_state'>
               <label class="custom-control-label" id="statusText" for="switchStatus${data.id}"></label>
             </div>
           </div>`;
-          }
-          if (data.status == 1) {
-            return `<div class="form-group">
+            }
+            if (data.status == 1) {
+              return `<div class="form-group">
             <div class="custom-control custom-switch">
               <input onchange="changeStatusUser(this, '${data.id}', '${data.email}', 'off')" type="checkbox" checked="true" class="custom-control-input" id="switchStatus${data.id}" name='machine_state'>
               <label class="custom-control-label" id="statusText" for="switchStatus${data.id}"></label>
             </div>
           </div>`;
-          }
+            }
+          },
         },
-      },
-      {
-        data: "empId",
-      },
-      {
-        data: "email",
-      },
+        {
+          data: "empId",
+        },
+        {
+          data: "email",
+        },
 
-      {
-        data: null,
-        render: function (data, type, full, meta) {
-          return `<span> ${data.prefix} ${data.fullname} </span>`;
+        {
+          data: null,
+          render: function (data, type, full, meta) {
+            return `<span> ${data.prefix} ${data.fullname} </span>`;
+          },
         },
-      },
-      {
-        data: "nickname",
-      },
-      {
-        data: null,
-        render: function (data, type, full, meta) {
-          return `<span> ${data.tel.replace(
-            /(\d{3})(\d{3})(\d{4})/,
-            "$1-$2-$3",
-          )} </span>`;
+        {
+          data: "nickname",
         },
-      },
-      {
-        data: "department",
-      },
-      {
-        data: "position",
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          if (data.class == "admin") {
-            return `<span class="badge badge-purple"> ${data.class} </span>`;
-          }
+        {
+          data: null,
+          render: function (data, type, full, meta) {
+            return `<span> ${data.tel.replace(
+              /(\d{3})(\d{3})(\d{4})/,
+              "$1-$2-$3",
+            )} </span>`;
+          },
+        },
+        {
+          data: "department",
+        },
+        {
+          data: "position",
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            if (data.class == "admin") {
+              return `<span class="badge badge-purple"> ${data.class} </span>`;
+            }
 
-          if (data.class == "user") {
-            return `<span class="badge badge-cyan"> ${data.class} </span>`;
-          }
+            if (data.class == "user") {
+              return `<span class="badge badge-cyan"> ${data.class} </span>`;
+            }
+          },
         },
-      },
-      {
-        data: null,
-        render: function (data, type, full, meta) {
-          if (data.lastLogin == 0) {
-            return `<span class="text-danger"> <b> ไม่พบการเข้าสู่ระบบ </b> </span>`;
-          }
+        {
+          data: null,
+          render: function (data, type, full, meta) {
+            if (data.lastLogin == 0) {
+              return `<span class="text-danger"> <b> ไม่พบการเข้าสู่ระบบ </b> </span>`;
+            }
 
-          if (data.lastLogin != 0) {
-            return `<span class="text-success"> <b> ${moment
-              .unix(data.lastLogin)
-              .format("DD/MM/YYYY HH:mm")} </b> </span>`;
-          }
+            if (data.lastLogin != 0) {
+              return `<span class="text-success"> <b> ${moment
+                .unix(data.lastLogin)
+                .format("DD/MM/YYYY HH:mm")} </b> </span>`;
+            }
+          },
         },
-      },
-    ],
-  });
+      ],
+    });
 };
 
 const countUser = () => {
@@ -1300,25 +1336,40 @@ const getOTP = () => {
 var categoryId;
 
 const catList = () => {
-  var tableCat = $("#tableCat").dataTable({
-    processing: true,
-    stateSave: true,
-    searching: true,
-    responsive: true,
-    bDestroy: true,
-    colReorder: {
-      realtime: true,
-    },
-    ajax: `${baseUrl}admin/catagories/list`,
-    columns: [
-      {
-        targets: 0,
-        data: null,
-        className: "text-center",
-        searchable: true,
-        orderable: true,
-        render: function (data, type, full, meta) {
-          return `<div>  
+  var tableCat = $("#tableCat")
+    .on("xhr.dt", function (e, settings, json, xhr) {
+      if (json.status === 404) {
+        $(this).DataTable({
+          processing: true,
+          stateSave: true,
+          searching: true,
+          responsive: true,
+          bDestroy: true,
+          colReorder: {
+            realtime: true,
+          },
+        });
+      }
+    })
+    .dataTable({
+      processing: true,
+      stateSave: true,
+      searching: true,
+      responsive: true,
+      bDestroy: true,
+      colReorder: {
+        realtime: true,
+      },
+      ajax: `${baseUrl}admin/catagories/list`,
+      columns: [
+        {
+          targets: 0,
+          data: null,
+          className: "text-center",
+          searchable: true,
+          orderable: true,
+          render: function (data, type, full, meta) {
+            return `<div>  
                       <a href="#" data-toggle="tooltip" title="แก้ไขข้อมูล" onclick="editCat(${data.id})" class="btn btn-primary btn-sm"> 
                         <i class="fas fa-edit"></i>
                       </a>
@@ -1326,107 +1377,122 @@ const catList = () => {
                         <i class="fas fa-trash"></i>
                       </a>
                   </div>`;
+          },
         },
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          if (data.status == 0) {
-            return `<div class="form-group">
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            if (data.status == 0) {
+              return `<div class="form-group">
             <div class="custom-control custom-switch">
               <input  onchange="changeStatusCat(this, '${data.id}', '${data.nameSubCat}')" type="checkbox" class="custom-control-input" id="switchCat${data.id}" name='machine_state'>
               <label class="custom-control-label" id="statusText" for="switchCat${data.id}"></label>
             </div>
           </div>`;
-          }
-          if (data.status == 1) {
-            return `<div class="form-group">
+            }
+            if (data.status == 1) {
+              return `<div class="form-group">
             <div class="custom-control custom-switch">
               <input onchange="changeStatusCat(this, '${data.id}', '${data.nameSubCat}')" type="checkbox" checked="true" class="custom-control-input" id="switchCat${data.id}" name='machine_state'>
               <label class="custom-control-label" id="statusText" for="switchCat${data.id}"></label>
             </div>
           </div>`;
-          }
+            }
+          },
         },
-      },
-      {
-        data: "nameCatTh",
-        className: "text-center",
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          return `<a href="#" onclick="getOwner(${data.id})" data-bs-toggle="tooltip"
+        {
+          data: "nameCatTh",
+          className: "text-center",
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            return `<a href="#" onclick="getOwner(${data.id})" data-bs-toggle="tooltip"
                                  data-bs-placement="bottom" title="owner detail" class="btn btn-sm btn-info">
                     <i class="fas fa-users"></i>
                   </a>`;
+          },
         },
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          return `<a href="#" onclick="getSubCatagories(${data.id})" data-bs-toggle="tooltip"
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            return `<a href="#" onclick="getSubCatagories(${data.id})" data-bs-toggle="tooltip"
                       data-bs-placement="bottom" title="more sub catagory" class="btn btn-sm btn-dark">
                       <i class="fas fa-list"></i>
                   </a>`;
+          },
         },
-      },
-    ],
-  });
+      ],
+    });
 };
 
 const getOwner = (groupId) => {
   categoryId = groupId;
   $("#adminDetailModal").modal("show");
-  var tableListOwner = $("#tableListOwner").dataTable({
-    processing: true,
-    stateSave: true,
-    searching: true,
-    responsive: true,
-    bDestroy: true,
-    colReorder: {
-      realtime: true,
-    },
-    ajax: {
-      url: `${baseUrl}admin/catagories/owner`,
-      type: "GET",
-      data: {
-        ownerGroupId: groupId,
+  var tableListOwner = $("#tableListOwner")
+    .on("xhr.dt", function (e, settings, json, xhr) {
+      if (json.status === 404) {
+        $(this).DataTable({
+          processing: true,
+          stateSave: true,
+          searching: true,
+          responsive: true,
+          bDestroy: true,
+          colReorder: {
+            realtime: true,
+          },
+        });
+      }
+    })
+    .dataTable({
+      processing: true,
+      stateSave: true,
+      searching: true,
+      responsive: true,
+      bDestroy: true,
+      colReorder: {
+        realtime: true,
       },
-    },
-    columns: [
-      {
-        data: "ownerEmpId",
-        className: "text-center",
+      ajax: {
+        url: `${baseUrl}admin/catagories/owner`,
+        type: "GET",
+        data: {
+          ownerGroupId: groupId,
+        },
       },
-      {
-        data: "ownerName",
-        className: "text-center",
-      },
-      {
-        data: "ownerEmail",
-        className: "text-center",
-      },
-      {
-        data: "ownerPosition",
-        className: "text-center",
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          return `<div>
+      columns: [
+        {
+          data: "ownerEmpId",
+          className: "text-center",
+        },
+        {
+          data: "ownerName",
+          className: "text-center",
+        },
+        {
+          data: "ownerEmail",
+          className: "text-center",
+        },
+        {
+          data: "ownerPosition",
+          className: "text-center",
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            return `<div>
              <a href="#" data-toggle="tooltip" title="ลบข้อมูล" onclick="deleteOwner(${data.id}, '${data.ownerName}')" class="btn btn-danger btn-sm">
                         <i class="fas fa-trash"></i>
                       </a>
           </div>`;
+          },
         },
-      },
-    ],
-  });
+      ],
+    });
 };
 
 const insertOwner = () => {
@@ -1985,28 +2051,43 @@ const getSubCatagories = (catId) => {
   $("#subCatModal").modal("show");
   categoryId = catId;
 
-  var tableSubCat = $("#tableSubCat").dataTable({
-    processing: true,
-    stateSave: true,
-    searching: true,
-    responsive: true,
-    bDestroy: true,
-    ajax: {
-      url: `${baseUrl}admin/catagories/sub`,
-      type: "GET",
-      data: {
-        catId: catId,
+  var tableSubCat = $("#tableSubCat")
+    .on("xhr.dt", function (e, settings, json, xhr) {
+      if (json.status === 404) {
+        $(this).DataTable({
+          processing: true,
+          stateSave: true,
+          searching: true,
+          responsive: true,
+          bDestroy: true,
+          colReorder: {
+            realtime: true,
+          },
+        });
+      }
+    })
+    .dataTable({
+      processing: true,
+      stateSave: true,
+      searching: true,
+      responsive: true,
+      bDestroy: true,
+      ajax: {
+        url: `${baseUrl}admin/catagories/sub`,
+        type: "GET",
+        data: {
+          catId: catId,
+        },
       },
-    },
-    columns: [
-      {
-        targets: 0,
-        data: null,
-        className: "text-center",
-        searchable: true,
-        orderable: true,
-        render: function (data, type, full, meta) {
-          return `<div>  
+      columns: [
+        {
+          targets: 0,
+          data: null,
+          className: "text-center",
+          searchable: true,
+          orderable: true,
+          render: function (data, type, full, meta) {
+            return `<div>  
                       <a href="#" data-toggle="tooltip" title="แก้ไขข้อมูล" onclick="editSubCat(${data.id})" class="btn btn-primary btn-sm"> 
                         <i class="fas fa-edit"></i>
                       </a>
@@ -2014,55 +2095,55 @@ const getSubCatagories = (catId) => {
                         <i class="fas fa-trash"></i>
                       </a>
                   </div>`;
+          },
         },
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          if (data.status == 0) {
-            return `<div class="form-group">
-            <div class="custom-control custom-switch">
-              <input  onchange="changeStatusSubCat(this, '${data.id}', '${data.nameSubCat}')" type="checkbox" class="custom-control-input" id="customSwitch${data.id}" name='machine_state'>
-              <label class="custom-control-label" id="statusText" for="customSwitch${data.id}"></label>
-            </div>
-          </div>`;
-          }
-          if (data.status == 1) {
-            return `<div class="form-group">
-            <div class="custom-control custom-switch">
-              <input onchange="changeStatusSubCat(this, '${data.id}', '${data.nameSubCat}')" type="checkbox" checked="true" class="custom-control-input" id="customSwitch${data.id}" name='machine_state'>
-              <label class="custom-control-label" id="statusText" for="customSwitch${data.id}"></label>
-            </div>
-          </div>`;
-          }
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            if (data.status == 0) {
+              return `<div class="form-group">
+                <div class="custom-control custom-switch">
+                  <input  onchange="changeStatusSubCat(this, '${data.id}', '${data.nameSubCat}')" type="checkbox" class="custom-control-input" id="customSwitch${data.id}" name='machine_state'>
+                  <label class="custom-control-label" id="statusText" for="customSwitch${data.id}"></label>
+                </div>
+              </div>`;
+            }
+            if (data.status == 1) {
+              return `<div class="form-group">
+                <div class="custom-control custom-switch">
+                  <input onchange="changeStatusSubCat(this, '${data.id}', '${data.nameSubCat}')" type="checkbox" checked="true" class="custom-control-input" id="customSwitch${data.id}" name='machine_state'>
+                  <label class="custom-control-label" id="statusText" for="customSwitch${data.id}"></label>
+                </div>
+              </div>`;
+            }
+          },
         },
-      },
-      {
-        data: "nameSubCat",
-      },
-      {
-        data: "detail",
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          if (data.period < 60 && data.period > 0) {
-            return `<span> ${data.period} นาที</span> `;
-          }
+        {
+          data: "nameSubCat",
+        },
+        {
+          data: "detail",
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            if (data.period < 60 && data.period > 0) {
+              return `<span> ${data.period} นาที</span> `;
+            }
 
-          if (data.period >= 60) {
-            return `<span> ${data.period / 60} ชั่วโมง</span> `;
-          }
+            if (data.period >= 60) {
+              return `<span> ${data.period / 60} ชั่วโมง</span> `;
+            }
 
-          if (data.period == 0) {
-            return `<span> ไม่มีข้อมูล </span> `;
-          }
+            if (data.period == 0) {
+              return `<span> ไม่มีข้อมูล </span> `;
+            }
+          },
         },
-      },
-    ],
-  });
+      ],
+    });
 };
 
 const deleteSubCat = (subCatId, nameSubCat) => {
@@ -2428,26 +2509,41 @@ const editSubCat = (id) => {
 
 // ============================= Ticket page ============================== //
 const getAdminTicket = () => {
-  var tableTicketAdmin = $("#tableTicketAdmin").dataTable({
-    processing: true,
-    stateSave: true,
-    searching: true,
-    responsive: true,
-    bDestroy: true,
-    colReorder: {
-      realtime: true,
-    },
-    ajax: `${baseUrl}admin/ticket/show/list`,
-    columns: [
-      {
-        targets: 0,
-        data: null,
-        className: "text-center",
-        searchable: true,
-        orderable: true,
-        render: function (data, type, full, meta) {
-          if (data.task_status == 0) {
-            return `<div>  
+  var tableTicketAdmin = $("#tableTicketAdmin")
+    .on("xhr.dt", function (e, settings, json, xhr) {
+      if (json.status === 404) {
+        $(this).DataTable({
+          processing: true,
+          stateSave: true,
+          searching: true,
+          responsive: true,
+          bDestroy: true,
+          colReorder: {
+            realtime: true,
+          },
+        });
+      }
+    })
+    .dataTable({
+      processing: true,
+      stateSave: true,
+      searching: true,
+      responsive: true,
+      bDestroy: true,
+      colReorder: {
+        realtime: true,
+      },
+      ajax: `${baseUrl}admin/ticket/show/list`,
+      columns: [
+        {
+          targets: 0,
+          data: null,
+          className: "text-center",
+          searchable: true,
+          orderable: true,
+          render: function (data, type, full, meta) {
+            if (data.task_status == 0) {
+              return `<div>  
                        <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Confirm Ticket" onclick="updateTicketStatus('${data.taskId}', 'approve', 1)" class="btn btn-success btn-sm">
                           <i class="fas fa-check"></i>
                       </a>
@@ -2455,106 +2551,106 @@ const getAdminTicket = () => {
                         <i class="fas fa-times"> </i>
                       </a> 
                     </div>`;
-          }
+            }
 
-          if (data.task_status == 1) {
-            return `<div data-toggle="tooltip" title="Accepted pending...">  
+            if (data.task_status == 1) {
+              return `<div data-toggle="tooltip" title="Accepted pending...">  
                       <a href="#" onclick="updateTicketStatus('${data.taskId}', 'completed', 2)" class="btn btn-warning btn-sm">
                           <li class="fas fa-clock"></li>
                       </a> 
                     </div>`;
-          }
+            }
 
-          if (data.task_status == 2) {
-            // onclick="updateTicketStatus('closed', 4)"
-            return `<div data-toggle="tooltip" title="Completed">
+            if (data.task_status == 2) {
+              // onclick="updateTicketStatus('closed', 4)"
+              return `<div data-toggle="tooltip" title="Completed">
                 <a href="#" class="btn btn-success btn-sm">
                     <li class="fas fa-check-circle"></li>
                  </a>
              </div>`;
-          }
+            }
 
-          if (data.task_status == 4) {
-            return `<div data-toggle="tooltip" title="Closed">
+            if (data.task_status == 4) {
+              return `<div data-toggle="tooltip" title="Closed">
                 <a href="#" class="btn btn-secondary btn-sm">
                     <li class="fas fa-check-circle"></li>
                  </a>
              </div>`;
-          }
+            }
 
-          if (data.task_status == 5) {
-            return `<div>  
+            if (data.task_status == 5) {
+              return `<div>  
                        <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Confirm Ticket" onclick="updateTicketStatus('${data.taskId}', 'approve', 1)" class="btn btn-success btn-sm">
                           <i class="fas fa-check"></i>
                       </a>
                     </div>`;
-          }
+            }
 
-          if (data.task_status == 6) {
-            return `<div>  
+            if (data.task_status == 6) {
+              return `<div>  
                        <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Confirm Ticket" onclick="updateTicketStatus('${data.taskId}', 'acceptedReturn', 1)" class="btn btn-success btn-sm">
                          <i class="fas fa-reply"></i>
                       </a>
                     </div>`;
-          }
+            }
+          },
         },
-      },
-      {
-        data: "task_topic",
-        className: "text-center",
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          return `<a href="#" onclick="getMoreTicketDetail(${data.taskId})" data-bs-toggle="tooltip"
+        {
+          data: "task_topic",
+          className: "text-center",
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            return `<a href="#" onclick="getMoreTicketDetail(${data.taskId})" data-bs-toggle="tooltip"
                       data-bs-placement="bottom" title="more detail" class="btn btn-sm btn-cyan">
                       <i class="fas fa-list"></i>
                   </a>`;
+          },
         },
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          return `<a href="#" onclick="getUserDetail('${data.user_email}')" data-bs-toggle="tooltip"
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            return `<a href="#" onclick="getUserDetail('${data.user_email}')" data-bs-toggle="tooltip"
                       data-bs-placement="bottom" title="more detail" class="btn btn-sm btn-light">
                     ${data.user_email}
                   </a>`;
+          },
         },
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          if (data.task_created == 0) {
-            return ` <span> ไม่มีข้อมูล </span>`;
-          }
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            if (data.task_created == 0) {
+              return ` <span> ไม่มีข้อมูล </span>`;
+            }
 
-          if (data.task_created != 0) {
-            return `<span class="text-success"> <b> ${moment
-              .unix(data.task_created)
-              .format("DD/MM/YYYY HH:mm")} </b> </span>`;
-          }
+            if (data.task_created != 0) {
+              return `<span class="text-success"> <b> ${moment
+                .unix(data.task_created)
+                .format("DD/MM/YYYY HH:mm")} </b> </span>`;
+            }
+          },
         },
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          if (data.task_updated == 0) {
-            return ` <span> ไม่มีข้อมูล </span>`;
-          }
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            if (data.task_updated == 0) {
+              return ` <span> ไม่มีข้อมูล </span>`;
+            }
 
-          if (data.task_updated != 0) {
-            return `<span class="text-success"> <b> ${moment
-              .unix(data.task_updated)
-              .format("DD/MM/YYYY HH:mm")} </b> </span>`;
-          }
+            if (data.task_updated != 0) {
+              return `<span class="text-success"> <b> ${moment
+                .unix(data.task_updated)
+                .format("DD/MM/YYYY HH:mm")} </b> </span>`;
+            }
+          },
         },
-      },
-    ],
-  });
+      ],
+    });
 };
 
 const getUserDetail = (email) => {
@@ -3066,32 +3162,53 @@ const getOwnerTicket = (taskId) => {
 };
 
 const getAdminTicketByStatus = (status) => {
-  var tableTicketAdmin = $("#tableTicketAdmin").dataTable({
-    processing: true,
-    stateSave: true,
-    searching: true,
-    responsive: true,
-    bDestroy: true,
-    colReorder: {
-      realtime: true,
-    },
-    ajax: {
-      url: `${baseUrl}admin/ticket/show/list/by/status`,
-      type: "GET",
-      data: {
-        status: status,
+  var tableTicketAdmin = $("#tableTicketAdmin")
+    .on("xhr.dt", function (e, settings, json, xhr) {
+      if (json.status === 404) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops!",
+          text: "ไม่พบข้อมูลที่คุณร้องขอ!",
+        }).then((result) => {
+          $(this).DataTable({
+            processing: true,
+            stateSave: true,
+            searching: true,
+            responsive: true,
+            bDestroy: true,
+            colReorder: {
+              realtime: true,
+            },
+          });
+        });
+      }
+    })
+    .dataTable({
+      processing: true,
+      stateSave: true,
+      searching: true,
+      responsive: true,
+      bDestroy: true,
+      colReorder: {
+        realtime: true,
       },
-    },
-    columns: [
-      {
-        targets: 0,
-        data: null,
-        className: "text-center",
-        searchable: true,
-        orderable: true,
-        render: function (data, type, full, meta) {
-          if (data.task_status == 0) {
-            return `<div>  
+      ajax: {
+        url: `${baseUrl}admin/ticket/show/list/by/status`,
+        type: "GET",
+        data: {
+          status: status,
+        },
+      },
+      columns: [
+        {
+          targets: 0,
+          data: null,
+          className: "text-center",
+          searchable: true,
+          orderable: true,
+          render: function (data, type, full, meta) {
+            if (data.task_status == 0) {
+              return `<div>  
                        <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Confirm Ticket" onclick="updateTicketStatus('${data.taskId}', 'approve', 1)" class="btn btn-success btn-sm">
                           <i class="fas fa-check"></i>
                       </a>
@@ -3099,106 +3216,106 @@ const getAdminTicketByStatus = (status) => {
                         <i class="fas fa-times"> </i>
                       </a> 
                     </div>`;
-          }
+            }
 
-          if (data.task_status == 1) {
-            return `<div data-toggle="tooltip" title="Accepted pending...">  
+            if (data.task_status == 1) {
+              return `<div data-toggle="tooltip" title="Accepted pending...">  
                       <a href="#" onclick="updateTicketStatus('${data.taskId}', 'completed', 2)" class="btn btn-warning btn-sm">
                           <li class="fas fa-clock"></li>
                       </a> 
                     </div>`;
-          }
+            }
 
-          if (data.task_status == 2) {
-            // onclick="updateTicketStatus('closed', 4)"
-            return `<div data-toggle="tooltip" title="Completed">
+            if (data.task_status == 2) {
+              // onclick="updateTicketStatus('closed', 4)"
+              return `<div data-toggle="tooltip" title="Completed">
                 <a href="#" class="btn btn-success btn-sm">
                     <li class="fas fa-check-circle"></li>
                  </a>
              </div>`;
-          }
+            }
 
-          if (data.task_status == 4) {
-            return `<div data-toggle="tooltip" title="Closed">
+            if (data.task_status == 4) {
+              return `<div data-toggle="tooltip" title="Closed">
                 <a href="#" class="btn btn-secondary btn-sm">
                     <li class="fas fa-check-circle"></li>
                  </a>
              </div>`;
-          }
+            }
 
-          if (data.task_status == 5) {
-            return `<div>  
+            if (data.task_status == 5) {
+              return `<div>  
                        <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Confirm Ticket" onclick="updateTicketStatus('${data.taskId}', 'approve', 1)" class="btn btn-success btn-sm">
                           <i class="fas fa-check"></i>
                       </a>
                     </div>`;
-          }
+            }
 
-          if (data.task_status == 6) {
-            return `<div>  
+            if (data.task_status == 6) {
+              return `<div>  
                        <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Confirm Ticket" onclick="updateTicketStatus('${data.taskId}', 'acceptedReturn', 1)" class="btn btn-success btn-sm">
                          <i class="fas fa-reply"></i>
                       </a>
                     </div>`;
-          }
+            }
+          },
         },
-      },
-      {
-        data: "task_topic",
-        className: "text-center",
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          return `<a href="#" onclick="getMoreDetailTicket(${data.taskId})" data-bs-toggle="tooltip"
+        {
+          data: "task_topic",
+          className: "text-center",
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            return `<a href="#" onclick="getMoreDetailTicket(${data.taskId})" data-bs-toggle="tooltip"
                       data-bs-placement="bottom" title="more detail" class="btn btn-sm btn-cyan">
                       <i class="fas fa-list"></i>
                   </a>`;
+          },
         },
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          return `<a href="#" onclick="getUserDetail('${data.user_email}')" data-bs-toggle="tooltip"
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            return `<a href="#" onclick="getUserDetail('${data.user_email}')" data-bs-toggle="tooltip"
                       data-bs-placement="bottom" title="more detail" class="btn btn-sm btn-light">
                     ${data.user_email}
                   </a>`;
+          },
         },
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          if (data.task_created == 0) {
-            return ` <span> ไม่มีข้อมูล </span>`;
-          }
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            if (data.task_created == 0) {
+              return ` <span> ไม่มีข้อมูล </span>`;
+            }
 
-          if (data.task_created != 0) {
-            return `<span class="text-success"> <b> ${moment
-              .unix(data.task_created)
-              .format("DD/MM/YYYY HH:mm")} </b> </span>`;
-          }
+            if (data.task_created != 0) {
+              return `<span class="text-success"> <b> ${moment
+                .unix(data.task_created)
+                .format("DD/MM/YYYY HH:mm")} </b> </span>`;
+            }
+          },
         },
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          if (data.task_updated == 0) {
-            return ` <span> ไม่มีข้อมูล </span>`;
-          }
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            if (data.task_updated == 0) {
+              return ` <span> ไม่มีข้อมูล </span>`;
+            }
 
-          if (data.task_updated != 0) {
-            return `<span class="text-success"> <b> ${moment
-              .unix(data.task_updated)
-              .format("DD/MM/YYYY HH:mm")} </b> </span>`;
-          }
+            if (data.task_updated != 0) {
+              return `<span class="text-success"> <b> ${moment
+                .unix(data.task_updated)
+                .format("DD/MM/YYYY HH:mm")} </b> </span>`;
+            }
+          },
         },
-      },
-    ],
-  });
+      ],
+    });
 };
 
 const getMoreTicketDetail = (taskId) => {
@@ -3245,54 +3362,69 @@ const getMoreTicketDetail = (taskId) => {
 
 // dashboard
 const oftenTicketDashboard = () => {
-  $("#oftenTicketTable").dataTable({
-    processing: true,
-    stateSave: true,
-    searching: false,
-    responsive: true,
-    paging: false,
-    order: false,
-    bDestroy: true,
-    bInfo: false,
-    colReorder: {
-      realtime: true,
-    },
-    ajax: {
-      url: `${baseUrl}admin/dashboard/ticket/often/list`,
-      type: "GET",
-    },
-    columns: [
-      {
-        targets: 0,
-        data: null,
-        searchable: true,
-        orderable: true,
-        render: function (data, type, full, meta) {
-          return `<div class="d-flex no-block">
+  $("#oftenTicketTable")
+    .on("xhr.dt", function (e, settings, json, xhr) {
+      if (json.status === 404) {
+        $(this).DataTable({
+          processing: true,
+          stateSave: true,
+          searching: true,
+          responsive: true,
+          bDestroy: true,
+          colReorder: {
+            realtime: true,
+          },
+        });
+      }
+    })
+    .dataTable({
+      processing: true,
+      stateSave: true,
+      searching: false,
+      responsive: true,
+      paging: false,
+      order: false,
+      bDestroy: true,
+      bInfo: false,
+      colReorder: {
+        realtime: true,
+      },
+      ajax: {
+        url: `${baseUrl}admin/dashboard/ticket/often/list`,
+        type: "GET",
+      },
+      columns: [
+        {
+          targets: 0,
+          data: null,
+          searchable: true,
+          orderable: true,
+          render: function (data, type, full, meta) {
+            return `<div class="d-flex no-block">
                          <div class="text-left px-5">
                             <h5 class="text-dark mb-0 font-16 font-weight-medium">${data.catName}</h5>
                          <span class="text-muted font-14">${data.subCatName}</span>
                     </div>
                  </div>`;
+          },
         },
-      },
-      {
-        data: "ownerTicket",
-        className: "text-center",
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          return `<div class="popover-icon">
+        {
+          data: "ownerTicket",
+          className: "text-center",
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            return `<div class="popover-icon">
                      <a class="btn btn-warning rounded-circle btn-sm" href="javascript:void(0)">
                         ${data.countTicket}
                      </a>
                   </div>`;
+          },
         },
-      },
-    ],
-  });
+      ],
+    });
 };
 
 // ======================================================================== //
@@ -3491,109 +3623,124 @@ $("#ticketForm").on("submit", function (e) {
 
 // show user ticket
 const getUserTicket = () => {
-  var tableUserTicket = $("#tableUserTicket").dataTable({
-    processing: true,
-    stateSave: true,
-    searching: true,
-    responsive: true,
-    bDestroy: true,
-    colReorder: {
-      realtime: true,
-    },
-    ajax: `${baseUrl}user/ticket/list`,
-    columns: [
-      {
-        targets: 0,
-        data: null,
-        className: "text-center",
-        searchable: true,
-        orderable: true,
-        render: function (data, type, full, meta) {
-          if (data.status == 0 || data.status == 5 || data.status == 6) {
-            return `<div data-toggle="tooltip" title="Pending...">  
+  var tableUserTicket = $("#tableUserTicket")
+    .on("xhr.dt", function (e, settings, json, xhr) {
+      if (json.status === 404) {
+        $(this).DataTable({
+          processing: true,
+          stateSave: true,
+          searching: true,
+          responsive: true,
+          bDestroy: true,
+          colReorder: {
+            realtime: true,
+          },
+        });
+      }
+    })
+    .dataTable({
+      processing: true,
+      stateSave: true,
+      searching: true,
+      responsive: true,
+      bDestroy: true,
+      colReorder: {
+        realtime: true,
+      },
+      ajax: `${baseUrl}user/ticket/list`,
+      columns: [
+        {
+          targets: 0,
+          data: null,
+          className: "text-center",
+          searchable: true,
+          orderable: true,
+          render: function (data, type, full, meta) {
+            if (data.status == 0 || data.status == 5 || data.status == 6) {
+              return `<div data-toggle="tooltip" title="Pending...">  
                        <a href="#" class="btn btn-secondary btn-sm">  <li class="fas fa-clock"></li> </a> 
                     </div>`;
-          }
+            }
 
-          if (data.status == 1) {
-            return `<div data-toggle="tooltip" title="Accepted">  
+            if (data.status == 1) {
+              return `<div data-toggle="tooltip" title="Accepted">  
                        <a  href="#" class="btn btn-warning btn-sm">  <li class="fas fa-clock"></li> </a> 
                     </div>`;
-          }
+            }
 
-          if (data.status == 2) {
-            return `<div>
+            if (data.status == 2) {
+              return `<div>
                       <a data-toggle="tooltip" title="Success" onclick="updateStatusUserTicket('close', ${data.id})" href="#" class="btn btn-success btn-sm">  <li class="fas fa-check-circle"></li> </a> 
                       <a data-toggle="tooltip" title="Return" onclick="updateStatusUserTicket('return', ${data.id})" href="#" class="btn btn-danger btn-sm">  <li class="fas fa-redo"></li> </a> 
                     </div>`;
-          }
+            }
 
-          if (data.status == 3) {
-            return `<div data-toggle="tooltip" title="Rejected">
+            if (data.status == 3) {
+              return `<div data-toggle="tooltip" title="Rejected">
                        <a  href="#" class="btn btn-danger btn-sm">  <li class="fas fa-times"></li> </a> 
                     </div>`;
-          }
+            }
 
-          if (data.status == 4) {
-            return `<div data-toggle="tooltip" title="Closes">
+            if (data.status == 4) {
+              return `<div data-toggle="tooltip" title="Closes">
                        <a  href="#" class="btn btn-secondary btn-sm">  <li class="fas fa-check-circle"></li> </a> 
                     </div>`;
-          }
+            }
+          },
         },
-      },
-      {
-        data: "topic",
-        className: "text-center",
-      },
-      {
-        data: "nameCatTh",
-        className: "text-center",
-      },
-      {
-        data: "nameSubCat",
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          return `<a href="#" onclick="getMoreDetailTicket(${data.id})" data-bs-toggle="tooltip"
+        {
+          data: "topic",
+          className: "text-center",
+        },
+        {
+          data: "nameCatTh",
+          className: "text-center",
+        },
+        {
+          data: "nameSubCat",
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            return `<a href="#" onclick="getMoreDetailTicket(${data.id})" data-bs-toggle="tooltip"
                       data-bs-placement="bottom" title="more detail" class="btn btn-sm btn-cyan">
                       <i class="fas fa-list"></i>
                   </a>`;
+          },
         },
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          if (data.createdAt == 0) {
-            return ` <span> ไม่มีข้อมูล </span>`;
-          }
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            if (data.createdAt == 0) {
+              return ` <span> ไม่มีข้อมูล </span>`;
+            }
 
-          if (data.createdAt != 0) {
-            return `<span class="text-success"> <b> ${moment
-              .unix(data.createdAt)
-              .format("DD/MM/YYYY HH:mm")} </b> </span>`;
-          }
+            if (data.createdAt != 0) {
+              return `<span class="text-success"> <b> ${moment
+                .unix(data.createdAt)
+                .format("DD/MM/YYYY HH:mm")} </b> </span>`;
+            }
+          },
         },
-      },
-      {
-        data: null,
-        className: "text-center",
-        render: function (data, type, full, meta) {
-          if (data.updatedAt == 0) {
-            return ` <span> ไม่มีข้อมูล </span>`;
-          }
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            if (data.updatedAt == 0) {
+              return ` <span> ไม่มีข้อมูล </span>`;
+            }
 
-          if (data.updatedAt != 0) {
-            return `<span class="text-success"> <b> ${moment
-              .unix(data.updatedAt)
-              .format("DD/MM/YYYY HH:mm")} </b> </span>`;
-          }
+            if (data.updatedAt != 0) {
+              return `<span class="text-success"> <b> ${moment
+                .unix(data.updatedAt)
+                .format("DD/MM/YYYY HH:mm")} </b> </span>`;
+            }
+          },
         },
-      },
-    ],
-  });
+      ],
+    });
 };
 
 // show ticket more detail
@@ -3634,13 +3781,54 @@ const getMoreDetailTicket = (ticketId) => {
 
         $("#titleTicketDetail").html(response.data[0].task_topic);
         $("#taskDetail").html(response.data[0].task_remark);
-        $("#textPeriod").html(response.data[0].periodTime);
+
         $("#textCat").html(response.data[0].catName);
         $("#textSubCat").html(response.data[0].subCatName);
-        $("#imgTask").attr(
-          "src",
-          `${baseUrl}store_files_uploaded/${response.data[0].task_attach}`,
-        );
+        // $("#imgTask").attr(
+        //   "src",
+        //   `${baseUrl}store_files_uploaded/${response.data[0].task_attach}`,
+        // );
+
+        let sla;
+
+        if (response.data[0].periodTime == 0) {
+          sla = "ไม่มีข้อมูล";
+        }
+
+        if (
+          response.data[0].periodTime < 60 &&
+          response.data[0].periodTime > 0
+        ) {
+          sla = `${response.data[0].periodTime} นาที`;
+        }
+
+        if (
+          response.data[0].periodTime >= 60 &&
+          response.data[0].periodTime < 1440
+        ) {
+          sla = `${response.data[0].periodTime / 60} ชั่วโมง`;
+        }
+
+        if (response.data[0].periodTime > 1440) {
+          sla = "มากกว่า 1 วัน";
+        }
+
+        $("#textPeriod").html(sla);
+
+        response.data[0].timeline.forEach((timeline, index, array) => {
+          let html = "";
+
+          html += `<div class="timeline__item">`;
+          html += `  <div class="timeline__content">`;
+          html += `  <h2> ${array[index].ticket_cause} </h2>`;
+          html += `  <p> ${array[index].ticket_detail_remark} </p>`;
+          html += `   </div>`;
+          html += `</div>`;
+
+          $(".timeline__items").append(html);
+        });
+
+        $(".timeline").timeline();
       }
 
       if (response.status == 404 || response.status == 400) {
@@ -3669,13 +3857,39 @@ const getMoreDetailTicket = (ticketId) => {
   });
 };
 
-$("#imgTask").toggle(function () {
-  // this.requestFullscreen();
-  $("#imgTask").css({
-    transform: "scale(3)",
-    transition: "transform 0.25s ease",
-  });
+$("#imgTask").click(function () {
+  toggleFullscreen(this);
 });
+
+const toggleFullscreen = (elem) => {
+  elem = elem || document.documentElement;
+  if (
+    !document.fullscreenElement &&
+    !document.mozFullScreenElement &&
+    !document.webkitFullscreenElement &&
+    !document.msFullscreenElement
+  ) {
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      elem.msRequestFullscreen();
+    } else if (elem.mozRequestFullScreen) {
+      elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+    }
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    }
+  }
+};
 
 const updateStatusUserTicket = (action, taskId) => {
   if (action == "close") {
@@ -3828,6 +4042,152 @@ const updateStatusUserTicket = (action, taskId) => {
 };
 
 // ========================== end ticket page ============================= //
+
+// ========================= history ticket page ========================== //
+
+const searchHistory = () => {
+  let startDate = $("#searchStartDate").val();
+  let endDate = $("#searchEndDate").val();
+  let status = $("#searchStatus").val();
+
+  $("#tableResultHistory")
+    .on("xhr.dt", function (e, settings, json, xhr) {
+      if (json.status === 404) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops!",
+          text: "ไม่พบข้อมูลที่คุณร้องขอ!",
+        }).then((result) => {
+          $(this).DataTable({
+            processing: true,
+            stateSave: true,
+            searching: true,
+            responsive: true,
+            bDestroy: true,
+            colReorder: {
+              realtime: true,
+            },
+          });
+        });
+      }
+    })
+    .dataTable({
+      processing: true,
+      stateSave: true,
+      searching: true,
+      responsive: true,
+      bDestroy: true,
+      colReorder: {
+        realtime: true,
+      },
+      ajax: {
+        url: `${baseUrl}user/history/ticket/search`,
+        type: "GET",
+        data: {
+          startDate: startDate,
+          endDate: endDate,
+          status: status,
+        },
+      },
+      columns: [
+        {
+          targets: 0,
+          data: null,
+          className: "text-center",
+          searchable: true,
+          orderable: true,
+          render: function (data, type, full, meta) {
+            if (
+              data.ticket_status == 0 ||
+              data.ticket_status == 5 ||
+              data.ticket_status == 6
+            ) {
+              return `<div data-toggle="tooltip" title="Pending...">
+                       <a href="#" class="btn btn-secondary btn-sm">  <li class="fas fa-clock"></li> </a>
+                    </div>`;
+            }
+
+            if (data.ticket_status == 1) {
+              return `<div data-toggle="tooltip" title="Accepted">
+                       <a  href="#" class="btn btn-warning btn-sm">  <li class="fas fa-clock"></li> </a>
+                    </div>`;
+            }
+            if (data.ticket_status == 2) {
+              return `<div>
+                      <a data-toggle="tooltip" title="Success" href="#" class="btn btn-success btn-sm">  <li class="fas fa-check-circle"></li> </a>
+                      <a data-toggle="tooltip" title="Return" href="#" class="btn btn-danger btn-sm">  <li class="fas fa-redo"></li> </a>
+                    </div>`;
+            }
+
+            if (data.ticket_status == 3) {
+              return `<div data-toggle="tooltip" title="Rejected">
+                       <a  href="#" class="btn btn-danger btn-sm">  <li class="fas fa-times"></li> </a>
+                    </div>`;
+            }
+
+            if (data.ticket_status == 4) {
+              return `<div data-toggle="tooltip" title="Closes">
+                       <a  href="#" class="btn btn-secondary btn-sm">  <li class="fas fa-check-circle"></li> </a>
+                    </div>`;
+            }
+          },
+        },
+        {
+          data: "ticket_topic",
+          className: "text-center",
+        },
+        {
+          data: "catName",
+          className: "text-center",
+        },
+        {
+          data: "subCatName",
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            return `<a href="#" data-bs-toggle="tooltip"
+                      data-bs-placement="bottom" title="more detail" class="btn btn-sm btn-cyan">
+                      <i class="fas fa-list"></i>
+                  </a>`;
+          },
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            if (data.ticket_created == 0) {
+              return ` <span> ไม่มีข้อมูล </span>`;
+            }
+
+            if (data.ticket_created != 0) {
+              return `<span class="text-success"> <b> ${moment
+                .unix(data.ticket_created)
+                .format("DD/MM/YYYY HH:mm")} </b> </span>`;
+            }
+          },
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            if (data.ticket_updated == 0) {
+              return ` <span> ไม่มีข้อมูล </span>`;
+            }
+
+            if (data.ticket_updated != 0) {
+              return `<span class="text-success"> <b> ${moment
+                .unix(data.ticket_updated)
+                .format("DD/MM/YYYY HH:mm")} </b> </span>`;
+            }
+          },
+        },
+      ],
+    });
+};
+
+// ======================= end history ticket page ======================== //
 
 // ======================================================================== //
 // ========================== Role USER end =============================== //

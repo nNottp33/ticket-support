@@ -696,7 +696,7 @@ class Ticket extends BaseController
             )
             ->join('catagories', 'catagories.id = ticket_task.catId')
             ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
-            ->where('ticket_task.taskId', $task_id)
+            ->where('ticket_task.id', $task_id)
             ->findAll();
         
             $query['detail'] = $this->taskDetailModel

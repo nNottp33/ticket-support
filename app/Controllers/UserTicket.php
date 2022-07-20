@@ -222,6 +222,7 @@ class UserTicket extends BaseController
                 ticket_detail.remark as ticket_detail_remark'
             )
             ->where('ticket_detail.taskId', $ticketId)
+            ->orderBy('ticket_detail.id', 'desc')
             ->findAll();
 
 

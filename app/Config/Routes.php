@@ -112,6 +112,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
 
         // history ticket page
         $routes->get('history/ticket', 'HistoryTicket::index');
+        $routes->get('history/ticket/search', 'HistoryTicket::searchHistory');
     });
 });
 

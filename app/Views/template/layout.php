@@ -37,12 +37,19 @@
         type="text/css" />
 
 
+
     <!-- ajax -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <!-- bootstrap select -->
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+
+    <!-- timeline css -->
+    <link rel="stylesheet"
+        href="<?= base_url() ?>/assets/css/timeline.min.css"
+        type="text/css" />
 
 
 </head>
@@ -127,8 +134,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 
     <!-- my script -->
+    <script src="<?= base_url() ?>/assets/js/timeline.min.js"></script>
     <script src="<?= base_url() ?>/assets/js/app.js"></script>
-
 </body>
 
 </html>

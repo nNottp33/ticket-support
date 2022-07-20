@@ -598,3 +598,35 @@ p {
     opacity: .7;
   }
 }
+
+.font-10 {
+  font-size: 10px !important;
+}
+
+
+#imgTask {
+  cursor: zoom-in;
+}
+
+#imgTask:-webkit-full-screen {
+  cursor: zoom-out;
+}
+
+#imgTask:-moz-full-screen {
+  cursor: zoom-out;
+}
+
+#imgTask:-ms-fullscreen {
+  cursor: zoom-out;
+}
+
+#imgTask:fullscreen {
+  cursor: zoom-out;
+}
+
+#imgTask {
+  /* object-fit: cover;
+  object-fit: contain;
+  object-fit: fill; */
+  object-fit: scale-down;
+}

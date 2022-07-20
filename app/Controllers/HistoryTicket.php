@@ -8,27 +8,15 @@ class HistoryTicket extends BaseController
 {
     protected $session;
     protected $time;
-    protected $catModel;
-    protected $subCatModel;
-    protected $LogUsageModel;
-    protected $ticketTaskModel;
+    protected $ticketModel;
     protected $userModel;
-    protected $ownerGroupModel;
-    protected $logEmailModel;
-    protected $email;
 
     public function __construct()
     {
         $this->session = session();
         $this->time = Time::now('Asia/Bangkok', 'th');
-        $this->email = \Config\Services::email();
-        $this->catModel = new \App\Models\CatagoryModel();
-        $this->subCatModel = new \App\Models\SubCatagoryModel();
-        $this->LogUsageModel = new \App\Models\LogUsageModel();
-        $this->ticketTaskModel = new \App\Models\TicketTaskModel();
+        $this->ticketModel = new \App\Models\TicketTaskModel();
         $this->userModel = new \App\Models\UserModel();
-        $this->ownerGroupModel = new \App\Models\GroupOwnerModel();
-        $this->logEmailModel = new \App\Models\LogEmailModel();
         helper(['form', 'url']);
     }
 
@@ -36,5 +24,60 @@ class HistoryTicket extends BaseController
     public function index()
     {
         return view('main/user/history_ticket');
+    }
+
+
+    public function searchHistory()
+    {
+        if ($this->request->isAJAX()) {
+            $start_date = strtotime($this->request->getGet('startDate'));
+            $end_date = strtotime($this->request->getGet('endDate'));
+            // $status = $this->request->getGet('status');
+
+
+            $query = $this->ticketModel
+            ->select('ticket_task.id as ticket_id, 
+                      ticket_task.topic as ticket_topic,
+                      ticket_task.createdAt as ticket_created,
+                      ticket_task.updatedAt as ticket_updated,
+                      ticket_task.status as ticket_status,
+                      catagories.nameCatTh as catName,
+                      sub_catagories.nameSubCat as subCatName')
+            ->join('catagories', 'catagories.id = ticket_task.catId')
+            ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
+            ->where('ticket_task.createdAt >=', $start_date)
+            ->where('ticket_task.createdAt <=', $end_date)
+            // ->orWhereIn('ticket_task.status', [3,4])
+            ->findAll();
+            
+            // echo "<pre>" ;
+            // print_r($query);
+            // die();
+
+            if ($query) {
+                $response = [
+                    'status' => 200,
+                    'title' => 'Success!',
+                    'message' => 'ดึงข้อมูลสำเร็จ',
+                    'data' => $query,
+                ];
+                return $this->response->setJson($response);
+            } else {
+                $response = [
+                    'status' => 404,
+                    'title' => 'Error!',
+                    'message' => 'ไม่สามารถดึงข้อมูลได้',
+                ];
+                return $this->response->setJson($response);
+            }
+        } else {
+            $response = [
+                'status' => 500,
+                'title' => 'Error',
+                'message' => 'Server internal error'
+            ];
+
+            return $this->response->setJSON($response);
+        }
     }
 }
