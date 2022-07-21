@@ -692,9 +692,6 @@ const editUser = (id) => {
   $("#select-status").css("display", "block");
   $("#div-inputPassword").css("display", "none");
 
-  // $("#div-selectDepartment").css("display", "none");
-  // $("#div-selectPosition").css("display", "none");
-
   $.ajax({
     url: `${baseUrl}admin/users/byId`,
     type: "POST",
@@ -720,8 +717,8 @@ const editUser = (id) => {
         $("#classUser").val(response.data[0].class);
         $("#selectStatus").val(response.data[0].status);
 
-        // $("#selectDepartment").val(response.data[0].depId);
-        // $("#selectPosition :selected").val(response.data[0].posId);
+        $("#selectDepartment :selected").val(response.data[0].depId);
+        $("#selectPosition :selected").val(response.data[0].posId);
 
         $(".selectpicker").selectpicker("refresh");
 
@@ -744,8 +741,8 @@ const editUser = (id) => {
               tel: $("#inputPhone").val(),
               class: $("#classUser :selected").val(),
               status: $("#selectStatus :selected").val(),
-              // departmentId: $("#selectDepartment :selected").val(),
-              // positionId: $("#selectPosition :selected").val(),
+              departmentId: $("#selectDepartment :selected").val(),
+              positionId: $("#selectPosition :selected").val(),
             },
             success: function (response) {
               if (response.status == 200) {
@@ -833,20 +830,23 @@ const getDepartments = () => {
     type: "GET",
     success: function (response) {
       if (response.status == 200) {
-        let html = "";
-        for (let count = 0; count < response.data.length; count++) {
-          html += `<option value="${response.data[count].id}">${response.data[count].nameDepart}</option>`;
-        }
-        $("#selectDepartment").html(html);
-        $("#selectDepartment").selectpicker("refresh");
+        let $dep = $("#selectDepartment");
+        $dep.empty();
 
-        if ($("#selectDepartment :selected").val()) {
+        for (let count = 0; count < response.data.length; count++) {
+          $dep.append(
+            `<option value="${response.data[count].id}">${response.data[count].nameDepart}</option>`,
+          );
+        }
+        $dep.change();
+
+        if ($("#selectDepartment").val()) {
           let depId = $("#selectDepartment :selected").val();
           let resultPositionList = getPositions(depId);
         }
 
         $("#selectDepartment").change(function () {
-          let depId = $("#selectDepartment :selected").val();
+          let depId = $("#selectDepartment").val();
           let resultPositionList = getPositions(depId);
         });
       }
@@ -872,12 +872,14 @@ const getPositions = (id) => {
     },
     success: function (response) {
       if (response.status == 200) {
-        let html = "";
+        let $pos = $("#selectPosition");
+        $pos.empty();
         for (let count = 0; count < response.data.length; count++) {
-          html += `<option value="${response.data[count].id}">${response.data[count].namePosition}</option>`;
+          $pos.append(
+            `<option value="${response.data[count].id}">${response.data[count].namePosition}</option>`,
+          );
         }
-        $("#selectPosition").html(html);
-        $("#selectPosition").selectpicker("refresh");
+        $pos.change();
       }
     },
     error: function (error) {
@@ -3375,6 +3377,12 @@ const getMoreTicketDetail = (taskId) => {
 
         let sla;
 
+        let day = moment().format("ddd");
+
+        if (day == "Fri") {
+          response.data.task[0].periodTime = 2880;
+        }
+
         if (response.data.task[0].periodTime == 0) {
           sla = "ไม่มีข้อมูล";
         }
@@ -3395,6 +3403,10 @@ const getMoreTicketDetail = (taskId) => {
 
         if (response.data.task[0].periodTime > 1440) {
           sla = "มากกว่า 1 วัน";
+        }
+
+        if (response.data.task[0].periodTime >= 2880) {
+          sla = "มากกว่า 2 วัน";
         }
 
         $("#text-PeriodTask").html(sla);
@@ -3901,6 +3913,12 @@ const getMoreDetailTicket = (ticketId) => {
 
         let sla;
 
+        let day = moment().format("ddd");
+
+        if (day == "Fri") {
+          response.data.task[0].periodTime = 2880;
+        }
+
         if (response.data[0].periodTime == 0) {
           sla = "ไม่มีข้อมูล";
         }
@@ -3921,6 +3939,10 @@ const getMoreDetailTicket = (ticketId) => {
 
         if (response.data[0].periodTime > 1440) {
           sla = "มากกว่า 1 วัน";
+        }
+
+        if (response.data[0].periodTime >= 2880) {
+          sla = "มากกว่า 2 วัน";
         }
 
         $("#textPeriod").html(sla);

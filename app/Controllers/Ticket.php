@@ -277,6 +277,13 @@ class Ticket extends BaseController
             switch ($status) {
                 // accepted
                 case 1:
+
+                    $day = date('D', $this->time->getTimestamp());
+                    $current_day = var_dump($day);
+                    if ($current_day == 'Fri') {
+                        $resultMail['subCat_period'] = 2880;
+                    }
+
                     if ($resultMail['subCat_period'] >= 60 && $resultMail['subCat_period'] <= 1440) {
                         $timeUnit = 'ชั่วโมง';
                         $dayTime = $resultMail['subCat_period'] / 60;
@@ -285,7 +292,7 @@ class Ticket extends BaseController
                         $dayTime = $resultMail['subCat_period'];
                     } else {
                         $timeUnit = 'วัน';
-                        $dayTime = 24 / ($resultMail['subCat_period'] / 60) ;
+                        $dayTime = ($resultMail['subCat_period'] / 60) / 24 ;
                     }
 
               
