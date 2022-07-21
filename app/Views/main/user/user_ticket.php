@@ -246,12 +246,33 @@
                                      <h5 class="m-0">
                                          <a class="custom-accordion-title d-block pt-2 pb-2" data-toggle="collapse"
                                              href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                             Ticket timeline<span class="float-right"><i
+                                             ตัวอย่างไฟล์แนบ <span class="float-right"><i
                                                      class="mdi mdi-chevron-down accordion-arrow"></i></span>
                                          </a>
                                      </h5>
                                  </div>
                                  <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+                                     data-parent="#accordion">
+                                     <div class="card-body">
+                                         <div class="display-upload-img" alt="Image preview" aria-label="Image preview">
+                                             <img class="image-task" id="imgTask" src="" alt="Image preview">
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+
+                             <div class="card mb-0">
+                                 <div class="card-header" id="headingTwo">
+                                     <h5 class="m-0">
+                                         <a class="custom-accordion-title collapsed d-block pt-2 pb-2"
+                                             data-toggle="collapse" href="#collapseTwo" aria-expanded="false"
+                                             aria-controls="collapseTwo">
+                                             Ticket timeline <span class="float-right"><i
+                                                     class="mdi mdi-chevron-down accordion-arrow"></i></span>
+                                         </a>
+                                     </h5>
+                                 </div>
+                                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
                                      data-parent="#accordion">
                                      <div class="card-body">
                                          <div class="timeline">
@@ -262,6 +283,7 @@
                                      </div>
                                  </div>
                              </div>
+
                          </div>
                      </div>
                  </div>
@@ -272,7 +294,6 @@
          </div>
      </div>
  </div>
-
  <!-- ticket detail modal end -->
 
  <script>

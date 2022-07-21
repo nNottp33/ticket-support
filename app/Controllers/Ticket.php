@@ -701,13 +701,15 @@ class Ticket extends BaseController
         
             $query['detail'] = $this->taskDetailModel
             ->select(
-                'ticket_detail.cause as ticket_cause,
-                ticket_detail.solution as ticket_solution,
-                ticket_detail.remark as ticket_detail_remark,
-                ticket_detail.attachment as ticket_detail_attachment,
-                ticket_detail.remark as ticket_detail_remark'
+                'ticket_detail.cause as detail_cause,
+                ticket_detail.solution as detail_solution,
+                ticket_detail.remark as detail_remark,
+                ticket_detail.attachment as detail_attachment,
+                ticket_detail.createdAt as detail_created'
             )
             ->where('ticket_detail.taskId', $task_id)
+            ->orderBy('ticket_detail.id', 'desc')
+            ->limit(5)
             ->findAll();
 
 

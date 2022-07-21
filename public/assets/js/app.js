@@ -10,6 +10,8 @@ $(document).ready(function () {
   $(".clear-modal").on("hidden.bs.modal", function (e) {
     $(this).find("input,textarea,select").val("").end();
     $(".previewImg").hide();
+    $(".timeline__items").timeline().empty();
+    $(".collapse").collapse("hide");
   });
 
   $(".selectpicker").selectpicker();
@@ -3331,10 +3333,114 @@ const getMoreTicketDetail = (taskId) => {
         // show modal when load data success
         $("#ticketTaskDetailModal").modal("show");
 
-        console.log(response.data);
-
         // and set data in modal with js
         $("#text-topicTask").html(`Task: ${response.data.task[0].task_topic}`);
+
+        switch (parseInt(response.data.task[0].task_status)) {
+          case 1:
+            $("#text-StatusTask").html("รับคำร้อง").css("color", "#6c757d");
+            break;
+
+          case 2:
+            $("#text-StatusTask")
+              .html("เสร็จสิ้น รอการยืนยันจากผู้ใช้")
+              .css("color", "#22ca80");
+            break;
+
+          case 3:
+            $("#text-StatusTask").html("ปฎิเสธ").css("color", "#ff0332");
+            break;
+
+          case 4:
+            $("#text-StatusTask").html("ปิดงาน").css("color", "#01caf1");
+            break;
+
+          default:
+            $("#text-StatusTask").html("รอดำเนินการ").css("color", "#fdc16a");
+            break;
+        }
+
+        $("#task-DetailTask").html(response.data.task[0].task_remark);
+        $("#text-CatTask").html(response.data.task[0].catName);
+        $("#text-SubCatTask").html(response.data.task[0].subCatName);
+
+        let attach = response.data.task[0].task_attach.split(".");
+
+        if (attach[1] == "jpg" || attach[1] == "png" || attach[1] == "gif") {
+          $("#imgTask").attr(
+            "src",
+            `${baseUrl}store_files_uploaded/${response.data.task[0].task_attach}`,
+          );
+        }
+
+        let sla;
+
+        if (response.data.task[0].periodTime == 0) {
+          sla = "ไม่มีข้อมูล";
+        }
+
+        if (
+          response.data.task[0].periodTime < 60 &&
+          response.data.task[0].periodTime > 0
+        ) {
+          sla = `${response.data.task[0].periodTime} นาที`;
+        }
+
+        if (
+          response.data.task[0].periodTime >= 60 &&
+          response.data.task[0].periodTime < 1440
+        ) {
+          sla = `${response.data.task[0].periodTime / 60} ชั่วโมง`;
+        }
+
+        if (response.data.task[0].periodTime > 1440) {
+          sla = "มากกว่า 1 วัน";
+        }
+
+        $("#text-PeriodTask").html(sla);
+        $("#text-DetailTask").html(response.data.task[0].task_remark);
+
+        if (response.data.detail.length > 0) {
+          response.data.detail.forEach((timeline, index, array) => {
+            let html = "";
+
+            html += `<div class="timeline__item">`;
+            html += `  <div class="timeline__content">`;
+            html += `  <span class="badge badge-danger mb-1">  ${moment
+              .unix(array[index].detail_created)
+              .format("DD/MM/YYYY HH:mm")} </span>`;
+            html += `<div class="row">`;
+            html += `  <div class="col-md-4 col-12">`;
+            html += `<small class="text-muted"> สาเหตุ </small>`;
+            html += `</div>`;
+            html += `  <div class="col-md-8 col-12">`;
+            html += `    <p class="paragraph-timeline"> ${array[index].detail_cause} </p>`;
+            html += `  </div>`;
+            html += ` </div>`;
+            html += `<div class="row">`;
+            html += `  <div class="col-md-4 col-12">`;
+            html += `<small class="text-muted"> การแก้ไข </small>`;
+            html += `</div>`;
+            html += `  <div class="col-md-8 col-12">`;
+            html += `    <p class="paragraph-timeline"> ${array[index].detail_solution} </p>`;
+            html += `  </div>`;
+            html += ` </div>`;
+            html += `<div class="row">`;
+            html += `  <div class="col-md-4 col-12">`;
+            html += `<small class="text-muted"> รายละเอียด </small>`;
+            html += `</div>`;
+            html += `  <div class="col-md-8 col-12">`;
+            html += `    <p class="paragraph-timeline"> ${array[index].detail_remark} </p>`;
+            html += `  </div>`;
+            html += ` </div>`;
+            html += `   </div>`;
+            html += `</div>`;
+
+            $(".timeline__items").append(html);
+          });
+
+          $(".timeline").timeline();
+        }
       }
 
       if (response.status == 404 || response.status == 400) {
@@ -3779,15 +3885,19 @@ const getMoreDetailTicket = (ticketId) => {
             break;
         }
 
-        $("#titleTicketDetail").html(response.data[0].task_topic);
+        $("#titleTicketDetail").html(`Task: ${response.data[0].task_topic}`);
         $("#taskDetail").html(response.data[0].task_remark);
-
         $("#textCat").html(response.data[0].catName);
         $("#textSubCat").html(response.data[0].subCatName);
-        // $("#imgTask").attr(
-        //   "src",
-        //   `${baseUrl}store_files_uploaded/${response.data[0].task_attach}`,
-        // );
+
+        let attach = response.data[0].task_attach.split(".");
+
+        if (attach[1] == "jpg" || attach[1] == "png" || attach[1] == "gif") {
+          $("#imgTask").attr(
+            "src",
+            `${baseUrl}store_files_uploaded/${response.data[0].task_attach}`,
+          );
+        }
 
         let sla;
 
@@ -3814,21 +3924,49 @@ const getMoreDetailTicket = (ticketId) => {
         }
 
         $("#textPeriod").html(sla);
+        if (response.data[0].timeline.length > 0) {
+          response.data[0].timeline.forEach((timeline, index, array) => {
+            let html = "";
 
-        response.data[0].timeline.forEach((timeline, index, array) => {
-          let html = "";
+            html += `<div class="timeline__item">`;
+            html += `  <div class="timeline__content">`;
+            html += `  <span class="badge badge-danger mb-1">  ${moment
+              .unix(array[index].detail_created)
+              .format("DD/MM/YYYY HH:mm")} </span>`;
+            html += `<div class="row">`;
+            html += `  <div class="col-md-4 col-12">`;
+            html += `<small class="text-muted"> สาเหตุ </small>`;
+            html += `</div>`;
+            html += `  <div class="col-md-8 col-12">`;
+            html += `    <p class="paragraph-timeline"> ${array[index].detail_cause} </p>`;
+            html += `  </div>`;
+            html += ` </div>`;
 
-          html += `<div class="timeline__item">`;
-          html += `  <div class="timeline__content">`;
-          html += `  <h2> ${array[index].ticket_cause} </h2>`;
-          html += `  <p> ${array[index].ticket_detail_remark} </p>`;
-          html += `   </div>`;
-          html += `</div>`;
+            html += `<div class="row">`;
+            html += `  <div class="col-md-4 col-12">`;
+            html += `<small class="text-muted"> การแก้ไข </small>`;
+            html += `</div>`;
+            html += `  <div class="col-md-8 col-12">`;
+            html += `    <p class="paragraph-timeline"> ${array[index].detail_solution} </p>`;
+            html += `  </div>`;
+            html += ` </div>`;
 
-          $(".timeline__items").append(html);
-        });
+            html += `<div class="row">`;
+            html += `  <div class="col-md-4 col-12">`;
+            html += `<small class="text-muted"> รายละเอียด </small>`;
+            html += `</div>`;
+            html += `  <div class="col-md-8 col-12">`;
+            html += `    <p class="paragraph-timeline"> ${array[index].detail_remark} </p>`;
+            html += `  </div>`;
+            html += ` </div>`;
+            html += `   </div>`;
+            html += `</div>`;
 
-        $(".timeline").timeline();
+            $(".timeline__items").append(html);
+          });
+
+          $(".timeline").timeline();
+        }
       }
 
       if (response.status == 404 || response.status == 400) {

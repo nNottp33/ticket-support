@@ -630,3 +630,7 @@ p {
   object-fit: fill; */
   object-fit: scale-down;
 }
+
+.paragraph-timeline {
+  font-size: 12px !important;
+}
