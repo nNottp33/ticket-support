@@ -44,16 +44,18 @@
                               </a>
                               <ul aria-expanded="false" class="collapse  first-level base-level-line">
                                   <li class="sidebar-item">
-                                      <a href="form-inputs.html" class="sidebar-link">
-                                          <span class="hide-menu"> Report type1
-                                              <div class="sub-title">รายงาน ???</div>
+                                      <a href="<?php echo base_url('user/report/ticket/all'); ?>"
+                                          class="sidebar-link">
+                                          <span class="hide-menu"> Report All ticket
+                                              <div class="sub-title">รายงานปัญหาทั้งหมด</div>
                                           </span>
                                       </a>
                                   </li>
                                   <li class="sidebar-item">
-                                      <a href="form-input-grid.html" class="sidebar-link">
-                                          <span class="hide-menu"> Report type2
-                                              <div class="sub-title">รายงาน ???</div>
+                                      <a href="<?php echo base_url('user/report/ticket/status'); ?>"
+                                          class="sidebar-link">
+                                          <span class="hide-menu"> Report Ticket by status
+                                              <div class="sub-title">รายงานปัญหาตามสถานะ</div>
                                           </span>
                                       </a>
                                   </li>

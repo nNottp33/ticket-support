@@ -62,6 +62,7 @@ class UserTicket extends BaseController
                 'userId' => $this->session->get('id'),
             ];
 
+
             $insertData = [
                 'topic' => $topic,
                 'remark' => $detail,
@@ -76,27 +77,7 @@ class UserTicket extends BaseController
             $resultCatName = $this->catModel->where('id', $catId)->findColumn('nameCatTh');
             $resultSubCatName = $this->subCatModel->where('id', $subCatId)->findColumn('nameSubCat');
 
-            $titleMail = 'send Email create ticket';
-            $subjectMail = 'Ticket ใหม่';
-            $messageEmail = '<div id="app">';
-            $messageEmail .= ' <div>';
-            $messageEmail .= '  <h3><b> หัวข้อ </b></h3>';
-            $messageEmail .= '     <p style="padding-left: 20px;"> ' . $topic . ' </p> ';
-            $messageEmail .= ' </div>';
-            $messageEmail .= ' <div>';
-            $messageEmail .= '  <h3><b> หมวดเรื่อง </b></h3>';
-            $messageEmail .= '    <p style="padding-left: 20px;"> ' . $resultCatName[0] . ' </p> ';
-            $messageEmail .= ' </div>';
-            $messageEmail .= ' <div>';
-            $messageEmail .= '  <h3><b> หมวดย่อย </b></h3>';
-            $messageEmail .= '    <p style="padding-left: 20px;"> ' . $resultSubCatName[0] . ' </p> ';
-            $messageEmail .= ' </div>';
-            $messageEmail .= ' <div>';
-            $messageEmail .= '  <h3><b> รายละเอียดเพิ่มเติม </b></h3>';
-            $messageEmail .= '    <p style="padding-left: 20px;"> ' . $detail . ' </p> ';
-            $messageEmail .= ' </div>';
-            $messageEmail .= '</div>';
-
+        
             $resultOwner = $this->ownerGroupModel->where('groupId', $catId)->findAll();
 
             for ($i = 0; $i < sizeof($resultOwner); $i++) {
@@ -107,17 +88,58 @@ class UserTicket extends BaseController
             $toMail = [$_ENV['EMAIL_IT_GROUP'], ...$email];
      
             if ($this->LogUsageModel->insert($logData)) {
-                if ($this->ticketTaskModel->insert($insertData) && $this->sendEmailGroup($titleMail, $subjectMail, $messageEmail, $toMail, $imageFile->getClientName())) {
-                    if (is_file($imageFile)) {
-                        $imageFile->move('./store_files_uploaded');
-                    }
+                if ($this->ticketTaskModel->insert($insertData)) {
+                    $last_ticketId= $this->ticketTaskModel->getInsertID();
+                    $ticket_no = 'IT0722-' . str_pad($last_ticketId, 5, "0", STR_PAD_LEFT);
 
-                    $response = [
+                    $updateData = [
+                        'ticket_no' => $ticket_no,
+                    ];
+
+                    $titleMail = 'send Email create ticket';
+                    $subjectMail = 'Ticket ใหม่';
+                    $messageEmail = '<div id="app">';
+                    $messageEmail .= ' <div>';
+                    $messageEmail .= '  <h2><b> Ticket no. ' . $ticket_no . ' </b></h2>';
+                    $messageEmail .= ' </div>';
+                    $messageEmail .= ' <div>';
+                    $messageEmail .= '  <h3><b> หัวข้อ </b></h3>';
+                    $messageEmail .= '     <p style="padding-left: 20px;"> ' . $topic . ' </p> ';
+                    $messageEmail .= ' </div>';
+                    $messageEmail .= ' <div>';
+                    $messageEmail .= '  <h3><b> หมวดเรื่อง </b></h3>';
+                    $messageEmail .= '    <p style="padding-left: 20px;"> ' . $resultCatName[0] . ' </p> ';
+                    $messageEmail .= ' </div>';
+                    $messageEmail .= ' <div>';
+                    $messageEmail .= '  <h3><b> หมวดย่อย </b></h3>';
+                    $messageEmail .= '    <p style="padding-left: 20px;"> ' . $resultSubCatName[0] . ' </p> ';
+                    $messageEmail .= ' </div>';
+                    $messageEmail .= ' <div>';
+                    $messageEmail .= '  <h3><b> รายละเอียดเพิ่มเติม </b></h3>';
+                    $messageEmail .= '    <p style="padding-left: 20px;"> ' . $detail . ' </p> ';
+                    $messageEmail .= ' </div>';
+                    $messageEmail .= '</div>';
+
+
+                    if ($this->sendEmailGroup($titleMail, $subjectMail, $messageEmail, $toMail, $imageFile->getClientName()) && $this->ticketTaskModel->update($last_ticketId, $updateData)) {
+                        if (is_file($imageFile)) {
+                            $imageFile->move('./store_files_uploaded');
+                        }
+
+                        $response = [
                         'status' => 200,
                         'title' => 'Success!',
                         'message' => 'เพิ่มข้อมูลสำเร็จ',
                     ];
-                    return $this->response->setJson($response);
+                        return $this->response->setJson($response);
+                    } else {
+                        $response = [
+                                'status' => 404,
+                                'title' => 'Error!',
+                                'message' => 'ทำรายการไม่สำเร็จ',
+                            ];
+                        return $this->response->setJson($response);
+                    }
                 } else {
                     $response = [
                         'status' => 404,
@@ -194,7 +216,8 @@ class UserTicket extends BaseController
 
             $query = $this->ticketTaskModel
             ->select(
-                'ticket_task.id as task_id,
+                'ticket_task.ticket_no,
+                ticket_task.id as task_id,
                 ticket_task.topic as task_topic,
                 ticket_task.remark as task_remark,
                 ticket_task.createdAt as task_create,
@@ -261,10 +284,7 @@ class UserTicket extends BaseController
             $taskId = $this->request->getPost('taskId');
             $status = $this->request->getPost('status');
 
-
-       
-          
-            $resultTask = $this->ticketTaskModel->select('ticket_task.topic, ticket_task.createdAt, users.id admin_id, users.email as admin_email')
+            $resultTask = $this->ticketTaskModel->select('ticket_task.ticket_no, ticket_task.topic, ticket_task.createdAt, users.id admin_id, users.email as admin_email')
             ->join('users', 'users.id = ticket_task.ownerAccepted')
             ->where('ticket_task.id', $taskId)
             ->first();
@@ -274,8 +294,8 @@ class UserTicket extends BaseController
             $titleMail = 'send email close ticket to admin';
             $subjectMail = 'Close Ticket';
             $messageEmail = '<p>';
-            $messageEmail .= '   <h3> คำร้องขอ Ticket ' . $resultTask['topic'] . ' เมื่อวันที่ ' . date('d/m/Y H:i', $resultTask['createdAt']) . '  </h3>' ;
-            $messageEmail .= '  ได้รับการรับการตรวจสอบและสามารถใช้งานได้ตามปกติแล้ว';
+            $messageEmail .= '<h2> Ticket No.' . $resultTask['ticket_no'] . ' </h2>';
+            $messageEmail .= '  คำร้องขอ Ticket ' . $resultTask['topic'] . ' เมื่อวันที่ ' . date('d/m/Y H:i', $resultTask['createdAt']) . ' ได้รับการรับการตรวจสอบและสามารถใช้งานได้ตามปกติแล้ว ';
             $messageEmail .= '</p> ';
            
             $time = $this->time->getTimestamp();
@@ -377,7 +397,7 @@ class UserTicket extends BaseController
             ];
 
 
-            $resultTask = $this->ticketTaskModel->select('ticket_task.topic, ticket_task.createdAt, users.id admin_id, users.email as admin_email')
+            $resultTask = $this->ticketTaskModel->select('ticket_task.ticket_no, ticket_task.topic, ticket_task.createdAt, users.id admin_id, users.email as admin_email')
             ->join('users', 'users.id = ticket_task.ownerAccepted')
             ->where('ticket_task.id', $taskId)
             ->first();
@@ -387,8 +407,8 @@ class UserTicket extends BaseController
             $titleMail = 'send email return ticket to admin';
             $subjectMail = 'Return Ticket';
             $messageEmail = '<p>';
-            $messageEmail .= '   <h3> คำร้องขอ Ticket ' . $resultTask['topic'] . ' เมื่อวันที่ ' . date('d/m/Y H:i', $resultTask['createdAt']) . '  </h3>' ;
-            $messageEmail .= '  ยังไม่เป็นปกติ ';
+            $messageEmail .= '<h2> Ticket No.' . $resultTask['ticket_no'] . ' </h2>';
+            $messageEmail .= 'คำร้องขอ Ticket ' . $resultTask['topic'] . ' เมื่อวันที่ ' . date('d/m/Y H:i', $resultTask['createdAt']) . '  ยังไม่เป็นปกติ' ;
             $messageEmail .= '</p> ';
             $messageEmail .= ' <div>';
             $messageEmail .= '  <h3><b> หัวข้อ </b></h3>';

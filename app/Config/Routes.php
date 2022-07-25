@@ -113,6 +113,11 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         // history ticket page
         $routes->get('history/ticket', 'HistoryTicket::index');
         $routes->get('history/ticket/search', 'HistoryTicket::searchHistory');
+
+        // report page
+        $routes->get('report/ticket/all', 'UserReport::ticketAll_page');
+        $routes->get('report/ticket/status', 'UserReport::ticketStatus_page');
+        $routes->get('report/ticket/all/display', 'UserReport::index');
     });
 });
 

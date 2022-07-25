@@ -34,6 +34,7 @@
                  <thead>
                      <tr>
                          <th>สถานะ</th>
+                         <th>Ticket No.</th>
                          <th>หัวข้อ</th>
                          <th>หมวดหมู่</th>
                          <th>หมวดหมู่ย่อย</th>
@@ -46,6 +47,7 @@
                  <tfoot>
                      <tr>
                          <th>สถานะ</th>
+                         <th>Ticket No.</th>
                          <th>หัวข้อ</th>
                          <th>หมวดหมู่</th>
                          <th>หมวดหมู่ย่อย</th>
@@ -201,6 +203,17 @@
                      <div class='row'>
                          <div class="col-md-4 ">
                              <h5>
+                                 หัวข้อ
+                             </h5>
+                         </div>
+                         <div class="col-md-8 text-dark">
+                             <label id="taskTopic"> </label>
+                         </div>
+                     </div>
+
+                     <div class='row'>
+                         <div class="col-md-4 ">
+                             <h5>
                                  หมวดหมู่
                              </h5>
                          </div>
@@ -299,7 +312,6 @@
  <script>
      $(document).ready(function() {
          getUserTicket();
-
      });
  </script>
 

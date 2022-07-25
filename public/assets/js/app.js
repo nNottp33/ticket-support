@@ -3422,26 +3422,26 @@ const getMoreTicketDetail = (taskId) => {
               .unix(array[index].detail_created)
               .format("DD/MM/YYYY HH:mm")} </span>`;
             html += `<div class="row">`;
-            html += `  <div class="col-md-4 col-12">`;
+            html += `  <div class="col-md-12">`;
             html += `<small class="text-muted"> สาเหตุ </small>`;
             html += `</div>`;
-            html += `  <div class="col-md-8 col-12">`;
+            html += `  <div class="col-md-12">`;
             html += `    <p class="paragraph-timeline"> ${array[index].detail_cause} </p>`;
             html += `  </div>`;
             html += ` </div>`;
             html += `<div class="row">`;
-            html += `  <div class="col-md-4 col-12">`;
+            html += `  <div class="col-md-12">`;
             html += `<small class="text-muted"> การแก้ไข </small>`;
             html += `</div>`;
-            html += `  <div class="col-md-8 col-12">`;
+            html += `  <div class="col-md-12">`;
             html += `    <p class="paragraph-timeline"> ${array[index].detail_solution} </p>`;
             html += `  </div>`;
             html += ` </div>`;
             html += `<div class="row">`;
-            html += `  <div class="col-md-4 col-12">`;
+            html += `  <div class="col-md-12">`;
             html += `<small class="text-muted"> รายละเอียด </small>`;
             html += `</div>`;
-            html += `  <div class="col-md-8 col-12">`;
+            html += `  <div class="col-md-12">`;
             html += `    <p class="paragraph-timeline"> ${array[index].detail_remark} </p>`;
             html += `  </div>`;
             html += ` </div>`;
@@ -3807,6 +3807,10 @@ const getUserTicket = () => {
           },
         },
         {
+          data: "ticket_no",
+          className: "text-center",
+        },
+        {
           data: "topic",
           className: "text-center",
         },
@@ -3897,7 +3901,10 @@ const getMoreDetailTicket = (ticketId) => {
             break;
         }
 
-        $("#titleTicketDetail").html(`Task: ${response.data[0].task_topic}`);
+        $("#titleTicketDetail").html(
+          `Ticket no. ${response.data[0].ticket_no}`,
+        );
+        $("#taskTopic").html(response.data[0].task_topic);
         $("#taskDetail").html(response.data[0].task_remark);
         $("#textCat").html(response.data[0].catName);
         $("#textSubCat").html(response.data[0].subCatName);
@@ -3956,28 +3963,28 @@ const getMoreDetailTicket = (ticketId) => {
               .unix(array[index].detail_created)
               .format("DD/MM/YYYY HH:mm")} </span>`;
             html += `<div class="row">`;
-            html += `  <div class="col-md-4 col-12">`;
+            html += `  <div class="col-md-12">`;
             html += `<small class="text-muted"> สาเหตุ </small>`;
             html += `</div>`;
-            html += `  <div class="col-md-8 col-12">`;
+            html += `  <div class="col-md-12">`;
             html += `    <p class="paragraph-timeline"> ${array[index].detail_cause} </p>`;
             html += `  </div>`;
             html += ` </div>`;
 
             html += `<div class="row">`;
-            html += `  <div class="col-md-4 col-12">`;
+            html += `  <div class="col-md-12">`;
             html += `<small class="text-muted"> การแก้ไข </small>`;
             html += `</div>`;
-            html += `  <div class="col-md-8 col-12">`;
+            html += `  <div class="col-md-12">`;
             html += `    <p class="paragraph-timeline"> ${array[index].detail_solution} </p>`;
             html += `  </div>`;
             html += ` </div>`;
 
             html += `<div class="row">`;
-            html += `  <div class="col-md-4 col-12">`;
+            html += `  <div class="col-md-12">`;
             html += `<small class="text-muted"> รายละเอียด </small>`;
             html += `</div>`;
-            html += `  <div class="col-md-8 col-12">`;
+            html += `  <div class="col-md-12">`;
             html += `    <p class="paragraph-timeline"> ${array[index].detail_remark} </p>`;
             html += `  </div>`;
             html += ` </div>`;
@@ -4275,7 +4282,6 @@ const searchHistory = () => {
             if (data.ticket_status == 2) {
               return `<div>
                       <a data-toggle="tooltip" title="Success" href="#" class="btn btn-success btn-sm">  <li class="fas fa-check-circle"></li> </a>
-                      <a data-toggle="tooltip" title="Return" href="#" class="btn btn-danger btn-sm">  <li class="fas fa-redo"></li> </a>
                     </div>`;
             }
 
@@ -4293,6 +4299,10 @@ const searchHistory = () => {
           },
         },
         {
+          data: "ticket_no",
+          className: "text-center",
+        },
+        {
           data: "ticket_topic",
           className: "text-center",
         },
@@ -4307,7 +4317,7 @@ const searchHistory = () => {
           data: null,
           className: "text-center",
           render: function (data, type, full, meta) {
-            return `<a href="#" data-bs-toggle="tooltip"
+            return `<a href="#" onclick="getMoreDetailTicketHistory(${data.ticket_id})" data-bs-toggle="tooltip"
                       data-bs-placement="bottom" title="more detail" class="btn btn-sm btn-cyan">
                       <i class="fas fa-list"></i>
                   </a>`;
@@ -4347,7 +4357,291 @@ const searchHistory = () => {
     });
 };
 
+const getMoreDetailTicketHistory = (ticketId) => {
+  $.ajax({
+    url: `${baseUrl}user/ticket/detail`,
+    type: "POST",
+    data: {
+      ticketId: ticketId,
+    },
+    success: function (response) {
+      if (response.status == 200) {
+        $("#ีuserTicketDetailModal").modal("show");
+
+        switch (parseInt(response.data[0].task_status)) {
+          case 1:
+            $("#textStatusDetail").html("รับคำร้อง").css("color", "#6c757d");
+            break;
+
+          case 2:
+            $("#textStatusDetail")
+              .html("เสร็จสิ้น รอการยืนยันจากผู้ใช้")
+              .css("color", "#22ca80");
+            break;
+
+          case 3:
+            $("#textStatusDetail").html("ปฎิเสธ").css("color", "#ff0332");
+            break;
+
+          case 4:
+            $("#textStatusDetail").html("ปิดงาน").css("color", "#01caf1");
+            break;
+
+          default:
+            $("#textStatusDetail").html("รอดำเนินการ").css("color", "#fdc16a");
+            break;
+        }
+
+        $("#titleHistoryTicketDetail").html(
+          `Ticket no. ${response.data[0].ticket_no}`,
+        );
+        $("#taskTopicDetail").html(response.data[0].task_topic);
+        $("#taskRemarkDetail").html(response.data[0].task_remark);
+        $("#textCatDetail").html(response.data[0].catName);
+        $("#textSubCatDetail").html(response.data[0].subCatName);
+
+        let attach = response.data[0].task_attach.split(".");
+
+        if (attach[1] == "jpg" || attach[1] == "png" || attach[1] == "gif") {
+          $("#imgTask").attr(
+            "src",
+            `${baseUrl}store_files_uploaded/${response.data[0].task_attach}`,
+          );
+        }
+
+        let sla;
+
+        let day = moment().format("ddd");
+
+        if (day == "Fri") {
+          response.data.task[0].periodTime = 2880;
+        }
+
+        if (response.data[0].periodTime == 0) {
+          sla = "ไม่มีข้อมูล";
+        }
+
+        if (
+          response.data[0].periodTime < 60 &&
+          response.data[0].periodTime > 0
+        ) {
+          sla = `${response.data[0].periodTime} นาที`;
+        }
+
+        if (
+          response.data[0].periodTime >= 60 &&
+          response.data[0].periodTime < 1440
+        ) {
+          sla = `${response.data[0].periodTime / 60} ชั่วโมง`;
+        }
+
+        if (response.data[0].periodTime > 1440) {
+          sla = "มากกว่า 1 วัน";
+        }
+
+        if (response.data[0].periodTime >= 2880) {
+          sla = "มากกว่า 2 วัน";
+        }
+
+        $("#textPeriodDetail").html(sla);
+        if (response.data[0].timeline.length > 0) {
+          response.data[0].timeline.forEach((timeline, index, array) => {
+            let html = "";
+
+            html += `<div class="timeline__item">`;
+            html += `  <div class="timeline__content">`;
+            html += `  <span class="badge badge-danger mb-1">  ${moment
+              .unix(array[index].detail_created)
+              .format("DD/MM/YYYY HH:mm")} </span>`;
+            html += `<div class="row">`;
+            html += `  <div class="col-md-12">`;
+            html += `<small class="text-muted"> สาเหตุ </small>`;
+            html += `</div>`;
+            html += `  <div class="col-md-12">`;
+            html += `    <p class="paragraph-timeline"> ${array[index].detail_cause} </p>`;
+            html += `  </div>`;
+            html += ` </div>`;
+
+            html += `<div class="row">`;
+            html += `  <div class="col-md-12">`;
+            html += `<small class="text-muted"> การแก้ไข </small>`;
+            html += `</div>`;
+            html += `  <div class="col-md-12">`;
+            html += `    <p class="paragraph-timeline"> ${array[index].detail_solution} </p>`;
+            html += `  </div>`;
+            html += ` </div>`;
+
+            html += `<div class="row">`;
+            html += `  <div class="col-md-12">`;
+            html += `<small class="text-muted"> รายละเอียด </small>`;
+            html += `</div>`;
+            html += `  <div class="col-md-12">`;
+            html += `    <p class="paragraph-timeline"> ${array[index].detail_remark} </p>`;
+            html += `  </div>`;
+            html += ` </div>`;
+            html += `   </div>`;
+            html += `</div>`;
+
+            $(".timeline__items").append(html);
+          });
+
+          $(".timeline").timeline();
+        }
+      }
+
+      if (response.status == 404 || response.status == 400) {
+        Swal.fire({
+          icon: "error",
+          title: response.title,
+          text: response.message,
+          showConfirmButton: false,
+          timer: 1000,
+        }).then((result) => {
+          console.log(response);
+          return false;
+        });
+      }
+    },
+
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(error);
+      });
+    },
+  });
+};
+
 // ======================= end history ticket page ======================== //
+
+// ======================= report ticket all page ======================== //
+
+$(
+  "#main-wrapper > div > div.container-fluid > div.row > div.col-sm-12.col-md-6.col-lg-3.mb-0.mt-4.justify-content-center.text-center > button",
+).click(function () {
+  let startDate = $("#searchReportAllStartDate").val();
+  let endDate = $("#searchReportAllDate").val();
+  let ticketNo = $("#inputTicketNo").val();
+
+  $("#tableReportTicketAll")
+    .on("xhr.dt", function (e, settings, json, xhr) {
+      if (json.status === 404) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops!",
+          text: "ไม่พบข้อมูลที่คุณร้องขอ!",
+        }).then((result) => {
+          $(this).DataTable({
+            processing: true,
+            stateSave: true,
+            searching: true,
+            responsive: true,
+            bDestroy: true,
+            colReorder: {
+              realtime: true,
+            },
+          });
+        });
+      }
+    })
+    .dataTable({
+      processing: true,
+      stateSave: true,
+      searching: true,
+      responsive: true,
+      bDestroy: true,
+      colReorder: {
+        realtime: true,
+      },
+      ajax: {
+        url: `${baseUrl}user/report/ticket/all/display`,
+        type: "GET",
+        data: {
+          startDate: startDate,
+          endDate: endDate,
+          ticket_no: ticketNo,
+          type: "all",
+        },
+      },
+      columns: [
+        {
+          // targets: 0,
+          // data: null,
+          // className: "text-center",
+          // searchable: true,
+          // orderable: true,
+          // render: function (data, type, full, meta) {
+          //   return `0`;
+          // },
+          data: "task_id",
+          className: "text-center",
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            if (
+              data.task_status == 0 ||
+              data.task_status == 5 ||
+              data.task_status == 6
+            ) {
+              return `<div data-toggle="tooltip" title="Pending...">
+                       <a href="#" class="btn btn-secondary btn-sm">  <li class="fas fa-clock"></li> </a>
+                    </div>`;
+            }
+
+            if (data.task_status == 1) {
+              return `<div data-toggle="tooltip" title="Accepted">
+                       <a  href="#" class="btn btn-warning btn-sm">  <li class="fas fa-clock"></li> </a>
+                    </div>`;
+            }
+            if (data.task_status == 2) {
+              return `<div>
+                      <a data-toggle="tooltip" title="Success" href="#" class="btn btn-success btn-sm">  <li class="fas fa-check-circle"></li> </a>
+                    </div>`;
+            }
+
+            if (data.task_status == 3) {
+              return `<div data-toggle="tooltip" title="Rejected">
+                       <a  href="#" class="btn btn-danger btn-sm">  <li class="fas fa-times"></li> </a>
+                    </div>`;
+            }
+
+            if (data.task_status == 4) {
+              return `<div data-toggle="tooltip" title="Closes">
+                       <a  href="#" class="btn btn-secondary btn-sm">  <li class="fas fa-check-circle"></li> </a>
+                    </div>`;
+            }
+          },
+        },
+        {
+          data: "ticket_no",
+          className: "text-center",
+        },
+        {
+          data: "task_topic",
+          className: "text-center",
+        },
+        {
+          data: "catName",
+          className: "text-center",
+        },
+        {
+          data: "ownerName",
+          className: "text-center",
+        },
+        {
+          data: "task_created",
+          className: "text-center",
+        },
+      ],
+    });
+});
+
+// ====================== end report ticket all page ====================== //
 
 // ======================================================================== //
 // ========================== Role USER end =============================== //

@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use CodeIgniter\I18n\Time;
 
-class HistoryTicket extends BaseController
+class UserReport extends BaseController
 {
     protected $session;
     protected $time;
@@ -23,34 +23,40 @@ class HistoryTicket extends BaseController
     
     public function index()
     {
-        return view('main/user/history_ticket');
-    }
-
-
-    public function searchHistory()
-    {
         if ($this->request->isAJAX()) {
+            $type = $this->request->getGet('type');
+
             $start_date = strtotime($this->request->getGet('startDate'));
             $end_date = strtotime($this->request->getGet('endDate'));
-            // $status = $this->request->getGet('status');
 
-            $query = $this->ticketModel
-            ->select('ticket_task.ticket_no,
-                      ticket_task.id as ticket_id, 
-                      ticket_task.topic as ticket_topic,
-                      ticket_task.createdAt as ticket_created,
-                      ticket_task.updatedAt as ticket_updated,
-                      ticket_task.status as ticket_status,
-                      catagories.nameCatTh as catName,
-                      sub_catagories.nameSubCat as subCatName')
-            ->join('catagories', 'catagories.id = ticket_task.catId')
-            ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
-            ->where('ticket_task.createdAt >=', $start_date)
-            ->where('ticket_task.createdAt <=', $end_date)
-            // ->orWhereIn('ticket_task.status', [3,4])
-            ->findAll();
-            
-            // echo "<pre>" ;
+            if ($type == 'all') {
+                $ticket_no = $this->request->getGet('ticket_no');
+
+
+                //  error sql syntax WTF! find this tomorow
+                $query = $this->ticketModel
+                ->select('ticket_task.id as task_id, 
+                ticket_task.ticket_no, 
+                ticket_task.status as task_status,
+                ticket_task.createdAt as task_created,
+                ticket_task.topic as task_topic,
+                users.fullname as ownerName,
+                catagories.nameCatTh as catName')
+                ->join('users', 'users.id = ticket_task.ownerAccepted')
+                ->join('catagories', 'catagories.id = ticket_task.catId')
+                ->like('ticket_task.ticket_no', $ticket_no)
+                ->where('ticket_task.createdAt =>', $start_date)
+                ->where('ticket_task.createdAt <=', $end_date)
+                ->where('ticket_task.userId', $this->session->get('id'))
+                ->orderBy('ticket_task.id', 'DESC')
+                ->findALl();
+            }
+
+            if ($type == 'status') {
+                $arrStatus = $this->request->getGet('status');
+            }
+
+            // echo "<pre>";
             // print_r($query);
             // die();
 
@@ -79,5 +85,17 @@ class HistoryTicket extends BaseController
 
             return $this->response->setJSON($response);
         }
+    }
+
+
+    public function ticketAll_page()
+    {
+        return view('main/user/report_ticket_all');
+    }
+
+
+    public function ticketStatus_page()
+    {
+        return view('main/user/report_ticket_status');
     }
 }
