@@ -43,7 +43,7 @@ class Ticket extends BaseController
     {
         if ($this->request->isAJAX()) {
             $query = $this->ticketTaskModel
-            ->select('ticket_task.id as taskId, ticket_task.topic as task_topic, ticket_task.createdAt as task_created, ticket_task.updatedAt as task_updated, ticket_task.status as task_status, catagories.nameCatTh, sub_catagories.nameSubCat, users.email as user_email')
+            ->select('ticket_task.id as taskId, ticket_task.ticket_no, ticket_task.topic as task_topic, ticket_task.createdAt as task_created, ticket_task.updatedAt as task_updated, ticket_task.status as task_status, catagories.nameCatTh, sub_catagories.nameSubCat, users.email as user_email')
             ->join('catagories', 'catagories.id = ticket_task.catId')
             ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
             ->join('group_owner', 'group_owner.groupId = ticket_task.catId')
@@ -92,7 +92,7 @@ class Ticket extends BaseController
     {
         if ($this->request->isAJAX()) {
             $query = $this->ticketTaskModel
-            ->select('ticket_task.id as taskId, ticket_task.topic as task_topic, ticket_task.createdAt as task_created, ticket_task.updatedAt as task_updated, ticket_task.status as task_status, catagories.nameCatTh, sub_catagories.nameSubCat, users.email as user_email')
+            ->select('ticket_task.id as taskId, ticket_task.ticket_no, ticket_task.topic as task_topic, ticket_task.createdAt as task_created, ticket_task.updatedAt as task_updated, ticket_task.status as task_status, catagories.nameCatTh, sub_catagories.nameSubCat, users.email as user_email')
             ->join('catagories', 'catagories.id = ticket_task.catId')
             ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
             ->join('group_owner', 'group_owner.groupId = ticket_task.catId')
@@ -260,7 +260,8 @@ class Ticket extends BaseController
             $task_id =  $this->request->getPost('id');
             $status =  $this->request->getPost('status');
 
-            $resultMail = $this->ticketTaskModel->select('ticket_task.topic, users.id as user_id, users.email as user_email, sub_catagories.period as subCat_period')
+            $resultMail = $this->ticketTaskModel
+            ->select('ticket_task.topic, ticket_task.ticket_no, users.id as user_id, users.email as user_email, sub_catagories.period as subCat_period')
             ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
             ->join('users', 'users.id = ticket_task.userId')
             ->where('ticket_task.id', $task_id)
@@ -278,8 +279,9 @@ class Ticket extends BaseController
                 // accepted
                 case 1:
 
-                    $day = date('D', $this->time->getTimestamp());
-                    $current_day = var_dump($day);
+                    $current_day = date('D', $this->time->getTimestamp());
+
+
                     if ($current_day == 'Fri') {
                         $resultMail['subCat_period'] = 2880;
                     }
@@ -300,15 +302,15 @@ class Ticket extends BaseController
                         $titleMail = 'send email admin approved return ticket';
                         $subjectMail = 'แอดมินตอบรับการตีกลับ Ticket';
                         $messageEmail = '<p>';
-                        $messageEmail .= '   <h3> Ticket ของคุณได้รับการตอบรับเรียบร้อยแล้ว </h3>' ;
+                        $messageEmail .= '   <h3> Ticket no. ' . $resultMail['ticket_no'] . ' ของคุณได้รับการตอบรับเรียบร้อยแล้ว </h3>' ;
                         $messageEmail .= '     Ticket ' . $resultMail['topic']. ' ขณะนี้แอดมินกำลังตรวจสอบปัญหาอีกครั้ง ใช้เวลาดำเนินการประมาณ ' . $dayTime . ' ' .$timeUnit;
                         $messageEmail .= '</p> ';
                     } else {
                         $titleMail = 'send email admin approved ticket';
                         $subjectMail = 'แอดมินตอบรับ Ticket';
                         $messageEmail = '<p>';
-                        $messageEmail .= '   <h3> Ticket ของคุณได้รับการตอบรับเรียบร้อยแล้ว </h3>' ;
-                        $messageEmail .= '     Ticket ' . $resultMail['topic']. ' ขณะนี้กำลังดำเนินการใช้เวลาประมาณ ' . $dayTime . ' ' .$timeUnit;
+                        $messageEmail .= '   <h3> Ticket no. ' .  $resultMail['ticket_no'] . ' ของคุณได้รับการตอบรับเรียบร้อยแล้ว </h3>' ;
+                        $messageEmail .= '  Ticket ' . $resultMail['topic']. ' ขณะนี้กำลังดำเนินการใช้เวลาประมาณ ' . $dayTime . ' ' .$timeUnit;
                         $messageEmail .= '</p> ';
                     }
 
@@ -370,8 +372,8 @@ class Ticket extends BaseController
                     $titleMail = 'send email success ticket to user';
                     $subjectMail = 'Ticket เสร็จสิ้น ';
                     $messageEmail = '<p>';
-                    $messageEmail .= '   <h3> คำร้องขอ Ticket ' . $getTask['topic'] . ' เมื่อวันที่ ' . date('d/m/Y H:i', $getTask['createdAt']) . ' ได้รับการแก้ไขแล้ว </h3>' ;
-                    $messageEmail .= '   กรุณาตรวจสอบการใช้งาน และยืนยันความถูกต้อง';
+                    $messageEmail .= '<h2> Ticket No.' . $getTask['ticket_no'] . ' </h2>';
+                    $messageEmail .= ' คำร้องขอ Ticket ' . $getTask['topic'] . ' เมื่อวันที่ ' . date('d/m/Y H:i', $getTask['createdAt']) . ' ได้รับการแก้ไขแล้ว กรุณาตรวจสอบการใช้งาน และยืนยันความถูกต้อง' ;
                     $messageEmail .= '</p> ';
                     $messageEmail .= ' <div>';
                     $messageEmail .= '  <h3><b> สาเหตุ </b></h3>';
@@ -454,8 +456,8 @@ class Ticket extends BaseController
 
                     if ($reject  == 'duplicate') {
                         $messageEmail = '<p>';
-                        $messageEmail .= '   <h3> Ticket นี้มีการดำเนินการเรียบร้อยแล้ว </h3>' ;
-                        $messageEmail .= '     กรุณาตรวจสอบความถูกต้องใหม่อีกครั้ง ';
+                        $messageEmail .= '<h2> Ticket No.' . $resultMail['ticket_no'] . ' </h2>';
+                        $messageEmail .= '  Ticket มีการดำเนินการเรียบร้อยแล้ว กรุณาตรวจสอบความถูกต้องใหม่อีกครั้ง' ;
                         $messageEmail .= '</p> ';
 
                         $updateData = [
@@ -532,7 +534,14 @@ class Ticket extends BaseController
     public function getTicketOwner()
     {
         if ($this->request->isAJAX()) {
-            $query = $this->userModel->where('class', 'admin')->where('status', 1)->where('id !=', $this->session->get('id'))->findAll();
+            $query = $this->ownerGroupModel
+            ->distinct()
+            ->select('users.*')
+            ->join('users', 'users.id = group_owner.ownerId')
+            ->where('users.class', 'admin')
+            ->where('users.status', 1)
+            ->where('users.id !=', $this->session->get('id'))
+            ->findAll();
 
             if ($query) {
                 $response = [
@@ -690,6 +699,7 @@ class Ticket extends BaseController
             $query['task'] = $this->ticketTaskModel
             ->select(
                 'ticket_task.id as task_id,
+                ticket_task.ticket_no,
                 ticket_task.topic as task_topic,
                 ticket_task.remark as task_remark,
                 ticket_task.createdAt as task_create,

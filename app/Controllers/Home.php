@@ -68,15 +68,23 @@ class Home extends BaseController
     public function getTicketOften()
     {
         if ($this->request->isAJAX()) {
+
+            // set error group by
+            $db      = \Config\Database::connect();
+            $db->query("SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));");
+
             $query = $this->ticketModel
-            ->select('catagories.nameCatTh as catName, sub_catagories.nameSubCat as subCatName, users.fullname as ownerTicket, count(ticket_task.subCatId) as countTicket')
-            ->join('catagories', 'catagories.id = ticket_task.catId')
-            ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
-            ->join('users', 'users.id = ticket_task.ownerAccepted')
-            ->groupBy('ticket_task.subCatId')
-            ->orderBy('countTicket', 'DESC')
-            ->limit(5)
-            ->findAll();
+                ->select('catagories.nameCatTh as catName, 
+                sub_catagories.nameSubCat as subCatName, 
+                users.fullname as ownerTicket, 
+                count(ticket_task.subCatId) as countTicket')
+                ->join('catagories', 'catagories.id = ticket_task.catId')
+                ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
+                ->join('users', 'users.id = ticket_task.ownerAccepted')
+                ->groupBy('ticket_task.subCatId')
+                ->orderBy('countTicket', 'DESC')
+                ->limit(5)
+                ->findAll();
 
             if ($query) {
                 $response = [

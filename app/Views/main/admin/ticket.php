@@ -86,6 +86,7 @@
                                  <thead>
                                      <tr>
                                          <th>สถานะ</th>
+                                         <th>Ticket no.</th>
                                          <th>หัวข้อ</th>
                                          <th>รายละเอียด</th>
                                          <th>ผู้แจ้งปัญหา</th>
@@ -98,6 +99,7 @@
                                  <tfoot>
                                      <tr>
                                          <th>สถานนะ</th>
+                                         <th>Ticket no.</th>
                                          <th>หัวข้อ</th>
                                          <th>รายละเอียด</th>
                                          <th>ผู้แจ้งปัญหา</th>
@@ -220,8 +222,7 @@
 
                          <div class="form-group mb-4">
                              <small class="form-text text-muted">หมวดหมู่</small>
-                             <select id="changeTicketCategory" name="changeTicketCategory"
-                                 onchange="getSubCategoryTicket()" title="กรุณาเลือกหมวดหมู่"
+                             <select id="changeTicketCategory" name="changeTicketCategory" title="กรุณาเลือกหมวดหมู่"
                                  class="selectpicker form-control" data-live-search="true" data-width="100%">
                              </select>
                          </div>
@@ -329,7 +330,7 @@
      <div class="modal-dialog modal-lg">
          <div class="modal-content">
              <div class="modal-header">
-                 <h5 class="modal-title" id="text-topicTask"></h5>
+                 <h5 class="modal-title" id="text-ticket-no"></h5>
                  <a href="#" class="icon-close" data-bs-dismiss="modal" aria-label="Close"></a>
              </div>
              <div class="modal-body">
@@ -344,6 +345,19 @@
                              <label id="text-StatusTask"> </label>
                          </div>
                      </div>
+
+
+                     <div class='row'>
+                         <div class="col-md-4 ">
+                             <h5>
+                                 หัวข้อ
+                             </h5>
+                         </div>
+                         <div class="col-md-8 text-dark">
+                             <label id="text-topicTask"> </label>
+                         </div>
+                     </div>
+
 
                      <div class='row'>
                          <div class="col-md-4 ">

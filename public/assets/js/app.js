@@ -508,21 +508,15 @@ const userListByStatus = (status) => {
   var tableUsers = $("#tableUser")
     .on("xhr.dt", function (e, settings, json, xhr) {
       if (json.status === 404) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops!",
-          text: "ไม่พบข้อมูลที่คุณร้องขอ!",
-        }).then((result) => {
-          $(this).DataTable({
-            processing: true,
-            stateSave: true,
-            searching: true,
-            responsive: true,
-            bDestroy: true,
-            colReorder: {
-              realtime: true,
-            },
-          });
+        $(this).DataTable({
+          processing: true,
+          stateSave: true,
+          searching: true,
+          responsive: true,
+          bDestroy: true,
+          colReorder: {
+            realtime: true,
+          },
         });
       }
     })
@@ -2513,7 +2507,7 @@ const editSubCat = (id) => {
 
 // ============================= Ticket page ============================== //
 const getAdminTicket = () => {
-  var tableTicketAdmin = $("#tableTicketAdmin")
+  $("#tableTicketAdmin")
     .on("xhr.dt", function (e, settings, json, xhr) {
       if (json.status === 404) {
         $(this).DataTable({
@@ -2598,6 +2592,10 @@ const getAdminTicket = () => {
                     </div>`;
             }
           },
+        },
+        {
+          data: "ticket_no",
+          className: "text-center",
         },
         {
           data: "task_topic",
@@ -2777,7 +2775,7 @@ const updateTicketStatus = (id, action, status) => {
         cancelButtonText: "ยังก่อน",
       }).then((result) => {
         if (result.isConfirmed) {
-          updateTicket(id, status);
+          updateTicket(id, status, action);
         }
       });
 
@@ -2794,14 +2792,12 @@ const updateTicketStatus = (id, action, status) => {
         denyButtonColor: "#F14C4C",
       }).then((result) => {
         if (result.isConfirmed) {
-          $(".preloader").show();
           updateTicket(id, status, "duplicate");
         }
 
         if (result.isDenied) {
           $("#rejectTicketModal").modal("show");
           getCategoryTicket();
-          getOwnerTicket(id);
 
           $("#btnChangeTicket").click(function (e) {
             if (
@@ -3014,7 +3010,7 @@ const updateTicket = (id, status, action) => {
             text: response.message,
             showConfirmButton: false,
             timer: 1500,
-          }).then(() => {
+          }).then((result) => {
             $("#tableTicketAdmin").DataTable().ajax.reload();
             countTicket();
           });
@@ -3087,6 +3083,11 @@ const getCategoryTicket = () => {
   });
 };
 
+$("#changeTicketCategory").change(function () {
+  getSubCategoryTicket();
+  getOwnerTicket();
+});
+
 const getSubCategoryTicket = () => {
   let catId = $("#changeTicketCategory").val();
   $.ajax({
@@ -3128,11 +3129,18 @@ const getSubCategoryTicket = () => {
   });
 };
 
-const getOwnerTicket = (taskId) => {
+const getOwnerTicket = () => {
+  let groupId = $("#changeTicketCategory").val();
+
   $.ajax({
     url: `${baseUrl}admin/ticket/owner/change/get`,
     type: "GET",
+    data: {
+      groupId: groupId,
+    },
+
     success: function (response) {
+      console.log(response);
       if (response.status == 200) {
         let html = "";
         for (let count = 0; count < response.data.length; count++) {
@@ -3166,24 +3174,18 @@ const getOwnerTicket = (taskId) => {
 };
 
 const getAdminTicketByStatus = (status) => {
-  var tableTicketAdmin = $("#tableTicketAdmin")
+  $("#tableTicketAdmin")
     .on("xhr.dt", function (e, settings, json, xhr) {
       if (json.status === 404) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops!",
-          text: "ไม่พบข้อมูลที่คุณร้องขอ!",
-        }).then((result) => {
-          $(this).DataTable({
-            processing: true,
-            stateSave: true,
-            searching: true,
-            responsive: true,
-            bDestroy: true,
-            colReorder: {
-              realtime: true,
-            },
-          });
+        $(this).DataTable({
+          processing: true,
+          stateSave: true,
+          searching: true,
+          responsive: true,
+          bDestroy: true,
+          colReorder: {
+            realtime: true,
+          },
         });
       }
     })
@@ -3265,6 +3267,10 @@ const getAdminTicketByStatus = (status) => {
           },
         },
         {
+          data: "ticket_no",
+          className: "text-center",
+        },
+        {
           data: "task_topic",
           className: "text-center",
         },
@@ -3272,7 +3278,7 @@ const getAdminTicketByStatus = (status) => {
           data: null,
           className: "text-center",
           render: function (data, type, full, meta) {
-            return `<a href="#" onclick="getMoreDetailTicket(${data.taskId})" data-bs-toggle="tooltip"
+            return `<a href="#" onclick="getMoreTicketDetail(${data.taskId})" data-bs-toggle="tooltip"
                       data-bs-placement="bottom" title="more detail" class="btn btn-sm btn-cyan">
                       <i class="fas fa-list"></i>
                   </a>`;
@@ -3336,7 +3342,12 @@ const getMoreTicketDetail = (taskId) => {
         $("#ticketTaskDetailModal").modal("show");
 
         // and set data in modal with js
-        $("#text-topicTask").html(`Task: ${response.data.task[0].task_topic}`);
+
+        $("#text-ticket-no").html(
+          `Ticket no. ${response.data.task[0].ticket_no}`,
+        );
+
+        $("#text-topicTask").html(`${response.data.task[0].task_topic}`);
 
         switch (parseInt(response.data.task[0].task_status)) {
           case 1:
@@ -4220,21 +4231,15 @@ const searchHistory = () => {
   $("#tableResultHistory")
     .on("xhr.dt", function (e, settings, json, xhr) {
       if (json.status === 404) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops!",
-          text: "ไม่พบข้อมูลที่คุณร้องขอ!",
-        }).then((result) => {
-          $(this).DataTable({
-            processing: true,
-            stateSave: true,
-            searching: true,
-            responsive: true,
-            bDestroy: true,
-            colReorder: {
-              realtime: true,
-            },
-          });
+        $(this).DataTable({
+          processing: true,
+          stateSave: true,
+          searching: true,
+          responsive: true,
+          bDestroy: true,
+          colReorder: {
+            realtime: true,
+          },
         });
       }
     })
@@ -4529,21 +4534,15 @@ $(
   $("#tableReportTicketAll")
     .on("xhr.dt", function (e, settings, json, xhr) {
       if (json.status === 404) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops!",
-          text: "ไม่พบข้อมูลที่คุณร้องขอ!",
-        }).then((result) => {
-          $(this).DataTable({
-            processing: true,
-            stateSave: true,
-            searching: true,
-            responsive: true,
-            bDestroy: true,
-            colReorder: {
-              realtime: true,
-            },
-          });
+        $(this).DataTable({
+          processing: true,
+          stateSave: true,
+          searching: true,
+          responsive: true,
+          bDestroy: true,
+          colReorder: {
+            realtime: true,
+          },
         });
       }
     })
@@ -4666,21 +4665,15 @@ $(
   $("#tableReportTicketStatus")
     .on("xhr.dt", function (e, settings, json, xhr) {
       if (json.status === 404) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops!",
-          text: "ไม่พบข้อมูลที่คุณร้องขอ!",
-        }).then((result) => {
-          $(this).DataTable({
-            processing: true,
-            stateSave: true,
-            searching: true,
-            responsive: true,
-            bDestroy: true,
-            colReorder: {
-              realtime: true,
-            },
-          });
+        $(this).DataTable({
+          processing: true,
+          stateSave: true,
+          searching: true,
+          responsive: true,
+          bDestroy: true,
+          colReorder: {
+            realtime: true,
+          },
         });
       }
     })
