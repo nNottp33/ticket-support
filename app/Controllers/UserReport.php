@@ -26,39 +26,52 @@ class UserReport extends BaseController
         if ($this->request->isAJAX()) {
             $type = $this->request->getGet('type');
 
-            $start_date = strtotime($this->request->getGet('startDate'));
-            $end_date = strtotime($this->request->getGet('endDate'));
+            $start_date = strtotime($this->request->getGet('startDate') . "00:00:00");
+            $end_date = strtotime($this->request->getGet('endDate') . "23:59:59");
 
             if ($type == 'all') {
                 $ticket_no = $this->request->getGet('ticket_no');
 
-
-                //  error sql syntax WTF! find this tomorow
                 $query = $this->ticketModel
                 ->select('ticket_task.id as task_id, 
-                ticket_task.ticket_no, 
-                ticket_task.status as task_status,
-                ticket_task.createdAt as task_created,
-                ticket_task.topic as task_topic,
-                users.fullname as ownerName,
-                catagories.nameCatTh as catName')
+                    ticket_task.ticket_no, 
+                    ticket_task.status as task_status,
+                    ticket_task.createdAt as task_created,
+                    ticket_task.topic as task_topic,
+                    users.fullname as ownerName,
+                    catagories.nameCatTh as catName
+                    ')
                 ->join('users', 'users.id = ticket_task.ownerAccepted')
                 ->join('catagories', 'catagories.id = ticket_task.catId')
-                ->like('ticket_task.ticket_no', $ticket_no)
-                ->where('ticket_task.createdAt =>', $start_date)
+                ->like('ticket_task.ticket_no', $ticket_no, 'both')
+                ->where('ticket_task.createdAt >=', $start_date)
                 ->where('ticket_task.createdAt <=', $end_date)
                 ->where('ticket_task.userId', $this->session->get('id'))
                 ->orderBy('ticket_task.id', 'DESC')
-                ->findALl();
+                ->findAll();
             }
 
             if ($type == 'status') {
-                $arrStatus = $this->request->getGet('status');
-            }
+                $status = $this->request->getGet('status');
 
-            // echo "<pre>";
-            // print_r($query);
-            // die();
+                $query = $this->ticketModel
+                    ->select('ticket_task.id as task_id, 
+                        ticket_task.ticket_no, 
+                        ticket_task.status as task_status,
+                        ticket_task.createdAt as task_created,
+                        ticket_task.topic as task_topic,
+                        users.fullname as ownerName,
+                        catagories.nameCatTh as catName
+                        ')
+                    ->join('users', 'users.id = ticket_task.ownerAccepted')
+                    ->join('catagories', 'catagories.id = ticket_task.catId')
+                    ->whereIn('ticket_task.status', $status)
+                    ->where('ticket_task.createdAt >=', $start_date)
+                    ->where('ticket_task.createdAt <=', $end_date)
+                    ->where('ticket_task.userId', $this->session->get('id'))
+                    ->orderBy('ticket_task.id', 'DESC')
+                    ->findAll();
+            }
 
             if ($query) {
                 $response = [

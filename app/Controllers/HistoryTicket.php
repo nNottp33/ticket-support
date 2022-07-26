@@ -30,8 +30,8 @@ class HistoryTicket extends BaseController
     public function searchHistory()
     {
         if ($this->request->isAJAX()) {
-            $start_date = strtotime($this->request->getGet('startDate'));
-            $end_date = strtotime($this->request->getGet('endDate'));
+            $start_date = strtotime($this->request->getGet('startDate') . "00:00:00");
+            $end_date = strtotime($this->request->getGet('endDate') . "23:59:59");
             // $status = $this->request->getGet('status');
 
             $query = $this->ticketModel

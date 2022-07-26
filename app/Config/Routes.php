@@ -117,7 +117,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         // report page
         $routes->get('report/ticket/all', 'UserReport::ticketAll_page');
         $routes->get('report/ticket/status', 'UserReport::ticketStatus_page');
-        $routes->get('report/ticket/all/display', 'UserReport::index');
+        $routes->get('report/ticket/display', 'UserReport::index');
     });
 });
 

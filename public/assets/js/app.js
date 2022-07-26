@@ -4523,7 +4523,7 @@ $(
   "#main-wrapper > div > div.container-fluid > div.row > div.col-sm-12.col-md-6.col-lg-3.mb-0.mt-4.justify-content-center.text-center > button",
 ).click(function () {
   let startDate = $("#searchReportAllStartDate").val();
-  let endDate = $("#searchReportAllDate").val();
+  let endDate = $("#searchReportAllEndDate").val();
   let ticketNo = $("#inputTicketNo").val();
 
   $("#tableReportTicketAll")
@@ -4557,7 +4557,7 @@ $(
         realtime: true,
       },
       ajax: {
-        url: `${baseUrl}user/report/ticket/all/display`,
+        url: `${baseUrl}user/report/ticket/display`,
         type: "GET",
         data: {
           startDate: startDate,
@@ -4618,8 +4618,148 @@ $(
           },
         },
         {
-          data: "ticket_no",
+          data: null,
           className: "text-center",
+          render: function (data, type, full, meta) {
+            return `<button onclick="moreDetailTicket('${data.task_id}', 'reportTicketAllDetailModal')" type="button" class="btn waves-effect waves-light btn-outline-dark btn-sm">${data.ticket_no}</button>`;
+          },
+        },
+        {
+          data: "task_topic",
+          className: "text-center",
+        },
+        {
+          data: "catName",
+          className: "text-center",
+        },
+        {
+          data: "ownerName",
+          className: "text-center",
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            return `<span class="text-success"> <b> ${moment
+              .unix(data.task_created)
+              .format("DD/MM/YYYY HH:mm")} </b> </span>`;
+          },
+        },
+      ],
+    });
+});
+
+// ====================== end report ticket all page ====================== //
+
+// ===================== report ticket status page ======================== //
+$(
+  "#main-wrapper > div > div.container-fluid > div.row > div.col-sm-12.col-md-6.col-lg-3.mb-0.mt-4.justify-content-center.text-center > button",
+).click(function () {
+  let startDate = $("#searchReportStatusStartDate").val();
+  let endDate = $("#searchReportStatusEndDate").val();
+  let statusVal = $(
+    "#main-wrapper > div > div.container-fluid > div.row > div:nth-child(3) > form > div > div > select",
+  ).val();
+
+  let status = statusVal.length > 0 ? statusVal : [1, 2, 3, 4, 5];
+
+  $("#tableReportTicketStatus")
+    .on("xhr.dt", function (e, settings, json, xhr) {
+      if (json.status === 404) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops!",
+          text: "ไม่พบข้อมูลที่คุณร้องขอ!",
+        }).then((result) => {
+          $(this).DataTable({
+            processing: true,
+            stateSave: true,
+            searching: true,
+            responsive: true,
+            bDestroy: true,
+            colReorder: {
+              realtime: true,
+            },
+          });
+        });
+      }
+    })
+    .dataTable({
+      processing: true,
+      stateSave: true,
+      searching: true,
+      responsive: true,
+      bDestroy: true,
+      colReorder: {
+        realtime: true,
+      },
+      ajax: {
+        url: `${baseUrl}user/report/ticket/display`,
+        type: "GET",
+        data: {
+          startDate: startDate,
+          endDate: endDate,
+          status: status,
+          type: "status",
+        },
+      },
+      columns: [
+        {
+          // targets: 0,
+          // data: null,
+          // className: "text-center",
+          // searchable: true,
+          // orderable: true,
+          // render: function (data, type, full, meta) {
+          //   return `0`;
+          // },
+          data: "task_id",
+          className: "text-center",
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            if (
+              data.task_status == 0 ||
+              data.task_status == 5 ||
+              data.task_status == 6
+            ) {
+              return `<div data-toggle="tooltip" title="Pending...">
+                       <a href="#" class="btn btn-secondary btn-sm">  <li class="fas fa-clock"></li> </a>
+                    </div>`;
+            }
+
+            if (data.task_status == 1) {
+              return `<div data-toggle="tooltip" title="Accepted">
+                       <a  href="#" class="btn btn-warning btn-sm">  <li class="fas fa-clock"></li> </a>
+                    </div>`;
+            }
+            if (data.task_status == 2) {
+              return `<div>
+                      <a data-toggle="tooltip" title="Success" href="#" class="btn btn-success btn-sm">  <li class="fas fa-check-circle"></li> </a>
+                    </div>`;
+            }
+
+            if (data.task_status == 3) {
+              return `<div data-toggle="tooltip" title="Rejected">
+                       <a  href="#" class="btn btn-danger btn-sm">  <li class="fas fa-times"></li> </a>
+                    </div>`;
+            }
+
+            if (data.task_status == 4) {
+              return `<div data-toggle="tooltip" title="Closes">
+                       <a  href="#" class="btn btn-secondary btn-sm">  <li class="fas fa-check-circle"></li> </a>
+                    </div>`;
+            }
+          },
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            return `<button onclick="moreDetailTicket('${data.task_id}', 'reportTicketStatusDetailModal')" type="button" class="btn waves-effect waves-light btn-outline-dark btn-sm">${data.ticket_no}</button>`;
+          },
         },
         {
           data: "task_topic",
@@ -4640,8 +4780,173 @@ $(
       ],
     });
 });
+// =================== end report ticket status page ====================== //
 
-// ====================== end report ticket all page ====================== //
+const moreDetailTicket = (taskId, modalId) => {
+  $.ajax({
+    url: `${baseUrl}user/ticket/detail`,
+    type: "POST",
+    data: {
+      ticketId: taskId,
+    },
+    success: function (response) {
+      if (response.status == 200) {
+        $(`#${modalId}`).modal("show");
+
+        switch (parseInt(response.data[0].task_status)) {
+          case 1:
+            $(".text-report-detail-status")
+              .html("รับคำร้อง")
+              .css("color", "#6c757d");
+            break;
+
+          case 2:
+            $(".text-report-detail-status")
+              .html("เสร็จสิ้น รอการยืนยันจากผู้ใช้")
+              .css("color", "#22ca80");
+            break;
+
+          case 3:
+            $(".text-report-detail-status")
+              .html("ปฎิเสธ")
+              .css("color", "#ff0332");
+            break;
+
+          case 4:
+            $(".text-report-detail-status")
+              .html("ปิดงาน")
+              .css("color", "#01caf1");
+            break;
+
+          default:
+            $(".text-report-detail-status")
+              .html("รอดำเนินการ")
+              .css("color", "#fdc16a");
+            break;
+        }
+
+        $(".title-modal-report-more-detail").html(
+          `Ticket no. ${response.data[0].ticket_no}`,
+        );
+        $(".text-report-detail-topic").html(response.data[0].task_topic);
+        $(".text-report-detail-remark").html(response.data[0].task_remark);
+        $(".text-report-detail-catagory").html(response.data[0].catName);
+        $(".text-report-detail-catagory-sub").html(response.data[0].subCatName);
+
+        // let attach = response.data[0].task_attach.split(".");
+
+        // if (attach[1] == "jpg" || attach[1] == "png" || attach[1] == "gif") {
+        //   $("#imgTask").attr(
+        //     "src",
+        //     `${baseUrl}store_files_uploaded/${response.data[0].task_attach}`,
+        //   );
+        // }
+
+        let sla;
+
+        let day = moment().format("ddd");
+
+        if (day == "Fri") {
+          response.data.task[0].periodTime = 2880;
+        }
+
+        if (response.data[0].periodTime == 0) {
+          sla = "ไม่มีข้อมูล";
+        }
+
+        if (
+          response.data[0].periodTime < 60 &&
+          response.data[0].periodTime > 0
+        ) {
+          sla = `${response.data[0].periodTime} นาที`;
+        }
+
+        if (
+          response.data[0].periodTime >= 60 &&
+          response.data[0].periodTime < 1440
+        ) {
+          sla = `${response.data[0].periodTime / 60} ชั่วโมง`;
+        }
+
+        if (response.data[0].periodTime > 1440) {
+          sla = "มากกว่า 1 วัน";
+        }
+
+        if (response.data[0].periodTime >= 2880) {
+          sla = "มากกว่า 2 วัน";
+        }
+
+        $(".text-report-detail-sla").html(sla);
+        if (response.data[0].timeline.length > 0) {
+          response.data[0].timeline.forEach((timeline, index, array) => {
+            let html = "";
+
+            html += `<div class="timeline__item">`;
+            html += `  <div class="timeline__content">`;
+            html += `  <span class="badge badge-danger mb-1">  ${moment
+              .unix(array[index].detail_created)
+              .format("DD/MM/YYYY HH:mm")} </span>`;
+            html += `<div class="row">`;
+            html += `  <div class="col-md-12">`;
+            html += `<small class="text-muted"> สาเหตุ </small>`;
+            html += `</div>`;
+            html += `  <div class="col-md-12">`;
+            html += `    <p class="paragraph-timeline"> ${array[index].detail_cause} </p>`;
+            html += `  </div>`;
+            html += ` </div>`;
+
+            html += `<div class="row">`;
+            html += `  <div class="col-md-12">`;
+            html += `<small class="text-muted"> การแก้ไข </small>`;
+            html += `</div>`;
+            html += `  <div class="col-md-12">`;
+            html += `    <p class="paragraph-timeline"> ${array[index].detail_solution} </p>`;
+            html += `  </div>`;
+            html += ` </div>`;
+
+            html += `<div class="row">`;
+            html += `  <div class="col-md-12">`;
+            html += `<small class="text-muted"> รายละเอียด </small>`;
+            html += `</div>`;
+            html += `  <div class="col-md-12">`;
+            html += `    <p class="paragraph-timeline"> ${array[index].detail_remark} </p>`;
+            html += `  </div>`;
+            html += ` </div>`;
+            html += `   </div>`;
+            html += `</div>`;
+
+            $(".timeline__items").append(html);
+          });
+
+          $(".timeline").timeline();
+        }
+      }
+
+      if (response.status == 404 || response.status == 400) {
+        Swal.fire({
+          icon: "error",
+          title: response.title,
+          text: response.message,
+          showConfirmButton: false,
+          timer: 1000,
+        }).then((result) => {
+          console.log(response);
+          return false;
+        });
+      }
+    },
+
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(error);
+      });
+    },
+  });
+};
 
 // ======================================================================== //
 // ========================== Role USER end =============================== //
