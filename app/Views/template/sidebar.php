@@ -127,16 +127,18 @@
                               </a>
                               <ul aria-expanded="false" class="collapse  first-level base-level-line">
                                   <li class="sidebar-item">
-                                      <a href="form-inputs.html" class="sidebar-link">
-                                          <span class="hide-menu"> Report type1
-                                              <div class="sub-title">รายงาน ???</div>
+                                      <a href="<?= base_url('admin/report/performance'); ?>"
+                                          class="sidebar-link">
+                                          <span class="hide-menu"> Performance Report
+                                              <div class="sub-title">รายงานประสิทธิภาพ</div>
                                           </span>
                                       </a>
                                   </li>
                                   <li class="sidebar-item">
-                                      <a href="form-input-grid.html" class="sidebar-link">
-                                          <span class="hide-menu"> Report type2
-                                              <div class="sub-title">รายงาน ???</div>
+                                      <a href="<?= base_url('admin/report/dashboard'); ?>"
+                                          class="sidebar-link">
+                                          <span class="hide-menu"> Dashboard Report
+                                              <div class="sub-title">รายงานสรุปผล</div>
                                           </span>
                                       </a>
                                   </li>

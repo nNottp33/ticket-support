@@ -93,6 +93,11 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->post('catagories/sub/insert', 'Catagory::insertSubCat');
         $routes->post('catagories/sub/get/edit', 'Catagory::getUpdateSubCat');
         $routes->post('catagories/sub/update', 'Catagory::updateSubCat');
+
+        // report page
+        $routes->get('report/performance', 'AdminReport::reportPerformance_page');
+        $routes->get('report/dashboard', 'AdminReport::reportDashboard_page');
+        $routes->post('report/display', 'AdminReport::index');
     });
 
     // role user

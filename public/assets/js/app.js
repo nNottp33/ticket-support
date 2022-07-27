@@ -3563,6 +3563,148 @@ const oftenTicketDashboard = () => {
 
 // ======================================================================== //
 
+// =========================== report page ================================ //
+// ======================= dashboard report page ========================== //
+const getOwnerReport = () => {
+  $.ajax({
+    url: `${baseUrl}admin/get/list`,
+    type: "GET",
+
+    success: function (response) {
+      if (response.status == 200) {
+        let html = "";
+        for (let count = 0; count < response.data.length; count++) {
+          $(
+            "#main-wrapper > div > div.container-fluid > div:nth-child(1) > div:nth-child(1) > form > div > div > select",
+          ).append(
+            `<option value="${response.data[count].id}">${response.data[count].fullname}</option>`,
+          );
+        }
+
+        $(
+          "#main-wrapper > div > div.container-fluid > div:nth-child(1) > div:nth-child(1) > form > div > div > select",
+        ).selectpicker("refresh");
+      }
+
+      if (response.status == 404 || response.status == 400) {
+        Swal.fire({
+          icon: "error",
+          title: response.title,
+          text: response.message,
+          showConfirmButton: false,
+          timer: 1000,
+        });
+      }
+    },
+
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(error);
+      });
+    },
+  });
+};
+
+$(
+  "#main-wrapper > div > div.container-fluid > div:nth-child(1) > div.col-sm-12.col-md-6.col-lg-3.mb-0.mt-4.justify-content-center.text-center > button",
+).click(function () {
+  let startDate = $(
+    "#main-wrapper > div > div.container-fluid > div:nth-child(1) > div:nth-child(2) > form > div > input",
+  ).val();
+  let endDate = $(
+    "#main-wrapper > div > div.container-fluid > div:nth-child(1) > div:nth-child(3) > form > div > input",
+  ).val();
+  let owner = $(
+    "#main-wrapper > div > div.container-fluid > div:nth-child(1) > div:nth-child(1) > form > div > div > select",
+  ).val();
+
+  $("#tableReportDashboard")
+    .on("xhr.dt", function (e, settings, json, xhr) {
+      if (json.status === 400) {
+        $(this).DataTable({
+          processing: true,
+          stateSave: true,
+          searching: true,
+          responsive: true,
+          bDestroy: true,
+          colReorder: {
+            realtime: true,
+          },
+        });
+      }
+    })
+    .DataTable({
+      dom: "Bfrtip",
+      processing: true,
+      stateSave: true,
+      searching: true,
+      responsive: true,
+      bDestroy: true,
+      colReorder: {
+        realtime: true,
+      },
+
+      ajax: {
+        url: `${baseUrl}admin/report/display`,
+        type: "POST",
+        data: {
+          ownerId: owner,
+          startDate: startDate,
+          endDate: endDate,
+          type: "dashboard",
+        },
+      },
+      columns: [
+        {
+          data: "catName",
+          className: "text-center",
+        },
+        {
+          data: "total_ticket",
+          className: "text-center",
+        },
+        {
+          data: "ownerName",
+          className: "text-center",
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            return `<span>${
+              parseInt(data.pending_in_sla) + parseInt(data.renew_in_sla)
+            }</span>`;
+          },
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            return `<span>${
+              parseInt(data.complete_out_sla) +
+              parseInt(data.reject_out_sla) +
+              parseInt(data.close_out_sla)
+            }</span>`;
+          },
+        },
+      ],
+      buttons: ["excel", "csv"],
+    });
+});
+// ======================================================================== //
+
+// ====================== performance report page ========================= //
+
+// something function
+
+// ======================================================================== //
+
+// ========================== report page end ============================= //
+
 // ======================================================================== //
 // ========================== Role ADMIN end ============================== //
 // ======================================================================== //
@@ -3757,7 +3899,7 @@ $("#ticketForm").on("submit", function (e) {
 
 // show user ticket
 const getUserTicket = () => {
-  var tableUserTicket = $("#tableUserTicket")
+  $("#tableUserTicket")
     .on("xhr.dt", function (e, settings, json, xhr) {
       if (json.status === 404) {
         $(this).DataTable({
@@ -4656,9 +4798,7 @@ $(
 // ====================== end report ticket all page ====================== //
 
 // ===================== report ticket status page ======================== //
-$(
-  "#main-wrapper > div > div.container-fluid > div.row > div.col-sm-12.col-md-6.col-lg-3.mb-0.mt-4.justify-content-center.text-center > button",
-).click(function () {
+$("#tableReportTicketStatus").click(function () {
   let startDate = $("#searchReportStatusStartDate").val();
   let endDate = $("#searchReportStatusEndDate").val();
   let statusVal = $(
