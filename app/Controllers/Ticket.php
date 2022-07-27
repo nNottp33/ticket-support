@@ -43,6 +43,7 @@ class Ticket extends BaseController
     {
         if ($this->request->isAJAX()) {
             $query = $this->ticketTaskModel
+            ->distinct()
             ->select('ticket_task.id as taskId, ticket_task.ticket_no, ticket_task.topic as task_topic, ticket_task.createdAt as task_created, ticket_task.updatedAt as task_updated, ticket_task.status as task_status, catagories.nameCatTh, sub_catagories.nameSubCat, users.email as user_email')
             ->join('catagories', 'catagories.id = ticket_task.catId')
             ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
@@ -91,20 +92,39 @@ class Ticket extends BaseController
     public function getTicketAdminByStatus()
     {
         if ($this->request->isAJAX()) {
-            $query = $this->ticketTaskModel
-            ->select('ticket_task.id as taskId, ticket_task.ticket_no, ticket_task.topic as task_topic, ticket_task.createdAt as task_created, ticket_task.updatedAt as task_updated, ticket_task.status as task_status, catagories.nameCatTh, sub_catagories.nameSubCat, users.email as user_email')
-            ->join('catagories', 'catagories.id = ticket_task.catId')
-            ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
-            ->join('group_owner', 'group_owner.groupId = ticket_task.catId')
-            ->join('users', 'users.id = ticket_task.userId')
-            ->where('users.status', 1)
-            ->whereIn('ticket_task.status', $this->request->getGet('status'))
-            ->where('group_owner.ownerId', $this->session->get('id'))
-            ->where('ticket_task.ownerAccepted', $this->session->get('id'))
-            ->orWhere('ticket_task.ownerAccepted', 0)
-            ->orderBy('ticket_task.createdAt', 'DESC')
-            ->limit(100)
-            ->findAll();
+            if ($this->request->getGet('status')[0] == 0) {
+                $query = $this->ticketTaskModel
+                ->distinct()
+                ->select('ticket_task.id as taskId, ticket_task.ticket_no, ticket_task.topic as task_topic, ticket_task.createdAt as task_created, ticket_task.updatedAt as task_updated, ticket_task.status as task_status, catagories.nameCatTh, sub_catagories.nameSubCat, users.email as user_email')
+                ->join('catagories', 'catagories.id = ticket_task.catId')
+                ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
+                ->join('group_owner', 'group_owner.groupId = ticket_task.catId')
+                ->join('users', 'users.id = ticket_task.userId')
+                ->where('users.status', 1)
+                ->whereIn('ticket_task.status', $this->request->getGet('status'))
+                // ->where('group_owner.ownerId', $this->session->get('id'))
+                // ->where('ticket_task.ownerAccepted', $this->session->get('id'))
+                ->where('ticket_task.ownerAccepted', 0)
+                // ->orWhere('ticket_task.ownerAccepted', 0)
+                ->orderBy('ticket_task.createdAt', 'DESC')
+                ->limit(100)
+                ->findAll();
+            } else {
+                $query = $this->ticketTaskModel
+                ->distinct()
+                ->select('ticket_task.id as taskId, ticket_task.ticket_no, ticket_task.topic as task_topic, ticket_task.createdAt as task_created, ticket_task.updatedAt as task_updated, ticket_task.status as task_status, catagories.nameCatTh, sub_catagories.nameSubCat, users.email as user_email')
+                ->join('catagories', 'catagories.id = ticket_task.catId')
+                ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
+                ->join('group_owner', 'group_owner.groupId = ticket_task.catId')
+                ->join('users', 'users.id = ticket_task.userId')
+                ->where('users.status', 1)
+                ->whereIn('ticket_task.status', $this->request->getGet('status'))
+                ->where('group_owner.ownerId', $this->session->get('id'))
+                ->where('ticket_task.ownerAccepted', $this->session->get('id'))
+                ->orderBy('ticket_task.createdAt', 'DESC')
+                ->limit(100)
+                ->findAll();
+            }
 
             if ($query) {
                 $response = [
@@ -175,20 +195,22 @@ class Ticket extends BaseController
             $query['total'] = $this->ticketTaskModel
             ->select('count(ticket_task.id) as total')
             ->join('catagories', 'catagories.id = ticket_task.catId')
-            ->join('group_owner', 'group_owner.groupId = catagories.id')
+            // ->join('group_owner', 'group_owner.groupId = catagories.id')
             ->where('ticket_task.status != 3')
-            ->where('group_owner.ownerId', $this->session->get('id'))
+            // ->where('group_owner.ownerId', $this->session->get('id'))
+            ->where('ticket_task.ownerAccepted', $this->session->get('id'))
+            ->orWhere('ticket_task.ownerAccepted', 0)
             ->get()
             ->getRow()->total;
 
+  
             $query['wait'] = $this->ticketTaskModel
             ->select('count(ticket_task.id) as total')
             ->join('catagories', 'catagories.id = ticket_task.catId')
-            ->join('group_owner', 'group_owner.groupId = catagories.id')
-            ->where('ticket_task.status = 0')
-            ->orWhere('ticket_task.status = 5')
-            ->orWhere('ticket_task.status = 6')
-            ->where('group_owner.ownerId', $this->session->get('id'))
+            // ->join('group_owner', 'group_owner.groupId = catagories.id')
+            ->whereIn('ticket_task.status', [0,5,6])
+            ->where('ticket_task.ownerAccepted', $this->session->get('id'))
+            ->orWhere('ticket_task.ownerAccepted', 0)
             ->get()
             ->getRow()->total;
 
@@ -196,9 +218,10 @@ class Ticket extends BaseController
             $query['pending'] = $this->ticketTaskModel
             ->select('count(ticket_task.id) as total')
             ->join('catagories', 'catagories.id = ticket_task.catId')
-            ->join('group_owner', 'group_owner.groupId = catagories.id')
-            ->where('ticket_task.status = 1')
-            ->where('group_owner.ownerId', $this->session->get('id'))
+            // ->join('group_owner', 'group_owner.groupId = catagories.id')
+            ->where('ticket_task.status', 1)
+            // ->where('group_owner.ownerId', $this->session->get('id'))
+            ->where('ticket_task.ownerAccepted', $this->session->get('id'))
             ->get()
             ->getRow()->total;
 
@@ -206,9 +229,10 @@ class Ticket extends BaseController
             $query['complete'] = $this->ticketTaskModel
             ->select('count(ticket_task.id) as total')
             ->join('catagories', 'catagories.id = ticket_task.catId')
-            ->join('group_owner', 'group_owner.groupId = catagories.id')
-            ->where('ticket_task.status = 2')
-            ->where('group_owner.ownerId', $this->session->get('id'))
+            // ->join('group_owner', 'group_owner.groupId = catagories.id')
+            ->where('ticket_task.status', 2)
+            // ->where('group_owner.ownerId', $this->session->get('id'))
+            ->where('ticket_task.ownerAccepted', $this->session->get('id'))
             ->get()
             ->getRow()->total;
 
@@ -216,9 +240,10 @@ class Ticket extends BaseController
             $query['close'] = $this->ticketTaskModel
             ->select('count(ticket_task.id) as total')
             ->join('catagories', 'catagories.id = ticket_task.catId')
-            ->join('group_owner', 'group_owner.groupId = catagories.id')
+            // ->join('group_owner', 'group_owner.groupId = catagories.id')
             ->where('ticket_task.status = 4')
-            ->where('group_owner.ownerId', $this->session->get('id'))
+            // ->where('group_owner.ownerId', $this->session->get('id'))
+            ->where('ticket_task.ownerAccepted', $this->session->get('id'))
             ->get()
             ->getRow()->total;
 
@@ -538,9 +563,11 @@ class Ticket extends BaseController
             ->distinct()
             ->select('users.*')
             ->join('users', 'users.id = group_owner.ownerId')
+            ->join('catagories', 'catagories.id = group_owner.groupId')
             ->where('users.class', 'admin')
             ->where('users.status', 1)
             ->where('users.id !=', $this->session->get('id'))
+            ->where('catagories.id', $this->request->getGet('groupId'))
             ->findAll();
 
             if ($query) {

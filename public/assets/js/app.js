@@ -3113,6 +3113,9 @@ const getSubCategoryTicket = () => {
           text: response.message,
           showConfirmButton: false,
           timer: 1000,
+        }).then((result) => {
+          $("#changeTicketSubCategory").html("");
+          $("#changeTicketSubCategory").selectpicker("refresh");
         });
       }
     },
@@ -3140,7 +3143,6 @@ const getOwnerTicket = () => {
     },
 
     success: function (response) {
-      console.log(response);
       if (response.status == 200) {
         let html = "";
         for (let count = 0; count < response.data.length; count++) {
@@ -3157,6 +3159,9 @@ const getOwnerTicket = () => {
           text: response.message,
           showConfirmButton: false,
           timer: 1000,
+        }).then((result) => {
+          $("#changeTicketOwner").html("");
+          $("#changeTicketOwner").selectpicker("refresh");
         });
       }
     },

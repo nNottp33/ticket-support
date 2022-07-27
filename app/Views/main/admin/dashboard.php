@@ -5,7 +5,7 @@
      <div class="page-breadcrumb">
          <div class="row">
              <div class="col-7 align-self-center">
-                 <h3 class="page-title text-truncate text-dark font-weight-medium mb-1">Hello, <?= session()->get('nickname') ?>!
+                 <h3 class="page-title text-truncate text-dark font-weight-medium mb-1">Hello, <?= session()->get('nickname') == '-' ? 'Unknown' : session()->get('nickname') ?>!
                  </h3>
                  <div class="d-flex align-items-center">
                      <nav aria-label="breadcrumb">
