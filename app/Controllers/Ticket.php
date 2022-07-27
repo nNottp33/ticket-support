@@ -608,7 +608,7 @@ class Ticket extends BaseController
 
 
             $result_ticket = $this->userModel
-            ->select('catagories.nameCatTh, sub_catagories.nameSubCat, ticket_task.topic, ticket_task.remark, ticket_task.attachment, users.email')
+            ->select('catagories.nameCatTh, sub_catagories.nameSubCat, ticket_task.ticket_no, ticket_task.topic, ticket_task.remark, ticket_task.attachment, users.email')
             ->join('ticket_task', 'ticket_task.userId = users.id')
             ->join('catagories', 'ticket_task.catId = catagories.id')
             ->join('sub_catagories', 'ticket_task.subCatId = sub_catagories.id')
@@ -634,12 +634,15 @@ class Ticket extends BaseController
             // email to user
             $subjectMail_user = 'Ticket ไม่ถูกต้อง';
             $messageEmail_user = '<p>';
-            $messageEmail_user .= '   <h3> Ticket ของคุณผิดหมวดหมู่ </h3>' ;
-            $messageEmail_user .= '     แอดมิน ' . $this->session->get('email') . ' ได้ทำการแก้ไขและส่งคำขอใหม่ไปยังแอดมินคนใหม่เรียบร้อยแล้ว';
+            $messageEmail_user .= '   <h2> Ticket no. ' . $result_ticket['ticket_no'] . ' </h2>' ;
+            $messageEmail_user .= '  Ticket ของคุณผิดหมวดหมู่ แอดมิน ' . $this->session->get('email') . ' ได้ทำการแก้ไขและส่งคำขอใหม่ไปยังแอดมินคนใหม่เรียบร้อยแล้ว';
             $messageEmail_user .= '</p> ';
 
             // email to owner
             $subjectMail_owner = 'คุณมี Ticket ใหม่';
+            $messageEmail_owner = ' <div>';
+            $messageEmail_owner .= '  <h2> Ticket no. ' . $result_ticket['ticket_no'] . ' </h2>' ;
+            $messageEmail_owner .= ' </div>';
             $messageEmail_owner = ' <div>';
             $messageEmail_owner .= '  <h3><b> หัวข้อ </b></h3>';
             $messageEmail_owner .= '     <p style="padding-left: 20px;"> ' . $result_ticket['topic'] . ' </p> ';
