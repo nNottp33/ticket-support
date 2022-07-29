@@ -53,13 +53,26 @@ class AdminReport extends BaseController
             }
 
 
-            // echo"<pre>";
-            // print_r($query);
-            // die();
-
             if ($this->request->getPost('type') == 'performance') {
+                $query = $this->ticketModel
+                ->select('
+                    ticket_task.id as ticket_id,
+                    ticket_task.ticket_no,
+                    ticket_task.createdAt as ticket_created,
+                    ticket_task.status as ticket_status,
+                    catagories.nameCatTh as catName,
+                    sub_catagories.period as periodTime,
+                    users.fullname as ownerName,
+                ')
+                ->join('users', 'users.id = ticket_task.ownerAccepted')
+                ->join('catagories', 'catagories.id = ticket_task.catId')
+                ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
+                ->whereIn('ticket_task.ownerAccepted', $ownerId)
+                ->where('ticket_task.createdAt >=', $start_date)
+                ->where('ticket_task.createdAt <=', $end_date)
+                ->orderBy('ticket_task.id', 'DESC')
+                ->findAll();
             }
-
 
             if ($query) {
                 $response = [

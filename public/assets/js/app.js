@@ -3393,12 +3393,6 @@ const getMoreTicketDetail = (taskId) => {
 
         let sla;
 
-        let day = moment().format("ddd");
-
-        if (day == "Fri") {
-          response.data.task[0].periodTime = 2880;
-        }
-
         if (response.data.task[0].periodTime == 0) {
           sla = "ไม่มีข้อมูล";
         }
@@ -3575,15 +3569,13 @@ const getOwnerReport = () => {
         let html = "";
         for (let count = 0; count < response.data.length; count++) {
           $(
-            "#main-wrapper > div > div.container-fluid > div:nth-child(1) > div:nth-child(1) > form > div > div > select",
+            "#main-wrapper > div > div.container-fluid > div.row > div:nth-child(1) > form > div > div > select",
           ).append(
             `<option value="${response.data[count].id}">${response.data[count].fullname}</option>`,
           );
         }
 
-        $(
-          "#main-wrapper > div > div.container-fluid > div:nth-child(1) > div:nth-child(1) > form > div > div > select",
-        ).selectpicker("refresh");
+        $(".selectpicker").selectpicker("refresh");
       }
 
       if (response.status == 404 || response.status == 400) {
@@ -3609,18 +3601,10 @@ const getOwnerReport = () => {
   });
 };
 
-$(
-  "#main-wrapper > div > div.container-fluid > div:nth-child(1) > div.col-sm-12.col-md-6.col-lg-3.mb-0.mt-4.justify-content-center.text-center > button",
-).click(function () {
-  let startDate = $(
-    "#main-wrapper > div > div.container-fluid > div:nth-child(1) > div:nth-child(2) > form > div > input",
-  ).val();
-  let endDate = $(
-    "#main-wrapper > div > div.container-fluid > div:nth-child(1) > div:nth-child(3) > form > div > input",
-  ).val();
-  let owner = $(
-    "#main-wrapper > div > div.container-fluid > div:nth-child(1) > div:nth-child(1) > form > div > div > select",
-  ).val();
+$("#reportDash").click(function () {
+  let startDate = $("#startDateReportDash").val();
+  let endDate = $("#endDateReportDash").val();
+  let owner = $("#ownerReportDash").val();
 
   $("#tableReportDashboard")
     .on("xhr.dt", function (e, settings, json, xhr) {
@@ -3639,6 +3623,7 @@ $(
     })
     .DataTable({
       dom: "Bfrtip",
+      buttons: ["excel", "csv"],
       processing: true,
       stateSave: true,
       searching: true,
@@ -3647,7 +3632,6 @@ $(
       colReorder: {
         realtime: true,
       },
-
       ajax: {
         url: `${baseUrl}admin/report/display`,
         type: "POST",
@@ -3692,14 +3676,303 @@ $(
           },
         },
       ],
-      buttons: ["excel", "csv"],
     });
 });
 // ======================================================================== //
 
 // ====================== performance report page ========================= //
 
-// something function
+$("#reportPerform").click(function () {
+  let startDate = $("#startDateReportPerform").val();
+  let endDate = $("#endDateReportPerform").val();
+  let owner = $("#ownerReportPerform").val();
+
+  console.log(startDate);
+  $("#tableReportPerformance")
+    .on("xhr.dt", function (e, settings, json, xhr) {
+      if (json.status === 400) {
+        $(this).DataTable({
+          processing: true,
+          stateSave: true,
+          searching: true,
+          responsive: true,
+          bDestroy: true,
+          colReorder: {
+            realtime: true,
+          },
+        });
+      }
+    })
+    .DataTable({
+      dom: "Bfrtip",
+      buttons: ["excel", "csv"],
+      processing: true,
+      stateSave: true,
+      searching: true,
+      responsive: true,
+      bDestroy: true,
+      colReorder: {
+        realtime: true,
+      },
+      ajax: {
+        url: `${baseUrl}admin/report/display`,
+        type: "POST",
+        data: {
+          ownerId: owner,
+          startDate: startDate,
+          endDate: endDate,
+          type: "performance",
+        },
+      },
+      columns: [
+        {
+          data: "ticket_id",
+          className: "text-center",
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            return `<a href="#" onclick="detailReportPerformance(${data.ticket_id})" class="btn btn-sm btn-outline-cyan"> ${data.ticket_no} </a>`;
+          },
+        },
+        {
+          data: "catName",
+          className: "text-center",
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            return `<span>${moment
+              .unix(data.ticket_created)
+              .format("DD/MM/YYYY HH:mm")}</span>`;
+          },
+        },
+        {
+          data: "ownerName",
+          className: "text-center",
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            if (data.ticket_status == 1) {
+              return `<span class=""text-warning> <li class="fas fa-clock"> </li> Pending </span>`;
+            }
+
+            if (data.ticket_status == 2) {
+              return `<span class=""text-success> <li class="fas fa-check-circle"> </li> Complete </span>`;
+            }
+
+            if (data.ticket_status == 3) {
+              return `<span class=""text-danger> <li class="fas fa-times"> </li> Reject </span>`;
+            }
+
+            if (data.ticket_status == 4) {
+              return `<span class=""text-secondary> <li class="fas fa-check-circle"> </li> Close </span>`;
+            }
+
+            if (data.ticket_status == 5) {
+              return `<span class=""text-danger> <li class=" fas fa-exchange-alt"> </li> Reject change admin </span>`;
+            }
+
+            if (data.ticket_status == 6) {
+              return `<span class=""text-purple> <li class="fas fa-redo"> Return </span>`;
+            }
+          },
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            return `<span>${moment
+              .unix(data.ticket_created)
+              .add(data.periodTime, "minutes")
+              .format("DD/MM/YYYY HH:mm")}</span>`;
+          },
+        },
+        {
+          data: null,
+          className: "text-center",
+          render: function (data, type, full, meta) {
+            if (data.ticket_status == 1) {
+              return `<span class=""text-secondary> wait </span>`;
+            }
+
+            if (
+              data.ticket_status == 2 ||
+              data.ticket_status == 3 ||
+              data.ticket_status == 5
+            ) {
+              return `<span class=""text-danger> IN SLA </span>`;
+            }
+
+            if (data.ticket_status == 4) {
+              return `<span class=""text-success> OUT SLA </span>`;
+            }
+          },
+        },
+      ],
+    });
+});
+
+const detailReportPerformance = (taskId) => {
+  $("#reportPerformanceDetailModal").modal("show");
+
+  $.ajax({
+    url: `${baseUrl}admin/ticket/more/detail`,
+    type: "POST",
+    data: {
+      taskId: taskId,
+    },
+
+    success: function (response) {
+      console.log(response);
+      if (response.status == 200) {
+        $("#ticketTaskDetailModal").modal("show");
+
+        $(".title-modal-report-more-detail").html(
+          `Ticket no. ${response.data.task[0].ticket_no}`,
+        );
+
+        $(".text-report-detail-topic").html(
+          `${response.data.task[0].task_topic}`,
+        );
+
+        switch (parseInt(response.data.task[0].task_status)) {
+          case 1:
+            $(".text-report-detail-status")
+              .html("รับคำร้อง")
+              .css("color", "#6c757d");
+            break;
+
+          case 2:
+            $(".text-report-detail-status")
+              .html("เสร็จสิ้น รอการยืนยันจากผู้ใช้")
+              .css("color", "#22ca80");
+            break;
+
+          case 3:
+            $(".text-report-detail-status")
+              .html("ปฎิเสธ")
+              .css("color", "#ff0332");
+            break;
+
+          case 4:
+            $(".text-report-detail-status")
+              .html("ปิดงาน")
+              .css("color", "#01caf1");
+            break;
+
+          default:
+            $(".text-report-detail-status")
+              .html("รอดำเนินการ")
+              .css("color", "#fdc16a");
+            break;
+        }
+
+        $(".text-report-detail-catagory").html(response.data.task[0].catName);
+        $(".text-report-detail-catagory-sub").html(
+          response.data.task[0].subCatName,
+        );
+
+        let sla;
+
+        if (response.data.task[0].periodTime == 0) {
+          sla = "ไม่มีข้อมูล";
+        }
+
+        if (
+          response.data.task[0].periodTime < 60 &&
+          response.data.task[0].periodTime > 0
+        ) {
+          sla = `${response.data.task[0].periodTime} นาที`;
+        }
+
+        if (
+          response.data.task[0].periodTime >= 60 &&
+          response.data.task[0].periodTime < 1440
+        ) {
+          sla = `${response.data.task[0].periodTime / 60} ชั่วโมง`;
+        }
+
+        if (response.data.task[0].periodTime > 1440) {
+          sla = "มากกว่า 1 วัน";
+        }
+
+        if (response.data.task[0].periodTime >= 2880) {
+          sla = "มากกว่า 2 วัน";
+        }
+
+        $(".text-report-detail-sla").html(sla);
+        $(".text-report-detail-remark").html(response.data.task[0].task_remark);
+
+        if (response.data.detail.length > 0) {
+          response.data.detail.forEach((timeline, index, array) => {
+            let html = "";
+
+            html += `<div class="timeline__item">`;
+            html += `  <div class="timeline__content">`;
+            html += `  <span class="badge badge-danger mb-1">  ${moment
+              .unix(array[index].detail_created)
+              .format("DD/MM/YYYY HH:mm")} </span>`;
+            html += `<div class="row">`;
+            html += `  <div class="col-md-12">`;
+            html += `<small class="text-muted"> สาเหตุ </small>`;
+            html += `</div>`;
+            html += `  <div class="col-md-12">`;
+            html += `    <p class="paragraph-timeline"> ${array[index].detail_cause} </p>`;
+            html += `  </div>`;
+            html += ` </div>`;
+            html += `<div class="row">`;
+            html += `  <div class="col-md-12">`;
+            html += `<small class="text-muted"> การแก้ไข </small>`;
+            html += `</div>`;
+            html += `  <div class="col-md-12">`;
+            html += `    <p class="paragraph-timeline"> ${array[index].detail_solution} </p>`;
+            html += `  </div>`;
+            html += ` </div>`;
+            html += `<div class="row">`;
+            html += `  <div class="col-md-12">`;
+            html += `<small class="text-muted"> รายละเอียด </small>`;
+            html += `</div>`;
+            html += `  <div class="col-md-12">`;
+            html += `    <p class="paragraph-timeline"> ${array[index].detail_remark} </p>`;
+            html += `  </div>`;
+            html += ` </div>`;
+            html += `   </div>`;
+            html += `</div>`;
+
+            $(".timeline__items").append(html);
+          });
+
+          $(".timeline").timeline();
+        }
+      }
+
+      if (response.status == 404 || response.status == 400) {
+        Swal.fire({
+          icon: "error",
+          title: response.title,
+          text: response.message,
+          showConfirmButton: false,
+          timer: 1000,
+        });
+      }
+    },
+
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(error);
+      });
+    },
+  });
+};
 
 // ======================================================================== //
 
@@ -4077,12 +4350,6 @@ const getMoreDetailTicket = (ticketId) => {
         }
 
         let sla;
-
-        let day = moment().format("ddd");
-
-        if (day == "Fri") {
-          response.data.task[0].periodTime = 2880;
-        }
 
         if (response.data[0].periodTime == 0) {
           sla = "ไม่มีข้อมูล";
@@ -4563,12 +4830,6 @@ const getMoreDetailTicketHistory = (ticketId) => {
 
         let sla;
 
-        let day = moment().format("ddd");
-
-        if (day == "Fri") {
-          response.data.task[0].periodTime = 2880;
-        }
-
         if (response.data[0].periodTime == 0) {
           sla = "ไม่มีข้อมูล";
         }
@@ -4981,12 +5242,6 @@ const moreDetailTicket = (taskId, modalId) => {
         // }
 
         let sla;
-
-        let day = moment().format("ddd");
-
-        if (day == "Fri") {
-          response.data.task[0].periodTime = 2880;
-        }
 
         if (response.data[0].periodTime == 0) {
           sla = "ไม่มีข้อมูล";

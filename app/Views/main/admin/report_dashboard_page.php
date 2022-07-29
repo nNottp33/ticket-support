@@ -28,8 +28,8 @@
                  <small class="form-text text-muted">ผู้รับผิดชอบ</small>
                  <form class="mt-1">
                      <div class="form-group">
-                         <select multiple title="เลือกผู้รับผิดชอบ" data-actions-box="true" data-live-search="true"
-                             data-width="100%" class="form-control selectpicker show-tick">
+                         <select id="ownerReportDash" multiple title="เลือกผู้รับผิดชอบ" data-actions-box="true"
+                             data-live-search="true" data-width="100%" class="form-control selectpicker show-tick">
                          </select>
                      </div>
                  </form>
@@ -39,7 +39,7 @@
                  <small class="form-text text-muted">วันที่เริ่มต้น</small>
                  <form class="mt-1">
                      <div class="form-group">
-                         <input type="date" class="form-control">
+                         <input id="startDateReportDash" type="date" class="form-control">
                      </div>
                  </form>
              </div>
@@ -48,13 +48,13 @@
                  <small class="form-text text-muted">วันที่สิ้นสุด</small>
                  <form class="mt-1">
                      <div class="form-group">
-                         <input type="date" class="form-control">
+                         <input id="endDateReportDash" type="date" class="form-control">
                      </div>
                  </form>
              </div>
 
              <div class="col-sm-12 col-md-6 col-lg-3 mb-0 mt-4 justify-content-center text-center">
-                 <button type="button" class="btn btn-info w-100">
+                 <button id="reportDash" type="button" class="btn btn-info w-100">
                      ค้นหา <i class=" fas fa-search"></i> </button>
              </div>
          </div>
@@ -79,7 +79,8 @@
                          <th>Total ticket</th>
                          <th>Owner</th>
                          <th>Ticket IN SLA</th>
-                         <th>Ticket OUT SLA</th </tr>
+                         <th>Ticket OUT SLA</th>
+                     </tr>
                  </tfoot>
              </table>
          </div>
