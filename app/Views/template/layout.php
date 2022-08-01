@@ -18,9 +18,7 @@
     <!-- Custom CSS -->
     <link href="<?= base_url() ?>/assets/extra-libs/c3/c3.min.css"
         rel="stylesheet">
-    <!-- <link
-        href="<?= base_url() ?>/assets/libs/chartist/dist/chartist.min.css"
-    rel="stylesheet"> -->
+
     <link
         href="<?= base_url() ?>/assets/extra-libs/jvector/jquery-jvectormap-2.0.2.css"
         rel="stylesheet" />
@@ -36,8 +34,6 @@
         href="<?= base_url() ?>/assets/css/index.css"
         type="text/css" />
 
-
-
     <!-- ajax -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -50,8 +46,6 @@
     <link rel="stylesheet"
         href="<?= base_url() ?>/assets/css/timeline.min.css"
         type="text/css" />
-
-
 </head>
 
 <body>
@@ -121,6 +115,10 @@
     <!-- datatables -->
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.jqueryui.min.js"></script>
+
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
 
     <!-- sweet alert2 -->
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>

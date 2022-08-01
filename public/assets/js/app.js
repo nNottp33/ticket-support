@@ -3623,7 +3623,13 @@ $("#reportDash").click(function () {
     })
     .DataTable({
       dom: "Bfrtip",
-      buttons: ["excel", "csv"],
+      buttons: [
+        {
+          extend: "excel",
+          text: "EXCEL",
+          className: "btn btn-success btn-sm my-2 col-sm-12 col-lg-1",
+        },
+      ],
       processing: true,
       stateSave: true,
       searching: true,
@@ -3687,7 +3693,6 @@ $("#reportPerform").click(function () {
   let endDate = $("#endDateReportPerform").val();
   let owner = $("#ownerReportPerform").val();
 
-  console.log(startDate);
   $("#tableReportPerformance")
     .on("xhr.dt", function (e, settings, json, xhr) {
       if (json.status === 400) {
@@ -3705,7 +3710,13 @@ $("#reportPerform").click(function () {
     })
     .DataTable({
       dom: "Bfrtip",
-      buttons: ["excel", "csv"],
+      buttons: [
+        {
+          extend: "excel",
+          text: "EXCEL",
+          className: "btn btn-success btn-sm my-2 col-sm-12 col-lg-1",
+        },
+      ],
       processing: true,
       stateSave: true,
       searching: true,
@@ -3828,7 +3839,6 @@ const detailReportPerformance = (taskId) => {
     },
 
     success: function (response) {
-      console.log(response);
       if (response.status == 200) {
         $("#ticketTaskDetailModal").modal("show");
 
