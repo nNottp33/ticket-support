@@ -15,7 +15,7 @@
                           alt="homepage" class="light-logo" />
                   </b>
 
-                  <span class="logo-text">
+                  <span class="logo-text mt-2">
 
                       <img src="<?= base_url(); ?>/assets/images/logo-text.png"
                           alt="homepage" class="dark-logo" />

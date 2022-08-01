@@ -638,3 +638,8 @@ p {
 .paragraph-timeline {
   font-size: 12px !important;
 }
+
+.logo-text>img {
+  max-width: 170px;
+  width: 100%;
+}
