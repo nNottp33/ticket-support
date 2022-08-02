@@ -3608,7 +3608,7 @@ $("#reportDash").click(function () {
 
   $("#tableReportDashboard")
     .on("xhr.dt", function (e, settings, json, xhr) {
-      if (json.status === 400) {
+      if (json.status === 404) {
         $(this).DataTable({
           processing: true,
           stateSave: true,
@@ -3695,7 +3695,7 @@ $("#reportPerform").click(function () {
 
   $("#tableReportPerformance")
     .on("xhr.dt", function (e, settings, json, xhr) {
-      if (json.status === 400) {
+      if (json.status === 404) {
         $(this).DataTable({
           processing: true,
           stateSave: true,
