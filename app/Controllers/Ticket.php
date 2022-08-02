@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use CodeIgniter\BaseModel;
+use CodeIgniter\Entity\Cast\BaseCast;
 use CodeIgniter\I18n\Time;
 
 class Ticket extends BaseController
@@ -330,6 +332,10 @@ class Ticket extends BaseController
                         $messageEmail .= '   <h3> Ticket no. ' . $resultMail['ticket_no'] . ' ของคุณได้รับการตอบรับเรียบร้อยแล้ว </h3>' ;
                         $messageEmail .= '     Ticket ' . $resultMail['topic']. ' ขณะนี้แอดมินกำลังตรวจสอบปัญหาอีกครั้ง ใช้เวลาดำเนินการประมาณ ' . $dayTime . ' ' .$timeUnit;
                         $messageEmail .= '</p> ';
+                        $messageEmail .= '<div> ';
+                        $messageEmail .= '<label> Ticket support system :</label>';
+                        $messageEmail .= ' <a href="'. base_url('user/home')  .'"> ' . base_url('user/home') . '  </a>';
+                        $messageEmail .= '</div> ';
                     } else {
                         $titleMail = 'send email admin approved ticket';
                         $subjectMail = 'แอดมินตอบรับ Ticket';
@@ -337,6 +343,10 @@ class Ticket extends BaseController
                         $messageEmail .= '   <h3> Ticket no. ' .  $resultMail['ticket_no'] . ' ของคุณได้รับการตอบรับเรียบร้อยแล้ว </h3>' ;
                         $messageEmail .= '  Ticket ' . $resultMail['topic']. ' ขณะนี้กำลังดำเนินการใช้เวลาประมาณ ' . $dayTime . ' ' .$timeUnit;
                         $messageEmail .= '</p> ';
+                        $messageEmail .= '<div> ';
+                        $messageEmail .= '<label> Ticket support system :</label>';
+                        $messageEmail .= ' <a href="'. base_url('user/home')  .'"> ' . base_url('user/home') . '  </a>';
+                        $messageEmail .= '</div> ';
                     }
 
                     $updateData = [
@@ -412,6 +422,12 @@ class Ticket extends BaseController
                     $messageEmail .= '  <h3><b> รายละเอียดเพิ่มเติม </b></h3>';
                     $messageEmail .= '    <p style="padding-left: 20px; word-wrap: break-word; "> ' . $remark . ' </p> ';
                     $messageEmail .= ' </div>';
+                    $messageEmail .= '<div> ';
+                    $messageEmail .= '<label> Ticket support system :</label>';
+                    $messageEmail .= ' <a href="'. base_url('user/home')  .'"> ' . base_url('user/home') . '  </a>';
+                    $messageEmail .= '</div> ';
+
+
 
                     $time = $this->time->getTimestamp();
 
@@ -484,6 +500,10 @@ class Ticket extends BaseController
                         $messageEmail .= '<h2> Ticket No.' . $resultMail['ticket_no'] . ' </h2>';
                         $messageEmail .= '  Ticket มีการดำเนินการเรียบร้อยแล้ว กรุณาตรวจสอบความถูกต้องใหม่อีกครั้ง' ;
                         $messageEmail .= '</p> ';
+                        $messageEmail .= '<div> ';
+                        $messageEmail .= '<label> Ticket support system :</label>';
+                        $messageEmail .= ' <a href="'. base_url('user/home')  .'"> ' . base_url('user/home') . '  </a>';
+                        $messageEmail .= '</div> ';
 
                         $updateData = [
                             'status' => $status,
@@ -637,6 +657,11 @@ class Ticket extends BaseController
             $messageEmail_user .= '   <h2> Ticket no. ' . $result_ticket['ticket_no'] . ' </h2>' ;
             $messageEmail_user .= '  Ticket ของคุณผิดหมวดหมู่ แอดมิน ' . $this->session->get('email') . ' ได้ทำการแก้ไขและส่งคำขอใหม่ไปยังแอดมินคนใหม่เรียบร้อยแล้ว';
             $messageEmail_user .= '</p> ';
+            $messageEmail_user .= '<div> ';
+            $messageEmail_user .= '<label> Ticket support system :</label>';
+            $messageEmail_user .= ' <a href="'. base_url('user/home')  .'"> ' . base_url('user/home') . '  </a>';
+            $messageEmail_user .= '</div> ';
+
 
             // email to owner
             $subjectMail_owner = 'คุณมี Ticket ใหม่';
@@ -659,6 +684,11 @@ class Ticket extends BaseController
             $messageEmail_owner .= '  <h3><b> รายละเอียดเพิ่มเติม </b></h3>';
             $messageEmail_owner .= '    <p style="padding-left: 20px; word-wrap: break-word; "> ' . $result_ticket['remark'] . ' </p> ';
             $messageEmail_owner .= ' </div>';
+            $messageEmail_owner .= '<div> ';
+            $messageEmail_owner .= '<label> Ticket support system :</label>';
+            $messageEmail_owner .= ' <a href="'. base_url('admin/ticket/list')  .'"> ' . base_url('user/home') . '  </a>';
+            $messageEmail_owner .= '</div> ';
+
 
             $updateData = [
                 'status' => 5,

@@ -108,3 +108,8 @@ dist
 
 # TernJS port file
 .tern-port
+
+
+# public
+public/store_files_uploaded/*
+public/assets/images/*

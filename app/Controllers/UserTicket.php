@@ -119,6 +119,11 @@ class UserTicket extends BaseController
                     $messageEmail .= '    <p style="padding-left: 20px;"> ' . $detail . ' </p> ';
                     $messageEmail .= ' </div>';
                     $messageEmail .= '</div>';
+                    $messageEmail .= '<div> ';
+                    $messageEmail .= '<label> Ticket support system :</label>';
+                    $messageEmail .= ' <a href="'. base_url('admin/ticket/list')  .'"> ' . base_url('user/home') . '  </a>';
+                    $messageEmail .= '</div> ';
+
 
 
                     if ($this->sendEmailGroup($titleMail, $subjectMail, $messageEmail, $toMail, $imageFile->getClientName()) && $this->ticketTaskModel->update($last_ticketId, $updateData)) {
@@ -297,6 +302,11 @@ class UserTicket extends BaseController
             $messageEmail .= '<h2> Ticket No.' . $resultTask['ticket_no'] . ' </h2>';
             $messageEmail .= '  คำร้องขอ Ticket ' . $resultTask['topic'] . ' เมื่อวันที่ ' . date('d/m/Y H:i', $resultTask['createdAt']) . ' ได้รับการรับการตรวจสอบและสามารถใช้งานได้ตามปกติแล้ว ';
             $messageEmail .= '</p> ';
+            $messageEmail .= '<div> ';
+            $messageEmail .= '<label> Ticket support system :</label>';
+            $messageEmail .= ' <a href="'. base_url('admin/ticket/list')  .'"> ' . base_url('user/home') . '  </a>';
+            $messageEmail .= '</div> ';
+
            
             $time = $this->time->getTimestamp();
 
@@ -418,6 +428,11 @@ class UserTicket extends BaseController
             $messageEmail .= '  <h3><b> รายละเอียดเพิ่มเติม </b></h3>';
             $messageEmail .= '    <p style="padding-left: 20px;"> ' . $remark . ' </p> ';
             $messageEmail .= ' </div>';
+            $messageEmail .= '<div> ';
+            $messageEmail .= '<label> Ticket support system :</label>';
+            $messageEmail .= ' <a href="'. base_url('admin/ticket/list')  .'"> ' . base_url('user/home') . '  </a>';
+            $messageEmail .= '</div> ';
+
 
             $updateData = [
                 'status' => 6,
