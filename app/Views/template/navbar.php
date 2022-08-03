@@ -8,19 +8,19 @@
 
               <div class="navbar-brand">
                   <b class="logo-icon">
-                      <img src="<?= base_url(); ?>/assets/images/logo.png"
+                      <img src="<?= base_url() ?>/public/assets/images/logo.png"
                           alt="homepage" class="dark-logo" />
 
-                      <img src="<?= base_url(); ?>/assets/images/logo.png"
+                      <img src="<?= base_url() ?>/public/assets/images/logo.png"
                           alt="homepage" class="light-logo" />
                   </b>
 
                   <span class="logo-text mt-2">
 
-                      <img src="<?= base_url(); ?>/assets/images/logo-text.png"
+                      <img src="<?= base_url() ?>/public/assets/images/logo-text.png"
                           alt="homepage" class="dark-logo" />
 
-                      <img src="<?= base_url(); ?>/assets/images/logo-light-text.png"
+                      <img src="<?= base_url() ?>/public/assets/images/logo-light-text.png"
                           class="light-logo" alt="homepage" />
                   </span>
 
@@ -37,7 +37,7 @@
                   <li class=" nav-item dropdown">
                       <a class="nav-link dropdown-toggle" href="javascript:void(0)" data-toggle="dropdown"
                           aria-haspopup="true" aria-expanded="false">
-                          <img src="<?= base_url() ?>/assets/images/users/profile-pic.jpg"
+                          <img src="<?= base_url() ?>/public/assets/images/users/profile-pic.jpg"
                               alt="user" class="rounded-circle" width="40">
                           <span class="ml-2 d-none d-lg-inline-block"><span>Hello,</span> <span class="text-dark">
                                   <?= session()->get('nickname') == '-' ? 'Unknown' : session()->get('nickname') ?></span>

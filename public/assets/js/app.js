@@ -1,49 +1,3 @@
-const baseUrl = `${window.location.protocol}//${window.location.host}/`;
-const filters =
-  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-// ======================================================================== //
-// ============================== GLOBAL ================================== //
-// ======================================================================== //
-
-$(document).ready(function () {
-  // clear input when modal hide
-  $(".clear-modal").on("hidden.bs.modal", function (e) {
-    $(this).find("input,textarea,select").val("").end();
-    $(".previewImg").hide();
-    $(".timeline__items").timeline().empty();
-    $(".collapse").collapse("hide");
-  });
-
-  $(".selectpicker").selectpicker();
-
-  // check input email or password is empty or not
-  $(".input-login").keypress(function (e) {
-    // if not empty then can click on login button
-    if ($("#email").val() && $("#pwd").val()) {
-      $("#btnLogin").attr("disabled", false);
-    } else {
-      $("#btnLogin").attr("disabled", true);
-    }
-  });
-
-  $(".input-login").on("input", function () {
-    if ($("#email").val() && $("#pwd").val()) {
-      $("#btnLogin").attr("disabled", false);
-    } else {
-      $("#btnLogin").attr("disabled", true);
-    }
-  });
-
-  $(".profile-input").attr("disabled", "disabled");
-});
-
-// check if user press enter button
-$(document).on("keypress", ".input-login", function (e) {
-  if (e.which == 13) {
-    login();
-  }
-});
-
 const togglePassword = (id, inputParent) => {
   let inputId;
 
@@ -2682,7 +2636,7 @@ const getUserDetail = (email) => {
         let randomNum = Math.floor(Math.random() * imageArr.length);
         $("#ticketAvatar").attr(
           "src",
-          `${baseUrl}assets/images/avatar/${imageArr[randomNum]}`,
+          `${baseUrl}public/assets/images/avatar/${imageArr[randomNum]}`,
         );
         $("#text-ticketEmpId").html(response.data.empId);
         $("#text-ticketFullname").html(
@@ -3387,7 +3341,7 @@ const getMoreTicketDetail = (taskId) => {
         if (attach[1] == "jpg" || attach[1] == "png" || attach[1] == "gif") {
           $("#imgTask").attr(
             "src",
-            `${baseUrl}store_files_uploaded/${response.data.task[0].task_attach}`,
+            `${baseUrl}public/store_files_uploaded/${response.data.task[0].task_attach}`,
           );
         }
 
@@ -3814,7 +3768,8 @@ $("#reportPerform").click(function () {
             if (
               data.ticket_status == 2 ||
               data.ticket_status == 3 ||
-              data.ticket_status == 5
+              data.ticket_status == 5 ||
+              data.ticket_status == 6
             ) {
               return `<span class=""text-danger> IN SLA </span>`;
             }
@@ -4355,7 +4310,7 @@ const getMoreDetailTicket = (ticketId) => {
         if (attach[1] == "jpg" || attach[1] == "png" || attach[1] == "gif") {
           $("#imgTask").attr(
             "src",
-            `${baseUrl}store_files_uploaded/${response.data[0].task_attach}`,
+            `${baseUrl}public/store_files_uploaded/${response.data[0].task_attach}`,
           );
         }
 
@@ -4834,7 +4789,7 @@ const getMoreDetailTicketHistory = (ticketId) => {
         if (attach[1] == "jpg" || attach[1] == "png" || attach[1] == "gif") {
           $("#imgTask").attr(
             "src",
-            `${baseUrl}store_files_uploaded/${response.data[0].task_attach}`,
+            `${baseUrl}public/store_files_uploaded/${response.data[0].task_attach}`,
           );
         }
 
@@ -5247,7 +5202,7 @@ const moreDetailTicket = (taskId, modalId) => {
         // if (attach[1] == "jpg" || attach[1] == "png" || attach[1] == "gif") {
         //   $("#imgTask").attr(
         //     "src",
-        //     `${baseUrl}store_files_uploaded/${response.data[0].task_attach}`,
+        //     `${baseUrl}public/store_files_uploaded/${response.data[0].task_attach}`,
         //   );
         // }
 

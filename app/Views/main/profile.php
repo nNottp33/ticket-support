@@ -12,7 +12,7 @@
                      <div class="card-body">
                          <div class="row my-3">
                              <div class="col-md-12 col-12 text-center">
-                                 <img src="<?= base_url() ?>/assets/images/users/5.jpg"
+                                 <img src="<?= base_url() ?>/public/assets/images/users/5.jpg"
                                      alt="image" class="rounded-circle" width="200">
                              </div>
                          </div>

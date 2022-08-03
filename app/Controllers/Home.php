@@ -27,12 +27,13 @@ class Home extends BaseController
         $end = strtotime("last day of this month");
 
         // user all
-        $data['count_user_all'] = $this->userModel->countAll();
+        $data['count_user_all'] = $this->userModel->where('status != 4')->countAllResults();
 
         // new user in month
         $data['count_user_new'] = $this->userModel->select('count(id) as user_new')
         ->where('createdAt >=', $start)
         ->where('createdAt <=', $end)
+        ->where('status != 4')
         ->get()
         ->getRow()->user_new;
 

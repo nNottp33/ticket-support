@@ -2,13 +2,13 @@
 
  <?php $this->section('content'); ?>
  <div class="auth-wrapper d-flex no-block justify-content-center align-items-center position-relative"
-     style="background:url(<?= base_url() ?>/assets/images/big/auth-bg.jpg) no-repeat center center;">
+     style="background:url(<?= base_url() ?>/public/assets/images/big/auth-bg.jpg) no-repeat center center;">
      <div class="auth-box m-auto justify-content-center row">
 
          <div class="col-lg-10 col-md-7 bg-white">
              <div class="p-3">
                  <div class="text-center">
-                     <img src="<?= base_url() ?>/assets/images/logo-full.png"
+                     <img src="<?= base_url() ?>/public/assets/images/logo-full.png"
                          alt="Successmore logo" width="300">
                  </div>
 

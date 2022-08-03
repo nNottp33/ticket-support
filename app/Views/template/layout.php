@@ -10,20 +10,21 @@
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16"
-        href="<?= base_url() ?>/assets/images/logo.png">
+        href="<?= base_url() ?>/public/assets/images/logo.png">
     <title>Ticket support | <?php echo session()->get('class') == 'user' ? 'User' : 'Admin'; ?>
     </title>
     </title>
 
     <!-- Custom CSS -->
-    <link href="<?= base_url() ?>/assets/extra-libs/c3/c3.min.css"
+    <link
+        href="<?= base_url() ?>/public/assets/extra-libs/c3/c3.min.css"
         rel="stylesheet">
 
     <link
-        href="<?= base_url() ?>/assets/extra-libs/jvector/jquery-jvectormap-2.0.2.css"
+        href="<?= base_url() ?>/public/assets/extra-libs/jvector/jquery-jvectormap-2.0.2.css"
         rel="stylesheet" />
     <!-- Custom CSS -->
-    <link href="<?= base_url() ?>/dist/css/style.min.css"
+    <link href="<?= base_url() ?>/public/dist/css/style.min.css"
         rel="stylesheet">
 
     <!-- datatables -->
@@ -31,7 +32,7 @@
 
     <!-- my style -->
     <link rel="stylesheet"
-        href="<?= base_url() ?>/assets/css/index.css"
+        href="<?= base_url() ?>/public/assets/css/index.css"
         type="text/css" />
 
     <!-- ajax -->
@@ -44,7 +45,7 @@
 
     <!-- timeline css -->
     <link rel="stylesheet"
-        href="<?= base_url() ?>/assets/css/timeline.min.css"
+        href="<?= base_url() ?>/public/assets/css/timeline.min.css"
         type="text/css" />
 </head>
 
@@ -76,39 +77,43 @@
     </script>
 
     <!-- All Jquery -->
-    <script src="<?= base_url() ?>/assets/libs/jquery/dist/jquery.min.js">
+    <script
+        src="<?= base_url() ?>/public/assets/libs/jquery/dist/jquery.min.js">
     </script>
     <script
-        src="<?= base_url() ?>/assets/libs/popper.js/dist/umd/popper.min.js">
+        src="<?= base_url() ?>/public/assets/libs/popper.js/dist/umd/popper.min.js">
     </script>
     <script
-        src="<?= base_url() ?>/assets/libs/bootstrap/dist/js/bootstrap.min.js">
+        src="<?= base_url() ?>/public/assets/libs/bootstrap/dist/js/bootstrap.min.js">
     </script>
 
     <!-- apps -->
-    <script src="<?= base_url() ?>/dist/js/app-style-switcher.js"></script>
-    <script src="<?= base_url() ?>/dist/js/feather.min.js"></script>
-    <script
-        src="<?= base_url() ?>/assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js">
+    <script src="<?= base_url() ?>/public/dist/js/app-style-switcher.js">
     </script>
-    <script src="<?= base_url() ?>/dist/js/sidebarmenu.js"></script>
+    <script src="<?= base_url() ?>/public/dist/js/feather.min.js"></script>
+    <script
+        src="<?= base_url() ?>/public/assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js">
+    </script>
+    <script src="<?= base_url() ?>/public/dist/js/sidebarmenu.js"></script>
     <!--Custom JavaScript -->
-    <script src="<?= base_url() ?>/dist/js/custom.min.js"></script>
+    <script src="<?= base_url() ?>/public/dist/js/custom.min.js"></script>
     <!--This page JavaScript -->
-    <script src="<?= base_url() ?>/assets/extra-libs/c3/d3.min.js"></script>
-    <script src="<?= base_url() ?>/assets/extra-libs/c3/c3.min.js"></script>
-    <!-- <script src="<?= base_url() ?>/assets/libs/chartist/dist/chartist.min.js">
+    <script src="<?= base_url() ?>/public/assets/extra-libs/c3/d3.min.js">
+    </script>
+    <script src="<?= base_url() ?>/public/assets/extra-libs/c3/c3.min.js">
+    </script>
+    <!-- <script src="<?= base_url() ?>/public/assets/libs/chartist/dist/chartist.min.js">
     </script> -->
     <!-- <script
-        src="<?= base_url() ?>/assets/libs/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js">
+        src="<?= base_url() ?>/public/assets/libs/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js">
     </script> -->
     <script
-        src="<?= base_url() ?>/assets/extra-libs/jvector/jquery-jvectormap-2.0.2.min.js">
+        src="<?= base_url() ?>/public/assets/extra-libs/jvector/jquery-jvectormap-2.0.2.min.js">
     </script>
     <script
-        src="<?= base_url() ?>/assets/extra-libs/jvector/jquery-jvectormap-world-mill-en.js">
+        src="<?= base_url() ?>/public/assets/extra-libs/jvector/jquery-jvectormap-world-mill-en.js">
     </script>
-    <!-- <script src="<?= base_url() ?>/dist/js/pages/dashboards/dashboard1.min.js">
+    <!-- <script src="<?= base_url() ?>/public/dist/js/pages/dashboards/dashboard1.min.js">
     -->
     </script>
 
@@ -131,9 +136,58 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 
+    <script>
+        const baseUrl = '<?= getenv('app.baseURL'); ?>';
+        const filters =
+            /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        // ======================================================================== //
+        // ============================== GLOBAL ================================== //
+        // ======================================================================== //
+
+        $(document).ready(function() {
+
+            // clear input when modal hide
+            $(".clear-modal").on("hidden.bs.modal", function(e) {
+                $(this).find("input,textarea,select").val("").end();
+                $(".previewImg").hide();
+                $(".timeline__items").timeline().empty();
+                $(".collapse").collapse("hide");
+            });
+
+            $(".selectpicker").selectpicker();
+
+            // check input email or password is empty or not
+            $(".input-login").keypress(function(e) {
+                // if not empty then can click on login button
+                if ($("#email").val() && $("#pwd").val()) {
+                    $("#btnLogin").attr("disabled", false);
+                } else {
+                    $("#btnLogin").attr("disabled", true);
+                }
+            });
+
+            $(".input-login").on("input", function() {
+                if ($("#email").val() && $("#pwd").val()) {
+                    $("#btnLogin").attr("disabled", false);
+                } else {
+                    $("#btnLogin").attr("disabled", true);
+                }
+            });
+
+            $(".profile-input").attr("disabled", "disabled");
+        });
+
+        // check if user press enter button
+        $(document).on("keypress", ".input-login", function(e) {
+            if (e.which == 13) {
+                login();
+            }
+        });
+    </script>
+    xr
     <!-- my script -->
-    <script src="<?= base_url() ?>/assets/js/timeline.min.js"></script>
-    <script src="<?= base_url() ?>/assets/js/app.js"></script>
+    <script src="<?= base_url() ?>/public/assets/js/timeline.min.js"></script>
+    <script src="<?= base_url() ?>/public/assets/js/app.js"></script>
 </body>
 
 </html>

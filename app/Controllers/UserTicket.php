@@ -35,7 +35,7 @@ class UserTicket extends BaseController
         helper(['form', 'url']);
     }
 
-    
+
     public function index()
     {
         return view('main/user/user_ticket');
@@ -77,16 +77,16 @@ class UserTicket extends BaseController
             $resultCatName = $this->catModel->where('id', $catId)->findColumn('nameCatTh');
             $resultSubCatName = $this->subCatModel->where('id', $subCatId)->findColumn('nameSubCat');
 
-        
+
             $resultOwner = $this->ownerGroupModel->where('groupId', $catId)->findAll();
 
             for ($i = 0; $i < sizeof($resultOwner); $i++) {
                 $ownerId[] = $resultOwner[$i]['id'];
             }
-      
+
             $email = $this->userModel->whereIn('id', $ownerId)->findColumn('email');
             $toMail = [$_ENV['EMAIL_IT_GROUP'], ...$email];
-     
+
             if ($this->LogUsageModel->insert($logData)) {
                 if ($this->ticketTaskModel->insert($insertData)) {
                     $last_ticketId= $this->ticketTaskModel->getInsertID();
@@ -128,7 +128,7 @@ class UserTicket extends BaseController
 
                     if ($this->sendEmailGroup($titleMail, $subjectMail, $messageEmail, $toMail, $imageFile->getClientName()) && $this->ticketTaskModel->update($last_ticketId, $updateData)) {
                         if (is_file($imageFile)) {
-                            $imageFile->move('./store_files_uploaded');
+                            $imageFile->move('./public/store_files_uploaded');
                         }
 
                         $response = [
@@ -239,8 +239,8 @@ class UserTicket extends BaseController
             ->where('ticket_task.id', $ticketId)
             ->where('ticket_task.userId', $this->session->get('id'))
             ->findAll();
-            
-        
+
+
             $query[0]['timeline'] = $this->taskDetailModel
             ->select(
                 'ticket_detail.cause as detail_cause,
@@ -307,7 +307,7 @@ class UserTicket extends BaseController
             $messageEmail .= ' <a href="'. base_url('admin/ticket/list')  .'"> ' . base_url('user/home') . '  </a>';
             $messageEmail .= '</div> ';
 
-           
+
             $time = $this->time->getTimestamp();
 
             $updateData = [
@@ -443,7 +443,7 @@ class UserTicket extends BaseController
                 if ($this->sendEmailGroup($titleMail, $subjectMail, $messageEmail, $admin_email, $attatchment->getClientName())) {
                     if ($this->ticketTaskModel->update($taskId, $updateData) && $this->taskDetailModel->insert($newTaskDetail)) {
                         if (is_file($attatchment)) {
-                            $attatchment->move('./store_files_uploaded');
+                            $attatchment->move('./public/store_files_uploaded');
                         }
 
                         $response = [
@@ -494,8 +494,8 @@ class UserTicket extends BaseController
         $this->email->setTo($_ENV['CI_ENVIRONMENT'] == 'development' ? $_ENV['EMAIL_TEST'] : $email);
         $this->email->setSubject($subjectMail);
         $this->email->setMessage($messageEmail);
-        $this->email->attach(FCPATH . "store_files_uploaded/". $image);
-        
+        $this->email->attach(FCPATH . "public/store_files_uploaded/". $image);
+
 
         for ($i = 0; $i < sizeOf($email); $i++) {
             $logEmail[$i] = [

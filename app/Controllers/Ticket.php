@@ -154,7 +154,7 @@ class Ticket extends BaseController
             return $this->response->setJSON($response);
         }
     }
-    
+
     public function getUserByEmail()
     {
         if ($this->request->isAJAX()) {
@@ -205,7 +205,7 @@ class Ticket extends BaseController
             ->get()
             ->getRow()->total;
 
-  
+
             $query['wait'] = $this->ticketTaskModel
             ->select('count(ticket_task.id) as total')
             ->join('catagories', 'catagories.id = ticket_task.catId')
@@ -324,7 +324,7 @@ class Ticket extends BaseController
                         $dayTime = ($resultMail['subCat_period'] / 60) / 24 ;
                     }
 
-              
+
                     if ($this->request->getPost('action') == 'replyReturn') {
                         $titleMail = 'send email admin approved return ticket';
                         $subjectMail = 'แอดมินตอบรับการตีกลับ Ticket';
@@ -377,7 +377,7 @@ class Ticket extends BaseController
                             'status' => 404,
                             'title' => 'Error!',
                             'message' => 'ไม่สามารถส่งเมล์ได้',
-                            
+
                         ];
                             return $this->response->setJson($response);
                         }
@@ -440,7 +440,7 @@ class Ticket extends BaseController
                         'cause' => $cause,
                         'solution' => $solution,
                         'remark' => $remark,
-                        'attachment' => $attachment->getClientName() ?  $attachment->getClientName() : '-',
+                        'attachment' => $attachment->getClientName() ? $attachment->getClientName() : '-',
                         'updatedBy' => $this->session->get('id'),
                         'createdAt' => $time,
                         'updatedAt' => $time,
@@ -451,7 +451,7 @@ class Ticket extends BaseController
                         if ($this->sendEmailUser($titleMail, $subjectMail, $messageEmail, $resultMail['user_email'], $attachment->getClientName())) {
                             if ($this->ticketTaskModel->update($task_id, $updateData) && $this->taskDetailModel->insert($saveData)) {
                                 if (is_file($attachment)) {
-                                    $attachment->move('./store_files_uploaded');
+                                    $attachment->move('./public/store_files_uploaded');
                                 }
 
                                 $response = [
@@ -473,7 +473,7 @@ class Ticket extends BaseController
                             'status' => 404,
                             'title' => 'Error!',
                             'message' => 'ไม่สามารถส่งเมล์ได้',
-                           
+
                         ];
                             return $this->response->setJson($response);
                         }
@@ -487,7 +487,7 @@ class Ticket extends BaseController
                     }
 
                     break;
-                
+
                     // reject
                 case 3:
 
@@ -775,7 +775,7 @@ class Ticket extends BaseController
             ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
             ->where('ticket_task.id', $task_id)
             ->findAll();
-        
+
             $query['detail'] = $this->taskDetailModel
             ->select(
                 'ticket_detail.cause as detail_cause,
@@ -824,8 +824,8 @@ class Ticket extends BaseController
         // $this->email->setTo($email);
         $this->email->setSubject($subjectMail);
         $this->email->setMessage($messageEmail);
-        $this->email->attach(FCPATH . "store_files_uploaded/". $image);
-        
+        $this->email->attach(FCPATH . "public/store_files_uploaded/". $image);
+
 
         $logEmail = [
             'receiver' => $email,
