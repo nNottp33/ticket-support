@@ -3453,6 +3453,7 @@ const oftenTicketDashboard = () => {
           searching: true,
           responsive: true,
           bDestroy: true,
+          pageLength: 5,
           colReorder: {
             realtime: true,
           },
@@ -3468,6 +3469,7 @@ const oftenTicketDashboard = () => {
       order: false,
       bDestroy: true,
       bInfo: false,
+      pageLength: 50,
       colReorder: {
         realtime: true,
       },

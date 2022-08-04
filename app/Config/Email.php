@@ -1,4 +1,5 @@
 <?php
+
 namespace Config;
 
 use CodeIgniter\Config\BaseConfig;
@@ -28,7 +29,7 @@ class Email extends BaseConfig
      *
      * @var string
      */
-    public $protocol = 'smtp';
+    public $protocol = '';
     /**
      * The server path to Sendmail.
      *
@@ -40,7 +41,7 @@ class Email extends BaseConfig
      *
      * @var string
      */
-    public $SMTPHost = 'smtp.office365.com';
+    public $SMTPHost = '';
     /**
      * SMTP Username
      *
@@ -48,7 +49,7 @@ class Email extends BaseConfig
      */
     // Enter your email id from where you send email
     public $SMTPUser ='';
-    
+
     /**
      * SMTP Password
      *
@@ -61,7 +62,7 @@ class Email extends BaseConfig
      *
      * @var integer
      */
-    public $SMTPPort = 587;
+    public $SMTPPort = '';
     /**
      * SMTP Timeout (in seconds)
      *
@@ -79,7 +80,7 @@ class Email extends BaseConfig
      *
      * @var string
      */
-    public $SMTPCrypto = 'tls';
+    public $SMTPCrypto = '';
     /**
      * Enable word-wrap
      *
@@ -97,7 +98,7 @@ class Email extends BaseConfig
      *
      * @var string
      */
-    public $mailType = 'html';
+    public $mailType = '';
     /**
      * Character set (utf-8, iso-8859-1, etc.)
      *
@@ -133,7 +134,7 @@ class Email extends BaseConfig
      *
      * @var boolean
      */
-    public $BCCBatchMode = false;
+    public $BCCBatchMode = true;
     /**
      * Number of emails in each BCC batch
      *

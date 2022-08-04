@@ -448,12 +448,11 @@ class Ticket extends BaseController
                     ];
 
                     if ($this->LogUsageModel->insert($logData)) {
+                        if (is_file($attachment)) {
+                            $attachment->move('./public/store_files_uploaded');
+                        }
                         if ($this->sendEmailUser($titleMail, $subjectMail, $messageEmail, $resultMail['user_email'], $attachment->getClientName())) {
                             if ($this->ticketTaskModel->update($task_id, $updateData) && $this->taskDetailModel->insert($saveData)) {
-                                if (is_file($attachment)) {
-                                    $attachment->move('./public/store_files_uploaded');
-                                }
-
                                 $response = [
                                     'status' => 200,
                                     'title' => 'Success',
@@ -821,11 +820,12 @@ class Ticket extends BaseController
     {
         $this->email->setFrom($_ENV['email.SMTPUser'], $_ENV['EMAIL_NAME']);
         $this->email->setTo($_ENV['CI_ENVIRONMENT'] == 'development' ? $_ENV['EMAIL_TEST'] : $email);
-        // $this->email->setTo($email);
         $this->email->setSubject($subjectMail);
         $this->email->setMessage($messageEmail);
-        $this->email->attach(FCPATH . "public/store_files_uploaded/". $image);
 
+        if ($image) {
+            $this->email->attach(FCPATH . "public/store_files_uploaded/". $image);
+        }
 
         $logEmail = [
             'receiver' => $email,
@@ -840,6 +840,8 @@ class Ticket extends BaseController
             if ($this->email->send()) {
                 return true;
             } else {
+                echo $this->email->printDebugger();
+                die();
                 return false;
             }
         } else {

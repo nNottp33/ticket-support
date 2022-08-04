@@ -82,6 +82,7 @@ class Home extends BaseController
                 ->join('catagories', 'catagories.id = ticket_task.catId')
                 ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
                 ->join('users', 'users.id = ticket_task.ownerAccepted')
+                ->where('ticket_task.status', 4)
                 ->groupBy('ticket_task.subCatId')
                 ->orderBy('countTicket', 'DESC')
                 ->limit(5)

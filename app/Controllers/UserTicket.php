@@ -124,13 +124,7 @@ class UserTicket extends BaseController
                     $messageEmail .= ' <a href="'. base_url('admin/ticket/list')  .'"> ' . base_url('user/home') . '  </a>';
                     $messageEmail .= '</div> ';
 
-
-
-                    if ($this->sendEmailGroup($titleMail, $subjectMail, $messageEmail, $toMail, $imageFile->getClientName()) && $this->ticketTaskModel->update($last_ticketId, $updateData)) {
-                        if (is_file($imageFile)) {
-                            $imageFile->move('./public/store_files_uploaded');
-                        }
-
+                    if ($this->sendEmailGroup($titleMail, $subjectMail, $messageEmail, $toMail, $imageFile) && $this->ticketTaskModel->update($last_ticketId, $updateData)) {
                         $response = [
                         'status' => 200,
                         'title' => 'Success!',
@@ -442,10 +436,6 @@ class UserTicket extends BaseController
             if ($this->LogUsageModel->insert($logData)) {
                 if ($this->sendEmailGroup($titleMail, $subjectMail, $messageEmail, $admin_email, $attatchment->getClientName())) {
                     if ($this->ticketTaskModel->update($taskId, $updateData) && $this->taskDetailModel->insert($newTaskDetail)) {
-                        if (is_file($attatchment)) {
-                            $attatchment->move('./public/store_files_uploaded');
-                        }
-
                         $response = [
                             'status' => 200,
                             'title' => 'Success!',
@@ -490,12 +480,14 @@ class UserTicket extends BaseController
     public function sendEmailGroup($titleMail, $subjectMail, $messageEmail, $email, $image)
     {
         $this->email->setFrom($_ENV['email.SMTPUser'], $_ENV['EMAIL_NAME']);
-        // $this->email->setTo($email);
         $this->email->setTo($_ENV['CI_ENVIRONMENT'] == 'development' ? $_ENV['EMAIL_TEST'] : $email);
         $this->email->setSubject($subjectMail);
         $this->email->setMessage($messageEmail);
-        $this->email->attach(FCPATH . "public/store_files_uploaded/". $image);
 
+        if (is_file($image)) {
+            $image->move('./public/store_files_uploaded');
+            $this->email->attach(FCPATH . "public/store_files_uploaded/". $image);
+        }
 
         for ($i = 0; $i < sizeOf($email); $i++) {
             $logEmail[$i] = [
@@ -512,6 +504,8 @@ class UserTicket extends BaseController
             if ($this->email->send()) {
                 return true;
             } else {
+                echo $this->email->printDebugger();
+                // die();
                 return false;
             }
         } else {
