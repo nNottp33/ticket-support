@@ -17,14 +17,12 @@ class Ticket extends BaseController
     protected $userModel;
     protected $ownerGroupModel;
     protected $logEmailModel;
-    protected $email;
     protected $taskDetailModel;
 
     public function __construct()
     {
         $this->session = session();
         $this->time = Time::now('Asia/Bangkok', 'th');
-        $this->email = \Config\Services::email();
         $this->catModel = new \App\Models\CatagoryModel();
         $this->subCatModel = new \App\Models\SubCatagoryModel();
         $this->LogUsageModel = new \App\Models\LogUsageModel();
@@ -329,24 +327,24 @@ class Ticket extends BaseController
                         $titleMail = 'send email admin approved return ticket';
                         $subjectMail = 'แอดมินตอบรับการตีกลับ Ticket';
                         $messageEmail = '<p>';
-                        $messageEmail .= '   <h3> Ticket no. ' . $resultMail['ticket_no'] . ' ของคุณได้รับการตอบรับเรียบร้อยแล้ว </h3>' ;
-                        $messageEmail .= '     Ticket ' . $resultMail['topic']. ' ขณะนี้แอดมินกำลังตรวจสอบปัญหาอีกครั้ง ใช้เวลาดำเนินการประมาณ ' . $dayTime . ' ' .$timeUnit;
+                        $messageEmail .= '<h3> Ticket no. ' . $resultMail['ticket_no'] . ' ของคุณได้รับการตอบรับเรียบร้อยแล้ว </h3>' ;
+                        $messageEmail .= 'Ticket ' . $resultMail['topic']. ' ขณะนี้แอดมินกำลังตรวจสอบปัญหาอีกครั้ง ใช้เวลาดำเนินการประมาณ ' . $dayTime . ' ' .$timeUnit;
                         $messageEmail .= '</p> ';
                         $messageEmail .= '<div> ';
                         $messageEmail .= '<label> Ticket support system :</label>';
-                        $messageEmail .= ' <a href="'. base_url('user/home')  .'"> ' . base_url('user/home') . '  </a>';
+                        $messageEmail .= '<a href="'. base_url('user/home')  .'"> ' . base_url('user/home') . '  </a>';
                         $messageEmail .= '</div> ';
                     } else {
                         $titleMail = 'send email admin approved ticket';
                         $subjectMail = 'แอดมินตอบรับ Ticket';
                         $messageEmail = '<p>';
-                        $messageEmail .= '   <h3> Ticket no. ' .  $resultMail['ticket_no'] . ' ของคุณได้รับการตอบรับเรียบร้อยแล้ว </h3>' ;
-                        $messageEmail .= '  Ticket ' . $resultMail['topic']. ' ขณะนี้กำลังดำเนินการใช้เวลาประมาณ ' . $dayTime . ' ' .$timeUnit;
+                        $messageEmail .= '<h3> Ticket no. ' .  $resultMail['ticket_no'] . ' ของคุณได้รับการตอบรับเรียบร้อยแล้ว </h3>' ;
+                        $messageEmail .= 'Ticket ' . $resultMail['topic']. ' ขณะนี้กำลังดำเนินการใช้เวลาประมาณ ' . $dayTime . ' ' .$timeUnit;
                         $messageEmail .= '</p> ';
                         $messageEmail .= '<div> ';
                         $messageEmail .= '<label> Ticket support system :</label>';
-                        $messageEmail .= ' <a href="'. base_url('user/home')  .'"> ' . base_url('user/home') . '  </a>';
-                        $messageEmail .= '</div> ';
+                        $messageEmail .= ' <a href="'. base_url('user/home')  .'"> ' . base_url('user/home') . ' </a>';
+                        $messageEmail .= '</div>';
                     }
 
                     $updateData = [
@@ -816,19 +814,10 @@ class Ticket extends BaseController
         }
     }
 
-    public function sendEmailUser($titleMail, $subjectMail, $messageEmail, $email, $image)
+    public function sendEmailUser($titleMail, $subjectMail, $messageEmail, $receiver, $image)
     {
-        $this->email->setFrom($_ENV['email.SMTPUser'], $_ENV['EMAIL_NAME']);
-        $this->email->setTo($_ENV['CI_ENVIRONMENT'] == 'development' ? $_ENV['EMAIL_TEST'] : $email);
-        $this->email->setSubject($subjectMail);
-        $this->email->setMessage($messageEmail);
-
-        if ($image) {
-            $this->email->attach(FCPATH . "public/store_files_uploaded/". $image);
-        }
-
         $logEmail = [
-            'receiver' => $email,
+            'receiver' => $receiver,
             'title' => $titleMail,
             'subject' => $subjectMail,
             'detail' => strip_tags($messageEmail),
@@ -837,11 +826,9 @@ class Ticket extends BaseController
         ];
 
         if ($this->logEmailModel->insert($logEmail)) {
-            if ($this->email->send()) {
+            if ($this->sendEmailAPI($subjectMail, $messageEmail, $receiver, $image)) {
                 return true;
             } else {
-                echo $this->email->printDebugger();
-                die();
                 return false;
             }
         } else {

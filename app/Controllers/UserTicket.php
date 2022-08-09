@@ -17,13 +17,11 @@ class UserTicket extends BaseController
     protected $ownerGroupModel;
     protected $logEmailModel;
     protected $taskDetailModel;
-    protected $email;
 
     public function __construct()
     {
         $this->session = session();
         $this->time = Time::now('Asia/Bangkok', 'th');
-        $this->email = \Config\Services::email();
         $this->catModel = new \App\Models\CatagoryModel();
         $this->subCatModel = new \App\Models\SubCatagoryModel();
         $this->LogUsageModel = new \App\Models\LogUsageModel();
@@ -479,14 +477,8 @@ class UserTicket extends BaseController
 
     public function sendEmailGroup($titleMail, $subjectMail, $messageEmail, $email, $image)
     {
-        $this->email->setFrom($_ENV['email.SMTPUser'], $_ENV['EMAIL_NAME']);
-        $this->email->setTo($_ENV['CI_ENVIRONMENT'] == 'development' ? $_ENV['EMAIL_TEST'] : $email);
-        $this->email->setSubject($subjectMail);
-        $this->email->setMessage($messageEmail);
-
         if (is_file($image)) {
             $image->move('./public/store_files_uploaded');
-            $this->email->attach(FCPATH . "public/store_files_uploaded/". $image);
         }
 
         for ($i = 0; $i < sizeOf($email); $i++) {
@@ -500,12 +492,10 @@ class UserTicket extends BaseController
             ];
         }
 
-        if ($this->logEmailModel->insertBatch($logEmail)) {
-            if ($this->email->send()) {
+        if ($this->logEmailModel->insert($logEmail)) {
+            if ($this->sendEmailAPI($subjectMail, $messageEmail, $receiver, $image)) {
                 return true;
             } else {
-                echo $this->email->printDebugger();
-                // die();
                 return false;
             }
         } else {

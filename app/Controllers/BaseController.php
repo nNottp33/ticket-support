@@ -60,4 +60,45 @@ class BaseController extends Controller
         }
         return $randomString;
     }
+
+
+    public function sendEmailAPI($subbject, $message, $receiver, $images)
+    {
+        $curl = curl_init();
+
+        $data = [
+            "subject" => $subbject,
+            "message" => $message,
+            "receiver" => $receiver,
+            "images" => $images,
+        ];
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'http://localhost:3000/api/send/email',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json'
+            ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+
+        $result = json_decode($response, true);
+
+        if ($result['message'] == "success") {
+            return true;
+        } else {
+            print_r($response);
+            return false;
+        }
+    }
 }
