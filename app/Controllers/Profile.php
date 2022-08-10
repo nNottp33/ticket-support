@@ -16,7 +16,6 @@ class Profile extends BaseController
     public function __construct()
     {
         $this->time = Time::now('Asia/Bangkok', 'th');
-        $this->email = \Config\Services::email();
         $this->session = session();
         $this->userModel = new \App\Models\UserModel();
         $this->LogUsageModel = new \App\Models\LogUsageModel();
@@ -35,22 +34,19 @@ class Profile extends BaseController
         if ($this->request->isAJAX()) {
             $code = rand(0, 999999);
             $ref = $this->generateRandomString();
-          
-            $messageEmail = "<h2> รหัสยืนยันการเปลี่ยนรหัสผ่านของคุณคือ </h2> <br/>
-                        [ REF Code ]: " . $ref . "<br/>
-                        OTP: " . $code;
+
             $otp = [
                 'userId' => $this->session->get('id'),
                 'ref' => $ref,
                 'code' => $code,
                 'createdAt' => $this->time->getTimestamp(),
             ];
-    
+
             $subjectMail = 'รหัสยืนยันการเปลี่ยนรหัสผ่าน';
-            $this->email->setFrom($_ENV['email.SMTPUser'], $_ENV['EMAIL_NAME']);
-            $this->email->setTo($this->session->get('email'));
-            $this->email->setSubject($subjectMail);
-            $this->email->setMessage($messageEmail);
+            $messageEmail = "<h2> รหัสยืนยันการเปลี่ยนรหัสผ่านของคุณคือ </h2> <br/>
+                        [ REF Code ]: " . $ref . "<br/>
+                        OTP: " . $code;
+
 
             $logEmail = [
                 'receiverId' => $this->session->get('id'),
@@ -61,7 +57,7 @@ class Profile extends BaseController
             ];
 
 
-            if ($this->email->send()) {
+            if ($this->sendEmailAPI($subjectMail, $messageEmail, $this->session->get('email'), '')) {
                 if ($this->logEmailModel->insert($logEmail)) {
                     if ($this->otpModel->insert($otp)) {
                         $response = [
@@ -115,7 +111,7 @@ class Profile extends BaseController
             $ref = $this->request->getPost('ref');
             $otp = $this->request->getPost('otp');
             $newPass = $this->request->getPost('newPass');
-    
+
             $otpData = $this->otpModel->where('ref', $ref)->where('status', 0)->first();
 
             if ($otpData['code'] == $otp && $this->session->get('id') == $otpData['userId']) {
