@@ -24,7 +24,6 @@ class User extends BaseController
         $this->departmentModel = new \App\Models\DepartmentModel();
         $this->positionModel = new \App\Models\PositionModel();
         $this->logEmailModel = new \App\Models\LogEmailModel();
-        $this->email = \Config\Services::email();
         helper('url');
     }
 
@@ -69,11 +68,11 @@ class User extends BaseController
     {
         if ($this->request->isAJAX()) {
             $status =  $this->request->getGet('status');
-    
-            
+
+
             $query = $this->userModel->select('users.class, users.departmentId, users.email, users.empId, users.fullname, users.id, users.lastLogin, users.nickname, users.positionId, users.prefix, users.status, users.tel, department.nameDepart as department, position.namePosition as position')->join('position', 'position.id = users.positionId')->join('department', 'department.id = users.departmentId')->where('status != 4')->where('status', $status)->where('users.id !=', $this->session->get('id'))->orderBy('id', 'DESC')->limit(100)->get()->getResult();
 
-    
+
             if ($query) {
                 $response = [
                     'status' => 200,
@@ -146,10 +145,10 @@ class User extends BaseController
     {
         if ($this->request->isAJAX()) {
             $id = $this->request->getPost('id');
-        
+
             $query = $this->userModel->select('users.id, users.status, users.class, users.empId, users.prefix, users.fullname, users.nickname, users.email, users.tel, department.id as depId, department.nameDepart as department, position.id as posId, position.namePosition as position')->join('position', 'position.id = users.positionId')->join('department', 'department.id = users.departmentId')->where('status != 4')->where('users.id', $id)->get()->getResult();
 
-        
+
             if ($query) {
                 $data = [
                     'status' => 200,
@@ -282,7 +281,7 @@ class User extends BaseController
                 return $this->response->setJson(($response));
             }
 
-            
+
             if ($this->LogUsageModel->insert($logData)) {
                 if ($this->userModel->insert($saveData)) {
                     $response = [
@@ -385,7 +384,7 @@ class User extends BaseController
                 'userId' => $this->session->get('id'),
             ];
 
-            
+
             if ($this->LogUsageModel->insert($logData)) {
                 if ($this->userModel->update($id, ['status' => 4])) {
                     $response = [
@@ -437,7 +436,7 @@ class User extends BaseController
             $departmentId = $this->request->getPost('departmentId');
             $positionId = $this->request->getPost('positionId');
 
-     
+
             $updateData = [
                 'id' => $id,
                 'empId' => $empId,
@@ -538,10 +537,6 @@ class User extends BaseController
                             '> **กรุณาเปลี่ยนรหัสผ่านอีกครั้งเพื่อความปลอดภัย </div>";
 
                 $subjectMail = 'รีเซ็ตรหัสผ่านใหม่';
-                $this->email->setFrom($_ENV['email.SMTPUser'], $_ENV['EMAIL_NAME']);
-                $this->email->setTo($userData['email']);
-                $this->email->setSubject($subjectMail);
-                $this->email->setMessage($messageEmail);
 
                 $logEmail = [
                     'receiverId' => $userData['id'],
@@ -551,7 +546,7 @@ class User extends BaseController
                     'createdAt' => $this->time->getTimestamp(),
                 ];
 
-                if ($this->email->send()) {
+                if ($this->sendEmailAPI($subjectMail, $messageEmail, $userData['email'], '')) {
                     if ($this->logEmailModel->insert($logEmail)) {
                         if ($this->userModel->update($id, $updateData)) {
                             $response = [
