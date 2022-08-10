@@ -20,7 +20,7 @@ class HistoryTicket extends BaseController
         helper(['form', 'url']);
     }
 
-    
+
     public function index()
     {
         return view('main/user/history_ticket');
@@ -47,9 +47,10 @@ class HistoryTicket extends BaseController
             ->join('sub_catagories', 'sub_catagories.id = ticket_task.subCatId')
             ->where('ticket_task.createdAt >=', $start_date)
             ->where('ticket_task.createdAt <=', $end_date)
+            ->where('ticket_task.userId =', $this->session->get('id'))
             // ->orWhereIn('ticket_task.status', [3,4])
             ->findAll();
-            
+
             // echo "<pre>" ;
             // print_r($query);
             // die();
