@@ -5027,9 +5027,9 @@ $("#btnUserReportTicketAll").click(function () {
 const searchReportByStatus = () => {
   let startDate = $("#searchReportStatusStartDate").val();
   let endDate = $("#searchReportStatusEndDate").val();
-  let statusVal = $("#selectReportStatust").val();
+  let status = $("#selectReportStatus").val();
 
-  let status = statusVal.length > 0 ? statusVal : [1, 2, 3, 4, 5];
+  console.log(status);
 
   $("#tableReportTicketStatus")
     .on("xhr.dt", function (e, settings, json, xhr) {
