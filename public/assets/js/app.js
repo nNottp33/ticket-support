@@ -5029,8 +5029,6 @@ const searchReportByStatus = () => {
   let endDate = $("#searchReportStatusEndDate").val();
   let status = $("#selectReportStatus").val();
 
-  console.log(status);
-
   $("#tableReportTicketStatus")
     .on("xhr.dt", function (e, settings, json, xhr) {
       if (json.status === 404) {
