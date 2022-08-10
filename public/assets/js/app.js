@@ -4899,9 +4899,7 @@ const getMoreDetailTicketHistory = (ticketId) => {
 
 // ======================= report ticket all page ======================== //
 
-$(
-  "#main-wrapper > div > div.container-fluid > div.row > div.col-sm-12.col-md-6.col-lg-3.mb-0.mt-4.justify-content-center.text-center > button",
-).click(function () {
+$("#btnUserReportTicketAll").click(function () {
   let startDate = $("#searchReportAllStartDate").val();
   let endDate = $("#searchReportAllEndDate").val();
   let ticketNo = $("#inputTicketNo").val();
@@ -5026,12 +5024,10 @@ $(
 // ====================== end report ticket all page ====================== //
 
 // ===================== report ticket status page ======================== //
-$("#tableReportTicketStatus").click(function () {
+const searchReportByStatus = () => {
   let startDate = $("#searchReportStatusStartDate").val();
   let endDate = $("#searchReportStatusEndDate").val();
-  let statusVal = $(
-    "#main-wrapper > div > div.container-fluid > div.row > div:nth-child(3) > form > div > div > select",
-  ).val();
+  let statusVal = $("#selectReportStatust").val();
 
   let status = statusVal.length > 0 ? statusVal : [1, 2, 3, 4, 5];
 
@@ -5145,7 +5141,7 @@ $("#tableReportTicketStatus").click(function () {
         },
       ],
     });
-});
+};
 // =================== end report ticket status page ====================== //
 
 const moreDetailTicket = (taskId, modalId) => {

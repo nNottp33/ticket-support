@@ -53,7 +53,7 @@
              </div>
 
              <div class="col-sm-12 col-md-6 col-lg-3 mb-0 mt-4 justify-content-center text-center">
-                 <button type="button" class="btn btn-info w-100">
+                 <button id="btnUserReportTicketAll" type="button" class="btn btn-info w-100">
                      ค้นหา <i class=" fas fa-search"></i> </button>
              </div>
          </div>

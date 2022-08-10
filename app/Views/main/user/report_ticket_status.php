@@ -48,7 +48,8 @@
                  <small class="form-text text-muted">สถานะ</small>
                  <form class="mt-1">
                      <div class="form-group">
-                         <select title="เลือกสถานะ" class="form-control selectpicker" multiple>
+                         <select id="selectReportStatus" data-actions-box="true" title="เลือกสถานะ"
+                             class="form-control selectpicker" multiple>
                              <option value="1">Pending</option>
                              <option value="2">Success</option>
                              <option value="4">Close</option>
@@ -59,10 +60,9 @@
                  </form>
              </div>
 
-
              <div class="col-sm-12 col-md-6 col-lg-3 mb-0 mt-4 justify-content-center text-center">
-                 <button type="button" class="btn btn-info w-100">
-                     ค้นหา <i class=" fas fa-search"></i> </button>
+                 <button onclick="searchReportByStatus()" type="button" class="btn btn-info w-100">
+                     ค้นหา <i class="fas fa-search"></i> </button>
              </div>
          </div>
 
