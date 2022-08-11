@@ -136,7 +136,7 @@ class App extends BaseConfig
      *
      * @var bool
      */
-    public $forceGlobalSecureRequests = false;
+    public $forceGlobalSecureRequests = true;
 
     /**
      * --------------------------------------------------------------------------
@@ -207,7 +207,7 @@ class App extends BaseConfig
      *
      * @var bool
      */
-    public $sessionMatchIP = false;
+    public $sessionMatchIP = true;
 
     /**
      * --------------------------------------------------------------------------

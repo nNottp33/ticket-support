@@ -70,7 +70,8 @@ class BaseController extends Controller
             "subject" => $subbject,
             "message" => $message,
             "receiver" => $receiver,
-            "images" => $images,
+            "images" => 'https://supportscm.com/ticketsupport/public/store_files_uploaded/img3.jpg
+',
         ];
 
         curl_setopt_array($curl, array(

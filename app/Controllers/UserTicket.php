@@ -52,6 +52,7 @@ class UserTicket extends BaseController
             $detail = $this->request->getPost('ticketDetail');
             $imageFile = $this->request->getFile('file');
 
+
             $logData = [
                 'ip' => $this->request->getIPAddress(),
                 'action' => 'insert ticket',
@@ -492,8 +493,9 @@ class UserTicket extends BaseController
             ];
         }
 
-        if ($this->logEmailModel->insert($logEmail)) {
-            if ($this->sendEmailAPI($subjectMail, $messageEmail, $receiver, $image)) {
+
+        if ($this->logEmailModel->insertBatch($logEmail)) {
+            if ($this->sendEmailAPI($subjectMail, $messageEmail, $email, $image)) {
                 return true;
             } else {
                 return false;

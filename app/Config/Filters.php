@@ -27,6 +27,7 @@ class Filters extends BaseConfig
         'loggedin'      => \App\Filters\LoggedInFilter::class,
         'role_admin'    => \App\Filters\RoleAdminFilter::class,
         'role_user'     => \App\Filters\RoleUserFilter::class,
+        'cors'          => \App\Filters\Cors::class,
     ];
 
     /**
@@ -40,6 +41,7 @@ class Filters extends BaseConfig
             // 'honeypot',
             // 'csrf',
             // 'invalidchars',
+            'cors'
         ],
         'after' => [
             'toolbar',
