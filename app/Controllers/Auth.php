@@ -33,7 +33,7 @@ class Auth extends BaseController
             $email = $this->request->getPost('email');
             $password = $this->request->getPost('password');
 
-            $data = $this->userModel->where('email', $email)->where('status != 4')->first();
+            $data = $this->userModel->like('email', $email, 'before')->where('status != 4')->first();
 
             $countLogin = 0;
 
@@ -92,7 +92,7 @@ class Auth extends BaseController
                             $url = base_url('/user/home');
                         }
 
-                  
+
                         if ($data['lastLogin'] == 0) {
                             $url = base_url('/profile');
                         }
@@ -154,7 +154,7 @@ class Auth extends BaseController
                 'createdAt' => $this->time->getTimestamp(),
                 'userId' => $this->session->get('id'),
             ];
-        
+
             if ($this->LogUsageModel->insert($data)) {
                 $this->session->destroy();
 

@@ -4561,7 +4561,8 @@ const updateStatusUserTicket = (action, taskId) => {
                   timer: 1000,
                 }).then((result) => {
                   $("#userTicketReturnModal").modal("hide");
-                  $("#tableUserTicket").DataTable().ajax.reload();
+                  // $("#tableUserTicket").DataTable().ajax.reload();
+                  window.location.reload();
                 });
               }, 1000);
             }

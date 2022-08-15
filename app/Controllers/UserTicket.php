@@ -96,7 +96,7 @@ class UserTicket extends BaseController
                     ];
 
                     $titleMail = 'send Email create ticket';
-                    $subjectMail = 'Ticket ใหม่';
+    
                     $messageEmail = '<div id="app">';
                     $messageEmail .= ' <div>';
                     $messageEmail .= '  <h2><b> Ticket no. ' . $ticket_no . ' </b></h2>';
@@ -123,7 +123,7 @@ class UserTicket extends BaseController
                     $messageEmail .= ' <a href="'. base_url('admin/ticket/list')  .'"> ' . base_url('user/home') . '  </a>';
                     $messageEmail .= '</div> ';
 
-                    if ($this->sendEmailGroup($titleMail, $subjectMail, $messageEmail, $toMail, $imageFile) && $this->ticketTaskModel->update($last_ticketId, $updateData)) {
+                    if ($this->sendEmailGroup($titleMail, $topic, $messageEmail, $toMail, $imageFile) && $this->ticketTaskModel->update($last_ticketId, $updateData)) {
                         $response = [
                         'status' => 200,
                         'title' => 'Success!',
@@ -290,7 +290,7 @@ class UserTicket extends BaseController
 
             // mail data
             $titleMail = 'send email close ticket to admin';
-            $subjectMail = 'Close Ticket';
+           
             $messageEmail = '<p>';
             $messageEmail .= '<h2> Ticket No.' . $resultTask['ticket_no'] . ' </h2>';
             $messageEmail .= '  คำร้องขอ Ticket ' . $resultTask['topic'] . ' เมื่อวันที่ ' . date('d/m/Y H:i', $resultTask['createdAt']) . ' ได้รับการรับการตรวจสอบและสามารถใช้งานได้ตามปกติแล้ว ';
@@ -319,7 +319,7 @@ class UserTicket extends BaseController
             $admin_email = [$_ENV['EMAIL_IT_GROUP'] , $resultTask['admin_email']];
 
             if ($this->LogUsageModel->insert($logData)) {
-                if ($this->sendEmailGroup($titleMail, $subjectMail, $messageEmail, $admin_email, '')) {
+                if ($this->sendEmailGroup($titleMail, $resultTask['topic'], $messageEmail, $admin_email, '')) {
                     if ($this->ticketTaskModel->update($taskId, $updateData)) {
 
                         // remove file when status close (4)
@@ -408,7 +408,7 @@ class UserTicket extends BaseController
             $admin_email = [$_ENV['EMAIL_IT_GROUP'] , $resultTask['admin_email']];
 
             $titleMail = 'send email return ticket to admin';
-            $subjectMail = 'Return Ticket';
+            $subjectMail = 'Return Ticket' . $resultTask ['topic'];
             $messageEmail = '<p>';
             $messageEmail .= '<h2> Ticket No.' . $resultTask['ticket_no'] . ' </h2>';
             $messageEmail .= 'คำร้องขอ Ticket ' . $resultTask['topic'] . ' เมื่อวันที่ ' . date('d/m/Y H:i', $resultTask['createdAt']) . '  ยังไม่เป็นปกติ' ;
@@ -433,7 +433,7 @@ class UserTicket extends BaseController
             ];
 
             if ($this->LogUsageModel->insert($logData)) {
-                if ($this->sendEmailGroup($titleMail, $subjectMail, $messageEmail, $admin_email, $attatchment->getClientName())) {
+                if ($this->sendEmailGroup($titleMail, $subjectMail, $messageEmail, $admin_email, $attatchment) {
                     if ($this->ticketTaskModel->update($taskId, $updateData) && $this->taskDetailModel->insert($newTaskDetail)) {
                         $response = [
                             'status' => 200,
@@ -480,6 +480,7 @@ class UserTicket extends BaseController
     {
         if (is_file($image)) {
             $image->move('./public/store_files_uploaded');
+            $image_link = base_url() . '/public/store_files_uploaded' . $image->getClientName();
         }
 
         for ($i = 0; $i < sizeOf($email); $i++) {
@@ -495,7 +496,7 @@ class UserTicket extends BaseController
 
 
         if ($this->logEmailModel->insertBatch($logEmail)) {
-            if ($this->sendEmailAPI($subjectMail, $messageEmail, $email, $image)) {
+            if ($this->sendEmailAPI($subjectMail, $messageEmail, $email, $image_link)) {
                 return true;
             } else {
                 return false;

@@ -325,7 +325,7 @@ class Ticket extends BaseController
 
                     if ($this->request->getPost('action') == 'replyReturn') {
                         $titleMail = 'send email admin approved return ticket';
-                        $subjectMail = 'แอดมินตอบรับการตีกลับ Ticket';
+                        $subjectMail = 'แอดมินตอบรับการตีกลับ Ticket' . $resultMail['topic'];
                         $messageEmail = '<p>';
                         $messageEmail .= '<h3> Ticket no. ' . $resultMail['ticket_no'] . ' ของคุณได้รับการตอบรับเรียบร้อยแล้ว </h3>' ;
                         $messageEmail .= 'Ticket ' . $resultMail['topic']. ' ขณะนี้แอดมินกำลังตรวจสอบปัญหาอีกครั้ง ใช้เวลาดำเนินการประมาณ ' . $dayTime . ' ' .$timeUnit;
@@ -336,7 +336,7 @@ class Ticket extends BaseController
                         $messageEmail .= '</div> ';
                     } else {
                         $titleMail = 'send email admin approved ticket';
-                        $subjectMail = 'แอดมินตอบรับ Ticket';
+                        $subjectMail = 'แอดมินตอบรับ Ticket' $resultMail['topic'];
                         $messageEmail = '<p>';
                         $messageEmail .= '<h3> Ticket no. ' .  $resultMail['ticket_no'] . ' ของคุณได้รับการตอบรับเรียบร้อยแล้ว </h3>' ;
                         $messageEmail .= 'Ticket ' . $resultMail['topic']. ' ขณะนี้กำลังดำเนินการใช้เวลาประมาณ ' . $dayTime . ' ' .$timeUnit;
@@ -403,7 +403,7 @@ class Ticket extends BaseController
 
                     // mail data
                     $titleMail = 'send email success ticket to user';
-                    $subjectMail = 'Ticket เสร็จสิ้น ';
+                    $subjectMail = 'Ticket ' . $getTask['topic'] . ' เสร็จสิ้น';
                     $messageEmail = '<p>';
                     $messageEmail .= '<h2> Ticket No.' . $getTask['ticket_no'] . ' </h2>';
                     $messageEmail .= ' คำร้องขอ Ticket ' . $getTask['topic'] . ' เมื่อวันที่ ' . date('d/m/Y H:i', $getTask['createdAt']) . ' ได้รับการแก้ไขแล้ว กรุณาตรวจสอบการใช้งาน และยืนยันความถูกต้อง' ;
@@ -490,7 +490,7 @@ class Ticket extends BaseController
 
                     $reject = $this->request->getPost('action');
                     $titleMail = 'send email ' .  $reject . ' ticket';
-                    $subjectMail = 'Ticket ไม่ถูกต้อง';
+                    $subjectMail = 'Ticket ' . $resultMail['topic'] . ' ไม่ถูกต้อง';
 
                     if ($reject  == 'duplicate') {
                         $messageEmail = '<p>';
@@ -649,7 +649,7 @@ class Ticket extends BaseController
             $titleMail = 'send email wrong ticket';
 
             // email to user
-            $subjectMail_user = 'Ticket ไม่ถูกต้อง';
+            $subjectMail_user = 'Ticket ' . $result_ticket['topic'] .  ' ไม่ถูกต้อง';
             $messageEmail_user = '<p>';
             $messageEmail_user .= '   <h2> Ticket no. ' . $result_ticket['ticket_no'] . ' </h2>' ;
             $messageEmail_user .= '  Ticket ของคุณผิดหมวดหมู่ แอดมิน ' . $this->session->get('email') . ' ได้ทำการแก้ไขและส่งคำขอใหม่ไปยังแอดมินคนใหม่เรียบร้อยแล้ว';
@@ -661,7 +661,6 @@ class Ticket extends BaseController
 
 
             // email to owner
-            $subjectMail_owner = 'คุณมี Ticket ใหม่';
             $messageEmail_owner = ' <div>';
             $messageEmail_owner .= '  <h2> Ticket no. ' . $result_ticket['ticket_no'] . ' </h2>' ;
             $messageEmail_owner .= ' </div>';
@@ -697,7 +696,7 @@ class Ticket extends BaseController
 
             if ($this->LogUsageModel->insert($logData)) {
                 if ($this->sendEmailUser($titleMail, $subjectMail_user, $messageEmail_user, $result_ticket['email'], '')) {
-                    if ($this->sendEmailUser($titleMail, $subjectMail_owner, $messageEmail_owner, $owner_email['email'], $result_ticket['attachment'])) {
+                    if ($this->sendEmailUser($titleMail, $result_ticket['topic'], $messageEmail_owner, $owner_email['email'], $result_ticket['attachment'])) {
                         if ($this->ticketTaskModel->update($task_id, $updateData)) {
                             $response = [
                                 'status' => 200,
@@ -825,8 +824,10 @@ class Ticket extends BaseController
             'status' => 1
         ];
 
+        $image_link = base_url() . '/public/store_files_uploaded' . $image;
+
         if ($this->logEmailModel->insert($logEmail)) {
-            if ($this->sendEmailAPI($subjectMail, $messageEmail, $receiver, $image)) {
+            if ($this->sendEmailAPI($subjectMail, $messageEmail, $receiver, $image_link)) {
                 return true;
             } else {
                 return false;
