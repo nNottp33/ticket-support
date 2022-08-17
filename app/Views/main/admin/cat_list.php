@@ -94,7 +94,8 @@
                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
                  <button type="button" class="btn btn-primary insert-category"
                      onclick="saveCatagory()">บันทึกข้อมูล</button>
-                 <button type="button" id="btnUpdateCat" class="btn btn-primary d-none">แก้ไขข้อมูล</button>
+                 <button type="button" id="btnUpdateCat" onclick="updateCatagory()"
+                     class="btn btn-primary d-none">แก้ไขข้อมูล</button>
              </div>
          </div>
      </div>

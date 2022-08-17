@@ -1541,7 +1541,10 @@ $("#insertAdminModal").on("hidden.bs.modal", function (e) {
   $("#adminDetailModal").modal("show");
 });
 
+let catIdUpdate;
+
 const editCat = (id) => {
+  catIdUpdate = id;
   $.ajax({
     url: `${baseUrl}admin/catagories/get/edit`,
     type: "POST",
@@ -1554,74 +1557,6 @@ const editCat = (id) => {
         $(".insert-category").hide();
         $("#btnUpdateCat").removeClass("d-none");
         $("#inputCat").val(response.data[0].nameCatTh);
-
-        $("#btnUpdateCat").click(function () {
-          if (!$("#inputCat").val()) {
-            Swal.fire({
-              icon: "warning",
-              title: "ไม่มีข้อมูล",
-              showConfirmButton: false,
-              timer: 1000,
-            }).then((result) => {
-              return false;
-            });
-          }
-
-          if ($("#inputCat").val()) {
-            $(".preloader").show();
-            $.ajax({
-              url: `${baseUrl}admin/catagories/update`,
-              type: "POST",
-              data: {
-                id: id,
-                nameCatTh: $("#inputCat").val(),
-              },
-              success: function (response) {
-                if (response.status == 200) {
-                  setTimeout(() => {
-                    $(".preloader").hide();
-                    Swal.fire({
-                      icon: "success",
-                      title: response.title,
-                      text: response.message,
-                      showConfirmButton: false,
-                      timer: 1000,
-                    }).then((result) => {
-                      $("#catModal").modal("hide");
-                      $("#tableCat").DataTable().ajax.reload();
-                    });
-                  }, 1000);
-                }
-
-                if (response.status == 404 || response.status == 400) {
-                  setTimeout(() => {
-                    $(".preloader").hide();
-                    Swal.fire({
-                      icon: "error",
-                      title: response.title,
-                      text: response.message,
-                      showConfirmButton: false,
-                      timer: 1000,
-                    });
-                  }, 1000);
-                }
-              },
-
-              error: function (err) {
-                setTimeout(() => {
-                  $(".preloader").hide();
-                  Swal.fire({
-                    icon: "error",
-                    title: "เกิดข้อผิดผลาด!",
-                    text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
-                  }).then((result) => {
-                    console.log(err);
-                  });
-                }, 1000);
-              },
-            });
-          }
-        });
       }
 
       if (response.status == 404 || response.status == 400) {
@@ -1645,6 +1580,74 @@ const editCat = (id) => {
       });
     },
   });
+};
+
+const updateCatagory = () => {
+  if (!$("#inputCat").val()) {
+    Swal.fire({
+      icon: "warning",
+      title: "ไม่มีข้อมูล",
+      showConfirmButton: false,
+      timer: 1000,
+    }).then((result) => {
+      return false;
+    });
+  }
+
+  if ($("#inputCat").val()) {
+    $(".preloader").show();
+    $.ajax({
+      url: `${baseUrl}admin/catagories/update`,
+      type: "POST",
+      data: {
+        id: catIdUpdate,
+        nameCatTh: $("#inputCat").val(),
+      },
+      success: function (response) {
+        if (response.status == 200) {
+          setTimeout(() => {
+            $(".preloader").hide();
+            Swal.fire({
+              icon: "success",
+              title: response.title,
+              text: response.message,
+              showConfirmButton: false,
+              timer: 1000,
+            }).then((result) => {
+              $("#catModal").modal("hide");
+              $("#tableCat").DataTable().ajax.reload();
+            });
+          }, 1000);
+        }
+
+        if (response.status == 404 || response.status == 400) {
+          setTimeout(() => {
+            $(".preloader").hide();
+            Swal.fire({
+              icon: "error",
+              title: response.title,
+              text: response.message,
+              showConfirmButton: false,
+              timer: 1000,
+            });
+          }, 1000);
+        }
+      },
+
+      error: function (err) {
+        setTimeout(() => {
+          $(".preloader").hide();
+          Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดผลาด!",
+            text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+          }).then((result) => {
+            console.log(err);
+          });
+        }, 1000);
+      },
+    });
+  }
 };
 
 const deleteOwner = (id, nameOwner) => {

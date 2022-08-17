@@ -116,7 +116,7 @@ class Catagory extends BaseController
                 'userId' => $this->session->get('id'),
             ];
 
-        
+
             if ($this->LogUsageModel->insert($logData)) {
                 if ($this->catModel->where('status != 4')->update($id, ['status' => $status]) && $this->subCatModel->where('status != 4')->where('catId', $id)->set(['status' => $status])->update()) {
                     $response = [
@@ -158,7 +158,7 @@ class Catagory extends BaseController
             $id = $this->request->getPost('id');
             $nameCat = $this->request->getPost('nameCat');
             $status = $this->request->getPost('status');
-            
+
             $logData = [
                 'ip' => $this->request->getIPAddress(),
                 'action' => 'deleted catagory',
@@ -241,7 +241,7 @@ class Catagory extends BaseController
         if ($this->request->isAJAX()) {
             $subCatId = $this->request->getPost('id');
             $nameSubCat = $this->request->getPost('nameSubCat');
-           
+
             $logData = [
                 'ip' => $this->request->getIPAddress(),
                 'action' => 'deleted sub catagory',
@@ -530,7 +530,7 @@ class Catagory extends BaseController
             $ownerId = $this->request->getPost('ownerId');
 
             $adminUser = $this->userModel->select('fullname')->where('id', $ownerId)->first();
-            
+
             $check = $this->ownerGroupModel->where('ownerId', $ownerId)->where('groupId', $groupId)->first();
 
             $logData = [
@@ -599,7 +599,7 @@ class Catagory extends BaseController
             $catId = $this->request->getPost('catId');
 
             $cat = $this->catModel->select('nameCatTh')->where('id', $catId)->first();
-    
+
             $logData = [
                 'ip' => $this->request->getIPAddress(),
                 'action' => 'delete catagory owner',
@@ -682,11 +682,15 @@ class Catagory extends BaseController
         if ($this->request->isAJAX()) {
             $id = $this->request->getPost('id');
             $nameCatTh = $this->request->getPost('nameCatTh');
-           
+
 
             $updateData = [
+                'id' => $id,
                 'nameCatTh' => $nameCatTh,
             ];
+
+            // print_r($updateData);
+            // die();
 
             $beforeData = $this->catModel->where('id', $id)->first();
 
@@ -699,7 +703,7 @@ class Catagory extends BaseController
             ];
 
             if ($this->LogUsageModel->insert($logData)) {
-                if ($this->catModel->update($id, $updateData)) {
+                if ($this->catModel->save($updateData)) {
                     $response = [
                         'status' => 200,
                         'title' => 'Success!',

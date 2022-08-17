@@ -207,7 +207,7 @@ class App extends BaseConfig
      *
      * @var bool
      */
-    public $sessionMatchIP = true;
+    public $sessionMatchIP = false;
 
     /**
      * --------------------------------------------------------------------------

@@ -336,7 +336,7 @@ class Ticket extends BaseController
                         $messageEmail .= '</div> ';
                     } else {
                         $titleMail = 'send email admin approved ticket';
-                        $subjectMail = 'แอดมินตอบรับ Ticket' $resultMail['topic'];
+                        $subjectMail = 'แอดมินตอบรับ Ticket' . $resultMail['topic'];
                         $messageEmail = '<p>';
                         $messageEmail .= '<h3> Ticket no. ' .  $resultMail['ticket_no'] . ' ของคุณได้รับการตอบรับเรียบร้อยแล้ว </h3>' ;
                         $messageEmail .= 'Ticket ' . $resultMail['topic']. ' ขณะนี้กำลังดำเนินการใช้เวลาประมาณ ' . $dayTime . ' ' .$timeUnit;
