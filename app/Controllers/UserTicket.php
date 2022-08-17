@@ -96,7 +96,7 @@ class UserTicket extends BaseController
                     ];
 
                     $titleMail = 'send Email create ticket';
-    
+
                     $messageEmail = '<div id="app">';
                     $messageEmail .= ' <div>';
                     $messageEmail .= '  <h2><b> Ticket no. ' . $ticket_no . ' </b></h2>';
@@ -290,7 +290,7 @@ class UserTicket extends BaseController
 
             // mail data
             $titleMail = 'send email close ticket to admin';
-           
+
             $messageEmail = '<p>';
             $messageEmail .= '<h2> Ticket No.' . $resultTask['ticket_no'] . ' </h2>';
             $messageEmail .= '  คำร้องขอ Ticket ' . $resultTask['topic'] . ' เมื่อวันที่ ' . date('d/m/Y H:i', $resultTask['createdAt']) . ' ได้รับการรับการตรวจสอบและสามารถใช้งานได้ตามปกติแล้ว ';
@@ -433,7 +433,7 @@ class UserTicket extends BaseController
             ];
 
             if ($this->LogUsageModel->insert($logData)) {
-                if ($this->sendEmailGroup($titleMail, $subjectMail, $messageEmail, $admin_email, $attatchment) {
+                if ($this->sendEmailGroup($titleMail, $subjectMail, $messageEmail, $admin_email, $attatchment)) {
                     if ($this->ticketTaskModel->update($taskId, $updateData) && $this->taskDetailModel->insert($newTaskDetail)) {
                         $response = [
                             'status' => 200,
