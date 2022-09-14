@@ -107,7 +107,7 @@
  <!-- sub category modal -->
  <div class="modal fade clear-modal" id="subCatModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="subCatModalLabel" aria-hidden="true">
-     <div class="modal-dialog modal-lg">
+     <div class="modal-dialog modal-xl">
          <div class="modal-content">
              <div class="modal-header">
                  <h5 class="modal-title" id="subCatModalLabel">ข้อมูลหมวดหมู่ย่อย</h5>
@@ -193,7 +193,8 @@
                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
                  <button type="button" id="btnSaveSubCat" onclick="saveSubCat()"
                      class="btn btn-primary">บันทึกข้อมูล</button>
-                 <button type="button" id="btnUpdateSubCat" class="btn btn-primary">แก้ไขข้อมูล</button>
+                 <button type="button" id="btnUpdateSubCat" onclick="updateDataSubCat()"
+                     class="btn btn-primary">แก้ไขข้อมูล</button>
              </div>
          </div>
      </div>

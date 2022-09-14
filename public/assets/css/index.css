@@ -643,3 +643,13 @@ p {
   max-width: 170px;
   width: 100%;
 }
+
+
+.modal-xl {
+  max-width: 1280px;
+  width: 100% !important;
+}
+
+.modal-open {
+    overflow: scroll;
+}

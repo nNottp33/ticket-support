@@ -35,7 +35,7 @@ class User extends BaseController
     public function userList()
     {
         if ($this->request->isAJAX()) {
-            $query = $this->userModel->select('users.class, users.departmentId, users.email, users.empId, users.fullname, users.id, users.lastLogin, users.nickname, users.positionId, users.prefix, users.status, users.tel, department.nameDepart as department, position.namePosition as position')->join('position', 'position.id = users.positionId')->join('department', 'department.id = users.departmentId')->where('status != 4')->where('users.id !=', $this->session->get('id'))->orderBy('id', 'DESC')->limit(100)->get()->getResult();
+            $query = $this->userModel->select('users.class, users.departmentId, users.email, users.empId, users.fullname, users.id, users.lastLogin, users.nickname, users.positionId, users.prefix, users.status, users.tel, department.nameDepart as department, position.namePosition as position')->join('position', 'position.id = users.positionId')->join('department', 'department.id = users.departmentId')->where('status != 4')->where('users.id !=', $this->session->get('id'))->orderBy('id', 'DESC')->get()->getResult();
 
             if ($query) {
                 $response = [
@@ -68,7 +68,6 @@ class User extends BaseController
     {
         if ($this->request->isAJAX()) {
             $status =  $this->request->getGet('status');
-
 
             $query = $this->userModel->select('users.class, users.departmentId, users.email, users.empId, users.fullname, users.id, users.lastLogin, users.nickname, users.positionId, users.prefix, users.status, users.tel, department.nameDepart as department, position.namePosition as position')->join('position', 'position.id = users.positionId')->join('department', 'department.id = users.departmentId')->where('status != 4')->where('status', $status)->where('users.id !=', $this->session->get('id'))->orderBy('id', 'DESC')->limit(100)->get()->getResult();
 
@@ -104,15 +103,15 @@ class User extends BaseController
     public function countUsers()
     {
         if ($this->request->isAJAX()) {
-            $query['total'] = $this->userModel->select('count(users.id) as total')->where('id !=', $this->session->get('id'))->where('status != 4')->get()->getResult();
+            $query['total'] = $this->userModel->select('count(users.id) as total')->where('status != 4')->get()->getResult();
 
-            $query['on'] = $this->userModel->select('count(users.id) as online')->where('id !=', $this->session->get('id'))->where('status', 1)->get()->getResult();
+            $query['on'] = $this->userModel->select('count(users.id) as online')->where('status', 1)->get()->getResult();
 
-            $query['off'] = $this->userModel->select('count(users.id) as suspended')->where('id !=', $this->session->get('id'))->where('status = 0')->get()->getResult();
+            $query['off'] = $this->userModel->select('count(users.id) as suspended')->where('status = 0')->get()->getResult();
 
-            $query['lock'] = $this->userModel->select('count(users.id) as locked')->where('id !=', $this->session->get('id'))->where('status = 3')->get()->getResult();
+            $query['lock'] = $this->userModel->select('count(users.id) as locked')->where('status = 3')->get()->getResult();
 
-            $query['terminate'] = $this->userModel->select('count(users.id) as terminate')->where('id !=', $this->session->get('id'))->where('status = 4')->get()->getResult();
+            $query['terminate'] = $this->userModel->select('count(users.id) as terminate')->where('status = 4')->get()->getResult();
 
             if ($query) {
                 $response = [

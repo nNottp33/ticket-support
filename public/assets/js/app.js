@@ -230,6 +230,7 @@ const userList = () => {
       colReorder: {
         realtime: true,
       },
+      lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
       ajax: `${baseUrl}admin/users/list`,
       columns: [
         {
@@ -480,6 +481,7 @@ const userListByStatus = (status) => {
       searching: true,
       responsive: true,
       bDestroy: true,
+      lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
       colReorder: {
         realtime: true,
       },
@@ -634,6 +636,7 @@ const countUser = () => {
   });
 };
 
+let userIdUpdate;
 const editUser = (id) => {
   $("#btnUpdateUser").show();
   $("#btnSaveUser").hide();
@@ -670,72 +673,8 @@ const editUser = (id) => {
 
         $(".selectpicker").selectpicker("refresh");
 
-        $("#btnUpdateUser").click(function () {
-          // update user
-          let name = $("#inputName").val();
-          let lastName = $("#inputLastname").val();
+        userIdUpdate = response.data[0].id;
 
-          $(".preloader").show();
-          $.ajax({
-            url: `${baseUrl}admin/users/update`,
-            type: "POST",
-            data: {
-              id: response.data[0].id,
-              empId: $("#inputEmpId").val(),
-              prefix: $("#selectPrefix").val(),
-              fullname: `${name} ${lastName}`,
-              nickname: $("#inputNickname").val(),
-              email: $("#inputEmail").val(),
-              tel: $("#inputPhone").val(),
-              class: $("#classUser :selected").val(),
-              status: $("#selectStatus :selected").val(),
-              departmentId: $("#selectDepartment :selected").val(),
-              positionId: $("#selectPosition :selected").val(),
-            },
-            success: function (response) {
-              if (response.status == 200) {
-                setTimeout(() => {
-                  $(".preloader").hide();
-                  Swal.fire({
-                    icon: "success",
-                    title: response.title,
-                    text: response.message,
-                    showConfirmButton: false,
-                    timer: 1500,
-                  });
-                  $("#userModal").modal("hide");
-                  $("#tableUser").DataTable().ajax.reload();
-                }, 1000);
-              }
-
-              if (response.status == 404) {
-                setTimeout(() => {
-                  $(".preloader").hide();
-                  Swal.fire({
-                    icon: "error",
-                    title: response.title,
-                    text: response.message,
-                    showConfirmButton: false,
-                    timer: 1500,
-                  });
-                }, 1000);
-              }
-            },
-
-            error: function (error) {
-              setTimeout(() => {
-                $(".preloader").hide();
-                Swal.fire({
-                  icon: "error",
-                  title: "เกิดข้อผิดผลาด!",
-                  text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
-                }).then((result) => {
-                  console.log(error);
-                });
-              }, 1000);
-            },
-          });
-        });
       }
 
       if (response.status == 404) {
@@ -762,6 +701,75 @@ const editUser = (id) => {
     },
   });
 };
+
+
+const updateUserData = () => {
+
+  // update user
+  let name = $("#inputName").val();
+  let lastName = $("#inputLastname").val();
+
+  $(".preloader").show();
+  $.ajax({
+    url: `${baseUrl}admin/users/update`,
+    type: "POST",
+    data: {
+      id: userIdUpdate,
+      empId: $("#inputEmpId").val(),
+      prefix: $("#selectPrefix").val(),
+      fullname: `${name} ${lastName}`,
+      nickname: $("#inputNickname").val(),
+      email: $("#inputEmail").val(),
+      tel: $("#inputPhone").val(),
+      class: $("#classUser :selected").val(),
+      status: $("#selectStatus :selected").val(),
+      departmentId: $("#selectDepartment :selected").val(),
+      positionId: $("#selectPosition :selected").val(),
+    },
+    success: function (response) {
+      if (response.status == 200) {
+        setTimeout(() => {
+          $(".preloader").hide();
+          Swal.fire({
+            icon: "success",
+            title: response.title,
+            text: response.message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          $("#userModal").modal("hide");
+          $("#tableUser").DataTable().ajax.reload();
+        }, 1000);
+      }
+
+      if (response.status == 404) {
+        setTimeout(() => {
+          $(".preloader").hide();
+          Swal.fire({
+            icon: "error",
+            title: response.title,
+            text: response.message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }, 1000);
+      }
+    },
+
+    error: function (error) {
+      setTimeout(() => {
+        $(".preloader").hide();
+        Swal.fire({
+          icon: "error",
+          title: "เกิดข้อผิดผลาด!",
+          text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+        }).then((result) => {
+          console.log(error);
+        });
+      }, 1000);
+    },
+  });
+}
 
 const addUser = () => {
   $("#select-status").css("display", "none");
@@ -2088,8 +2096,12 @@ const getSubCatagories = (catId) => {
               return `<span> ${data.period} นาที</span> `;
             }
 
-            if (data.period >= 60) {
+            if (data.period >= 60 && data.period < 1440) {
               return `<span> ${data.period / 60} ชั่วโมง</span> `;
+            }
+
+            if (data.period >= 1440) {
+              return `<span> ${(data.period / 60) / 24} วัน</span> `;
             }
 
             if (data.period == 0) {
@@ -2357,7 +2369,11 @@ const saveSubCat = () => {
   }
 };
 
+
+let subCatIdEdit;
 const editSubCat = (id) => {
+
+  subCatIdEdit = id;
   $.ajax({
     url: `${baseUrl}admin/catagories/sub/get/edit`,
     type: "POST",
@@ -2376,65 +2392,9 @@ const editSubCat = (id) => {
 
         let calSla = response.data.period / 60;
 
-        console.log(calSla);
         let sla = calSla > 0 ? calSla : calSla == 0 ? 0 : calSla.toFixed(2);
-        console.log(sla);
 
         $("#inputSla").val(sla);
-
-        $("#btnUpdateSubCat").click(function () {
-          $(".preloader").show();
-          $.ajax({
-            url: `${baseUrl}admin/catagories/sub/update`,
-            type: "POST",
-            data: {
-              id: id,
-              nameSubCat: $("#inputNameSubCat").val(),
-              detail: $("#inputDetailSubCat").val(),
-              period: $("#inputSla").val(),
-            },
-            success: function (response) {
-              if (response.status == 200) {
-                setTimeout(() => {
-                  $(".preloader").hide();
-                  Swal.fire({
-                    icon: "success",
-                    title: response.title,
-                    text: response.message,
-                    showConfirmButton: false,
-                    timer: 1500,
-                  }).then((result) => {
-                    $("#subCatModal").modal("show");
-                    $("#subCatSaveModal").modal("hide");
-                    $("#tableSubCat").DataTable().ajax.reload();
-                  });
-                }, 1500);
-              }
-
-              if (response.status == 404 || response.status == 400) {
-                setTimeout(() => {
-                  $(".preloader").hide();
-                  Swal.fire({
-                    icon: "error",
-                    title: response.title,
-                    text: response.message,
-                    showConfirmButton: false,
-                    timer: 1000,
-                  });
-                }, 1500);
-              }
-            },
-            error: function (error) {
-              Swal.fire({
-                icon: "error",
-                title: "เกิดข้อผิดผลาด!",
-                text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
-              }).then((result) => {
-                console.log(error);
-              });
-            },
-          });
-        });
       }
 
       if (response.status == 404 || response.status == 400) {
@@ -2459,6 +2419,60 @@ const editSubCat = (id) => {
     },
   });
 };
+
+const updateDataSubCat = () => {
+  $.ajax({
+    url: `${baseUrl}admin/catagories/sub/update`,
+    type: "POST",
+    data: {
+      id: subCatIdEdit,
+      nameSubCat: $("#inputNameSubCat").val(),
+      detail: $("#inputDetailSubCat").val(),
+      period: $("#inputSla").val(),
+    },
+    success: function (response) {
+      if (response.status == 200) {
+        setTimeout(() => {
+          $(".preloader").hide();
+          Swal.fire({
+            icon: "success",
+            title: response.title,
+            text: response.message,
+            showConfirmButton: false,
+            timer: 1500,
+          }).then((result) => {
+            $("#subCatModal").modal("show");
+            $("#subCatSaveModal").modal("hide");
+            $("#tableSubCat").DataTable().ajax.reload();
+          });
+        }, 1500);
+      }
+
+      if (response.status == 404 || response.status == 400) {
+        setTimeout(() => {
+          $(".preloader").hide();
+          Swal.fire({
+            icon: "error",
+            title: response.title,
+            text: response.message,
+            showConfirmButton: false,
+            timer: 1000,
+          });
+        }, 1500);
+      }
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดผลาด!",
+        text: "ระบบไม่สามรถทำตามคำขอได้ในขณะนี้",
+      }).then((result) => {
+        console.log(error);
+      });
+    },
+  });
+};
+
 
 // ======================================================================== //
 
@@ -3624,20 +3638,18 @@ $("#reportDash").click(function () {
           data: null,
           className: "text-center",
           render: function (data, type, full, meta) {
-            return `<span>${
-              parseInt(data.pending_in_sla) + parseInt(data.renew_in_sla)
-            }</span>`;
+            return `<span>${parseInt(data.pending_in_sla) + parseInt(data.renew_in_sla)
+              }</span>`;
           },
         },
         {
           data: null,
           className: "text-center",
           render: function (data, type, full, meta) {
-            return `<span>${
-              parseInt(data.complete_out_sla) +
+            return `<span>${parseInt(data.complete_out_sla) +
               parseInt(data.reject_out_sla) +
               parseInt(data.close_out_sla)
-            }</span>`;
+              }</span>`;
           },
         },
       ],
