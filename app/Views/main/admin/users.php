@@ -206,7 +206,6 @@
                      <div class="customize-input mx-1 w-100">
                          <small class="form-text text-muted">แผนก</small>
                          <select class="form-control" name="selectDepartment" id="selectDepartment">
-
                          </select>
                      </div>
                      <!-- </div> -->
@@ -215,7 +214,6 @@
                          <div class="customize-input mx-1 w-100">
                              <small class="form-text text-muted">ตำแหน่ง</small>
                              <select class="form-control" id="selectPosition">
-
                              </select>
                          </div>
                      </div>
@@ -235,7 +233,8 @@
                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
                      <button type="button" id="btnSaveUser" onclick="saveUser()"
                          class="btn btn-primary">บันทึกข้อมูล</button>
-                     <button type="button" id="btnUpdateUser" class="btn btn-primary">บันทึกข้อมูล</button>
+                     <button type="button" onclick="updateUserData()" id="btnUpdateUser"
+                         class="btn btn-primary">บันทึกข้อมูล</button>
                  </div>
              </div>
          </div>

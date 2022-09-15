@@ -51,11 +51,10 @@ class Ticket extends BaseController
             ->join('users', 'users.id = ticket_task.userId')
             ->where('users.status', 1)
             ->where('ticket_task.status != 3')
-            ->where('group_owner.ownerId', $this->session->get('id'))
+            ->whereIn('group_owner.ownerId', $this->session->get('id'))
             ->where('ticket_task.ownerAccepted', $this->session->get('id'))
             ->orWhere('ticket_task.ownerAccepted', 0)
             ->orderBy('ticket_task.createdAt', 'DESC')
-            ->limit(100)
             ->findAll();
 
             // echo "<pre>";
@@ -119,7 +118,7 @@ class Ticket extends BaseController
                 ->join('users', 'users.id = ticket_task.userId')
                 ->where('users.status', 1)
                 ->whereIn('ticket_task.status', $this->request->getGet('status'))
-                ->where('group_owner.ownerId', $this->session->get('id'))
+                ->whereIn('group_owner.ownerId', $this->session->get('id'))
                 ->where('ticket_task.ownerAccepted', $this->session->get('id'))
                 ->orderBy('ticket_task.createdAt', 'DESC')
                 ->limit(100)

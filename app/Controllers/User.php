@@ -431,7 +431,7 @@ class User extends BaseController
             $email = $this->request->getPost('email');
             $tel = $this->request->getPost('tel');
             $class = $this->request->getPost('class');
-            $status = $this->request->getPost('status');
+
             $departmentId = $this->request->getPost('departmentId');
             $positionId = $this->request->getPost('positionId');
 
@@ -445,7 +445,7 @@ class User extends BaseController
                 'email' =>  $email,
                 'tel' => $tel,
                 'class' => $class,
-                'status' =>  $status ,
+
                 'departmentId' => $departmentId,
                 'positionId' => $positionId,
               ];

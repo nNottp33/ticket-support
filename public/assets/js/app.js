@@ -230,7 +230,7 @@ const userList = () => {
       colReorder: {
         realtime: true,
       },
-      lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+      lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
       ajax: `${baseUrl}admin/users/list`,
       columns: [
         {
@@ -481,7 +481,7 @@ const userListByStatus = (status) => {
       searching: true,
       responsive: true,
       bDestroy: true,
-      lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+      lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
       colReorder: {
         realtime: true,
       },
@@ -722,7 +722,6 @@ const updateUserData = () => {
       email: $("#inputEmail").val(),
       tel: $("#inputPhone").val(),
       class: $("#classUser :selected").val(),
-      status: $("#selectStatus :selected").val(),
       departmentId: $("#selectDepartment :selected").val(),
       positionId: $("#selectPosition :selected").val(),
     },
