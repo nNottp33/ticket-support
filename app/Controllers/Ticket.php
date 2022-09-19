@@ -196,8 +196,8 @@ class Ticket extends BaseController
             ->join('group_owner', 'group_owner.groupId = catagories.id')
             ->where('ticket_task.status != 3')
             ->whereIn('group_owner.ownerId', $this->session->get('id'))
-            ->where('ticket_task.ownerAccepted', $this->session->get('id'))
-            ->orWhere('ticket_task.ownerAccepted', 0)
+            // ->whereIn('ticket_task.ownerAccepted', [0, $this->session->get('id')])
+            ->groupBy('group_owner.groupId')
             ->get()
             ->getRow()->total;
 
@@ -205,10 +205,10 @@ class Ticket extends BaseController
             $query['wait'] = $this->ticketTaskModel
             ->select('count(ticket_task.id) as total')
             ->join('catagories', 'catagories.id = ticket_task.catId')
-            // ->join('group_owner', 'group_owner.groupId = catagories.id')
+            ->join('group_owner', 'group_owner.groupId = catagories.id')
             ->whereIn('ticket_task.status', [0,5,6])
-            ->where('ticket_task.ownerAccepted', $this->session->get('id'))
-            ->orWhere('ticket_task.ownerAccepted', 0)
+            ->whereIn('group_owner.ownerId', $this->session->get('id'))
+            ->whereIn('ticket_task.ownerAccepted', [0, $this->session->get('id')])
             ->get()
             ->getRow()->total;
 
