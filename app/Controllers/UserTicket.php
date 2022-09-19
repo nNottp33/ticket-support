@@ -76,15 +76,18 @@ class UserTicket extends BaseController
             $resultCatName = $this->catModel->where('id', $catId)->findColumn('nameCatTh');
             $resultSubCatName = $this->subCatModel->where('id', $subCatId)->findColumn('nameSubCat');
 
-
             $resultOwner = $this->ownerGroupModel->where('groupId', $catId)->findAll();
 
-            for ($i = 0; $i < sizeof($resultOwner); $i++) {
-                $ownerId[] = $resultOwner[$i]['id'];
-            }
+            $toMail = [$_ENV['EMAIL_IT_GROUP']];
 
-            $email = $this->userModel->whereIn('id', $ownerId)->findColumn('email');
-            $toMail = [$_ENV['EMAIL_IT_GROUP'], ...$email];
+            if ($resultOwner) {
+                for ($i = 0; $i < sizeof($resultOwner); $i++) {
+                    $ownerId[] = $resultOwner[$i]['id'];
+                }
+
+                $email = $this->userModel->whereIn('id', $ownerId)->findColumn('email');
+                $toMail = [$_ENV['EMAIL_IT_GROUP'], ...$email ];
+            }
 
             if ($this->LogUsageModel->insert($logData)) {
                 if ($this->ticketTaskModel->insert($insertData)) {
@@ -321,7 +324,6 @@ class UserTicket extends BaseController
             if ($this->LogUsageModel->insert($logData)) {
                 if ($this->sendEmailGroup($titleMail, $resultTask['topic'], $messageEmail, $admin_email, '')) {
                     if ($this->ticketTaskModel->update($taskId, $updateData)) {
-
                         // remove file when status close (4)
                         // if ($status == 4) {
                         //     $this->ticketTaskModel

@@ -37,8 +37,14 @@
                   <li class=" nav-item dropdown">
                       <a class="nav-link dropdown-toggle" href="javascript:void(0)" data-toggle="dropdown"
                           aria-haspopup="true" aria-expanded="false">
-                          <img src="<?= base_url() ?>/public/assets/images/users/profile-pic.jpg"
-                              alt="user" class="rounded-circle" width="40">
+
+                          <div class="btn btn-primary rounded-circle btn-circle font-12">
+                              <img>
+                              <?php echo mb_strimwidth(session()->get('email'), 0, 1); ?>
+
+                              </img>
+                          </div>
+
                           <span class="ml-2 d-none d-lg-inline-block"><span>Hello,</span> <span class="text-dark">
                                   <?= session()->get('nickname') == '-' ? 'Unknown' : session()->get('nickname') ?></span>
                               <i data-feather="chevron-down" class="svg-icon"></i></span>

@@ -104,13 +104,13 @@
                          <div class="form-group">
                              <small class="form-text text-muted">แนบไฟล์ตัวอย่าง</small>
                              <div class="mb-3">
-                                 <input accept="image/*" multiple="true" onchange="previewFile(this)"
-                                     class="form-control" type="file" name="file" id="file">
+                                 <input multiple="true" onchange="previewFile(this)" class="form-control" type="file"
+                                     name="file" id="file">
                              </div>
 
                          </div>
 
-                         <div class="form-group">
+                         <div class="form-group div-previewImage-user">
                              <small class="form-text text-muted">ภาพประกอบ</small>
                              <div class="display-upload-img">
                                  <img class="previewImg" accept="image/png, image/jpeg" id="previewImg" src=""
@@ -150,13 +150,13 @@
                          <div class="form-group">
                              <small class="form-text text-muted">แนบไฟล์ตัวอย่าง</small>
                              <div class="mb-3">
-                                 <input accept="image/*" multiple="true" onchange="previewFile(this)"
-                                     class="form-control" type="file" name="fileReturn" id="fileReturn">
+                                 <input multiple="true" onchange="previewFile(this)" class="form-control" type="file"
+                                     name="fileReturn" id="fileReturn">
                              </div>
 
                          </div>
 
-                         <div class="form-group">
+                         <div class="form-group div-previewImage-user">
                              <small class="form-text text-muted">ภาพประกอบ</small>
                              <div class="display-upload-img">
                                  <img class="previewImg" accept="image/png, image/jpeg" id="previewImgReturn" src=""

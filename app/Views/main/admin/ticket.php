@@ -182,7 +182,12 @@
                          <div class="single_advisor_profile wow fadeInUp" data-wow-delay="0.3s"
                              style="visibility: visible; animation-delay: 0.3s; animation-name: fadeInUp;">
                              <div class="advisor_thumb">
-                                 <img id="ticketAvatar" src="" alt="Avatar">
+                                 <div class="porfileDefault">
+                                     <img src="">
+                                     <div id="textProfile" class="centered"></div>
+                                     </img>
+                                 </div>
+
                                  <div class="social-info">
                                      <span class="designation" id="text-ticketEmpId"> </span>
                                  </div>
@@ -298,16 +303,16 @@
                          <div class="form-group">
                              <small class="form-text text-muted">แนบไฟล์ตัวอย่าง</small>
                              <div class="mb-3">
-                                 <input accept="*/*" multiple="true" onchange="previewFile(this)" class="form-control"
-                                     type="file" name="previewImgTask" id="previewImgTask">
+                                 <input multiple="true" onchange="previewFile(this)" class="form-control" type="file"
+                                     name="previewImgTask" id="previewImgTask">
                              </div>
                          </div>
 
-                         <div class="form-group">
+                         <div class="form-group div-previewImage-user">
                              <small class="form-text text-muted">ภาพประกอบ</small>
                              <div class="display-upload-img">
-                                 <img class="previewImg" accept="image/png, image/jpeg" id="previewImg" src=""
-                                     alt="Image preview" width="100%" height="180">
+                                 <img class="previewImg" id="previewImg" src="" alt="Image preview" width="100%"
+                                     height="180">
                              </div>
                          </div>
 

@@ -12,8 +12,13 @@
                      <div class="card-body">
                          <div class="row my-3">
                              <div class="col-md-12 col-12 text-center">
-                                 <img src="<?= base_url() ?>/public/assets/images/users/5.jpg"
-                                     alt="image" class="rounded-circle" width="200">
+                                 <div style="border-radius: 50% !important;"
+                                     class="porfileImageDefault btn btn-primary rounded-circle btn-circle">
+                                     <img>
+                                     <div class="centered"><?php echo mb_strimwidth(session()->get('email'), 0, 1); ?>
+                                     </div>
+                                     </img>
+                                 </div>
                              </div>
                          </div>
                          <div class="row my-3 text-center m-auto justify-content-center">

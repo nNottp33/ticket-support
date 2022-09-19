@@ -2636,24 +2636,6 @@ const getUserDetail = (email) => {
       if (response.status === 200) {
         $("#getUserDetaillModal").modal("show");
 
-        if (response.data.prefix == "นางสาว" || response.data.prefix == "นาง") {
-          var imageArr = ["avatar3.png", "avatar8.png"];
-        } else {
-          var imageArr = [
-            "avatar1.png",
-            "avatar2.png",
-            "avatar4.png",
-            "avatar5.png",
-            "avatar6.png",
-            "avatar7.png",
-          ];
-        }
-
-        let randomNum = Math.floor(Math.random() * imageArr.length);
-        $("#ticketAvatar").attr(
-          "src",
-          `${baseUrl}public/assets/images/avatar/${imageArr[randomNum]}`,
-        );
         $("#text-ticketEmpId").html(response.data.empId);
         $("#text-ticketFullname").html(
           `${response.data.prefix} ${response.data.fullname}`,
@@ -2664,6 +2646,7 @@ const getUserDetail = (email) => {
           response.data.tel.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3"),
         );
         $("#text-ticketMail").html(response.data.email);
+        $("#textProfile").text(response.data.email.charAt(0))
       }
 
       if (response.status == 404 || response.status == 400) {
@@ -3355,10 +3338,13 @@ const getMoreTicketDetail = (taskId) => {
         let attach = response.data.task[0].task_attach.split(".");
 
         if (attach[1] == "jpg" || attach[1] == "png" || attach[1] == "gif") {
+          $("#headingOne").show();
           $("#imgTask").attr(
             "src",
             `${baseUrl}public/store_files_uploaded/${response.data.task[0].task_attach}`,
           );
+        } else {
+          $("#headingOne").hide();
         }
 
         let sla;
@@ -4061,6 +4047,12 @@ const previewFile = (input, id) => {
   if (file) {
     let reader = new FileReader();
 
+    if (file.type == "image/jpeg" || file.type == "image/png" || file.type == "image/gif") {
+      $(".div-previewImage-user").show();
+    } else {
+      $(".div-previewImage-user").hide();
+    }
+
     reader.onload = function () {
       $(".previewImg").show();
       $(".previewImg").attr("src", reader.result);
@@ -4114,7 +4106,8 @@ $("#ticketForm").on("submit", function (e) {
               timer: 1000,
             }).then((result) => {
               $("#userTicketModal").modal("hide");
-              $("#tableUserTicket").DataTable().ajax.reload();
+              // $("#tableUserTicket").DataTable().ajax.reload();
+              window.location.reload();
             });
           }, 1000);
         }
@@ -4324,10 +4317,13 @@ const getMoreDetailTicket = (ticketId) => {
         let attach = response.data[0].task_attach.split(".");
 
         if (attach[1] == "jpg" || attach[1] == "png" || attach[1] == "gif") {
+          $("#headingOne").show();
           $("#imgTask").attr(
             "src",
             `${baseUrl}public/store_files_uploaded/${response.data[0].task_attach}`,
           );
+        } else {
+          $("#headingOne").hide();
         }
 
         let sla;
