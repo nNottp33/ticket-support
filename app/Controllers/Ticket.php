@@ -102,8 +102,7 @@ class Ticket extends BaseController
                 ->where('users.status', 1)
                 ->whereIn('ticket_task.status', $this->request->getGet('status'))
                 ->whereIn('group_owner.ownerId', $this->session->get('id'))
-                ->where('ticket_task.ownerAccepted', $this->session->get('id'))
-                ->orWhere('ticket_task.ownerAccepted', 0)
+                ->whereIn('ticket_task.ownerAccepted', [0, $this->session->get('id')])
                 ->orderBy('ticket_task.createdAt', 'DESC')
                 ->limit(100)
                 ->findAll();
@@ -196,7 +195,7 @@ class Ticket extends BaseController
             ->join('group_owner', 'group_owner.groupId = catagories.id')
             ->where('ticket_task.status != 3')
             ->whereIn('group_owner.ownerId', $this->session->get('id'))
-            // ->whereIn('ticket_task.ownerAccepted', [0, $this->session->get('id')])
+            ->whereIn('ticket_task.ownerAccepted', [0, $this->session->get('id')])
             ->groupBy('group_owner.groupId')
             ->get()
             ->getRow()->total;
