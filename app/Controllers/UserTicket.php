@@ -75,14 +75,12 @@ class UserTicket extends BaseController
 
             $resultCatName = $this->catModel->where('id', $catId)->findColumn('nameCatTh');
             $resultSubCatName = $this->subCatModel->where('id', $subCatId)->findColumn('nameSubCat');
-
             $resultOwner = $this->ownerGroupModel->where('groupId', $catId)->findAll();
-
             $toMail = [$_ENV['EMAIL_IT_GROUP']];
 
             if ($resultOwner) {
                 for ($i = 0; $i < sizeof($resultOwner); $i++) {
-                    $ownerId[] = $resultOwner[$i]['id'];
+                    $ownerId[] = $resultOwner[$i]['ownerId'];
                 }
 
                 $email = $this->userModel->whereIn('id', $ownerId)->findColumn('email');
@@ -92,7 +90,8 @@ class UserTicket extends BaseController
             if ($this->LogUsageModel->insert($logData)) {
                 if ($this->ticketTaskModel->insert($insertData)) {
                     $last_ticketId= $this->ticketTaskModel->getInsertID();
-                    $ticket_no = 'IT0722-' . str_pad($last_ticketId, 5, "0", STR_PAD_LEFT);
+                    // $ticket_no = 'IT0722-' . str_pad($last_ticketId, 5, "0", STR_PAD_LEFT);
+                    $ticket_no = 'IT0722-' . date("m") . str_pad($last_ticketId, 4, "0", STR_PAD_LEFT);
 
                     $updateData = [
                         'ticket_no' => $ticket_no,
